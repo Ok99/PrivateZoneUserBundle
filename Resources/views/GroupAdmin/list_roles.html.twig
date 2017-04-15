@@ -1,0 +1,11 @@
+{% extends 'SonataAdminBundle:CRUD:list_string.html.twig' %}
+
+{% block field %}{% spaceless %}
+	{% if object.roles|length %}
+		<ul>
+			{% for role in object.roles|sort %}
+				<li>{{ role }}</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+{% endspaceless %}{% endblock %}

@@ -34,7 +34,10 @@ class GroupAdmin extends BaseGroupAdmin
         parent::configureListFields($listMapper);
         unset($this->listModes['mosaic']);
 
+        $listMapper->remove('roles');
+
         $listMapper
+            ->add('roles', null, array('template' => 'Ok99PrivateZoneUserBundle:GroupAdmin:list_roles.html.twig'))
             ->add('isDefault', null, array('label' => 'group.is_default','editable' => true))
         ;
     }
