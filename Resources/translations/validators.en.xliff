@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="" >
+        <body>
+            <trans-unit id="fos_user.date_of_birth.blank">
+                <source>fos_user.date_of_birth.blank</source>
+                <target>Please enter date of birth</target>
+            </trans-unit>
+            <trans-unit id="fos_user.firstname.blank">
+                <source>fos_user.firstname.blank</source>
+                <target>Please enter your firstname</target>
+            </trans-unit>
+            <trans-unit id="fos_user.lastname.blank">
+                <source>fos_user.lastname.blank</source>
+                <target>Please enter your lastname</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

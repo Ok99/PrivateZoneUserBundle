@@ -1,0 +1,261 @@
+{% block user_avatar_widget %}
+	<input id="{{ id }}" type="hidden" name="{{ full_name }}" value="{{ value }}" />
+	<div id="field_container_{{ id }}" class="field-container" data-image-pattern="{{ path('symbio_webtools_thumbnail', {'width': 160, 'height': 160, 'path': '|path|' }) }}">
+		<span id="field_actions_{{ id }}" class="field_actions" style="margin: -2px 0 3px 0">
+			{% set upload_btn_title = value ? 'user_profile_upload_again' : 'user_profile_upload' %}
+			<span class="btn btn-danger btn-sm btn-outline sonata-ba-action btn-remove" style="position:relative;{{ not value ? 'display:none;' : '' }}">
+				<i class="fa fa-minus-circle"></i>
+				&nbsp;<span>{{ 'user_profile_remove'|trans({}, 'SonataUserBundle') }}</span>
+			</span>
+			<span class="btn btn-success btn-sm btn-outline sonata-ba-action btn-upload" style="position:relative">
+				<i class="fa fa-upload"></i>
+				&nbsp;<span data-upload-title="{{ 'user_profile_upload'|trans({}, 'SonataUserBundle') }}" data-upload-again-title="{{ 'user_profile_upload_again'|trans({}, 'SonataUserBundle') }}">{{ upload_btn_title|trans({}, 'SonataUserBundle') }}</span>
+				<input id="{{ id }}_files" type="file" name="{{ id }}_files[]" data-url="{{ oneup_uploader_endpoint('media_user_image') }}" style="position:absolute;top:0;right:0;opacity:0;left:0;bottom:0;cursor:pointer;width:100%;" />
+			</span>
+			<img src="/bundles/ok99privatezonemedia/img/ajax-loader.gif" alt="" class="loading" />
+		</span>
+
+		<div class="user-profile--avatar-field">
+			{% if app.user.avatar %}
+				<img src="{{ path('symbio_webtools_thumbnail', {'width': 160, 'height': 160, 'path': app.user.avatar }) }}" class="user-profile--avatar" alt="" />
+			{% endif %}
+		</div>
+		<div class="user-profile--drop-desc" style="display: none;">
+			<i class="fa fa-warning text-yellow"></i>
+			&nbsp;{{ 'user_profile_drop_info'|trans({}, 'SonataUserBundle') }}
+		</div>
+		<div class="user-profile--avatar-crop" style="display: none"></div>
+
+		<div class="user-profile--avatar-popover popover top fade" role="tooltip" data-send-url="{{ path('admin_privatezonecore_user_user_store_cropped_avatar') }}">
+			<h3 class="popover-title">Ořez profilové fotky</h3>
+			<div class="popover-content">
+				<div>
+					<div class="control-group form-group">
+						<div>
+							<div class="editable-buttons" style="display: block;margin-left: 0;">
+								<span class="btn btn-danger btn-sm btn-outline sonata-ba-action btn-remove" style="position:relative">
+									<i class="fa fa-close"></i>
+									&nbsp;<span>{{ 'user_profile_popover_close'|trans({}, 'SonataUserBundle') }}</span>
+								</span>
+								<span class="btn btn-success btn-sm btn-outline sonata-ba-action btn-save" style="position:relative">
+									<i class="fa fa-download"></i>
+									&nbsp;<span>{{ 'user_profile_avatar_save'|trans({}, 'SonataUserBundle') }}</span>
+								</span>
+								<img src="/bundles/ok99privatezonemedia/img/ajax-loader.gif" alt="" class="loading" />
+							</div>
+							<div class="editable-input"></div>
+						</div>
+						<div class="editable-error-block help-block" style="display: none;"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$('#{{ id }}_files').fileupload({
+					dataType: 'json',
+					done: function (e, data) {
+						if (data.result.error === undefined) {
+							var cropImage = new Image(),
+								imageCroppable = false,
+								popover = $('#field_container_{{ id }} .popover'),
+								popoverWidth = $('#field_container_{{ id }}').parents('.box-primary').innerWidth() + 2 * 14,
+								popoverOffsetTop = $('body').scrollTop() + popover.outerHeight()/2 - $('#field_container_{{ id }}').parents('.form-group').offset().top - $('.main-header').outerHeight();
+
+							cropImage.classList.add('user-profile--avatar-crop-image');
+							cropImage.onload = function(e) {
+								$('#overlay').show();
+
+								$(cropImage).css('maxWidth', $('#field_container_{{ id }}').parents('.box-primary').innerWidth());
+
+								$(cropImage).cropper({
+									aspectRatio: 1,
+									viewMode: 1,
+									movable: false,
+									scalable: false,
+									zoomable: false,
+									minCropBoxWidth: 160,
+									minCropBoxHeight: 160,
+									ready: function() {
+										imageCroppable = true;
+									}
+								});
+
+								popover.css({
+									positon: 'absolute',
+									minWidth: popoverWidth,
+									left: $(window).width()/2 - popoverWidth/2 - $('.main-sidebar').outerWidth(),
+									top: popoverOffsetTop
+								}).addClass('in').show();
+
+								popover.find('.editable-buttons .btn-save').off('click').click(function(e){
+									e.preventDefault();
+
+									if (!imageCroppable) {
+										return;
+									}
+
+									var popover = $(this).parents('.popover'),
+										cropData = popover.find('img.user-profile--avatar-crop-image').cropper('getData');
+
+									popover.find('.loading').show();
+
+									console.log(cropData);
+
+									$.ajax({
+										type: 'post',
+										url: popover.data('send-url'),
+										data: {
+											crop: {
+												x: Math.round(cropData.x),
+												y: Math.round(cropData.y),
+												width: Math.round(cropData.width),
+												height: Math.round(cropData.height)
+											},
+											pathname: data.result.pathname
+										},
+										dataType: 'json',
+										success: function(response) {
+											if (typeof response == 'object' && response.success) {
+												var imagePathname = $('#field_container_{{ id }}').data('image-pattern').replace('|path|', response.data.pathname);
+												if ($('#field_container_{{ id }} img.user-profile--avatar').length) {
+													$('#field_container_{{ id }} img.user-profile--avatar').attr('src', imagePathname);
+												} else {
+													$('#field_container_{{ id }} .user-profile--avatar-field').append('<img src="' + imagePathname + '" class="user-profile--avatar" alt="" />');
+												}
+
+												$('#{{ id }}').val(response.data.pathname);
+												$('#field_actions_{{ id }}').find('.btn-upload span').text($('#field_actions_{{ id }}').find('.btn-upload span').data('upload-again-title'));
+												$('#field_actions_{{ id }}').find('.btn-remove').show();
+												$('#field_container_{{ id }} .user-profile--drop-desc').hide();
+
+												popover.removeClass('in').hide();
+
+												popover.find('.editable-input .user-profile--avatar-crop-image')
+													.cropper('destroy')
+													.remove();
+
+												$('#overlay').hide();
+											}
+											popover.find('.loading').hide();
+										},
+										error: function() {
+											popover.find('.loading').hide();
+										}
+									});
+								});
+
+								popover.find('.editable-buttons .btn-remove').off('click').click(function(e){
+									e.preventDefault();
+
+									var popover = $(this).parents('.popover');
+									popover.removeClass('in').hide();
+
+									popover.find('.editable-input .user-profile--avatar-crop-image')
+										.cropper('destroy')
+										.remove();
+
+									$('#overlay').hide();
+								});
+							};
+							cropImage.src = data.result.pathname;
+
+							popover.find('.editable-input').append(cropImage);
+						} else {
+							$("#field_actions_{{ id }}").before('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button><p>' + data.result.error + '</p></div>');
+						}
+					},
+					formData: {
+						context: 'avatar'
+					},
+					progressall: function (e) {
+						$('#field_container_{{ id }}').find('.loading').show();
+					},
+					stop: function (e) {
+						$('#field_container_{{ id }}').find('.loading').hide();
+					}
+				});
+
+				$('#field_actions_{{ id }}').find('.btn-remove').off('click').on('click', function(e){
+					e.preventDefault();
+					$('#field_container_{{ id }} img.user-profile--avatar').remove();
+					$('#field_container_{{ id }} .user-profile--drop-desc').show();
+					$('#field_actions_{{ id }}').find('.btn-upload span').text($('#field_actions_{{ id }}').find('.btn-upload span').data('upload-title'));
+					$(this).hide();
+					$('#{{ id }}').val('');
+				});
+			});
+		</script>
+	</div>
+{% endblock %}
+
+{% block user_photo_widget %}
+	<input id="{{ id }}" type="hidden" name="{{ full_name }}" value="{{ value }}" />
+	<div id="field_container_{{ id }}" class="field-container" data-image-pattern="{{ path('symbio_webtools_thumbnail_ratio', {'width': 250, 'height': 350, 'path': '|path|' }) }}">
+		<span id="field_actions_{{ id }}" class="field_actions" style="margin: -2px 0 3px 0">
+			{% set upload_btn_title = value ? 'user_profile_upload_again' : 'user_profile_upload' %}
+			<span class="btn btn-danger btn-sm btn-outline sonata-ba-action btn-remove" style="position:relative;{{ not value ? 'display:none;' : '' }}">
+				<i class="fa fa-minus-circle"></i>
+				&nbsp;<span>{{ 'user_profile_remove'|trans({}, 'SonataUserBundle') }}</span>
+			</span>
+			<span class="btn btn-success btn-sm btn-outline sonata-ba-action btn-upload" style="position:relative">
+				<i class="fa fa-upload"></i>
+				&nbsp;<span data-upload-title="{{ 'user_profile_upload'|trans({}, 'SonataUserBundle') }}" data-upload-again-title="{{ 'user_profile_upload_again'|trans({}, 'SonataUserBundle') }}">{{ upload_btn_title|trans({}, 'SonataUserBundle') }}</span>
+				<input id="{{ id }}_files" type="file" name="{{ id }}_files[]" data-url="{{ oneup_uploader_endpoint('media_user_image') }}" style="position:absolute;top:0;right:0;opacity:0;left:0;bottom:0;cursor:pointer;width:100%;" />
+			</span>
+			<img src="/bundles/ok99privatezonemedia/img/ajax-loader.gif" alt="" class="loading" />
+		</span>
+
+		{% if app.user.photo %}
+			<img src="{{ path('symbio_webtools_thumbnail_ratio', {'width': 250, 'height': 350, 'path': app.user.photo }) }}" class="user-profile--photo" alt="" />
+		{% endif %}
+
+		<div class="user-profile--drop-desc">
+			<i class="fa fa-warning text-yellow"></i>
+			&nbsp;{{ 'user_profile_drop_info'|trans({}, 'SonataUserBundle') }}
+		</div>
+
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$('#{{ id }}_files').fileupload({
+					dataType: 'json',
+					done: function (e, data) {
+						if (data.result.error === undefined) {
+							var imagePathname = $('#field_container_{{ id }}').data('image-pattern').replace('|path|', data.result.pathname);
+							if ($('#field_container_{{ id }} img.user-profile--photo').length) {
+								$('#field_container_{{ id }} img.user-profile--photo').attr('src', imagePathname);
+							} else {
+								$('#field_container_{{ id }}').append('<img src="' + imagePathname + '" class="user-profile--photo" alt="" />');
+							}
+							$('#{{ id }}').val(data.result.pathname);
+							$('#field_actions_{{ id }}').find('.btn-upload span').text($('#field_actions_{{ id }}').find('.btn-upload span').data('upload-again-title'));
+							$('#field_actions_{{ id }}').find('.btn-remove').show();
+							$('#field_container_{{ id }} .user-profile--drop-desc').hide();
+						} else {
+							$("#field_actions_{{ id }}").before('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button><p>' + data.result.error + '</p></div>');
+						}
+					},
+					formData: {
+						context: 'photo'
+					},
+					progressall: function (e) {
+						$('#field_container_{{ id }}').find('.loading').show();
+					},
+					stop: function (e) {
+						$('#field_container_{{ id }}').find('.loading').hide();
+					}
+				});
+
+				$('#field_actions_{{ id }}').find('.btn-remove').off('click').on('click', function(e){
+					e.preventDefault();
+					$('#field_container_{{ id }} img.user-profile--photo').remove();
+					$('#field_container_{{ id }} .user-profile--drop-desc').show();
+					$('#field_actions_{{ id }}').find('.btn-upload span').text($('#field_actions_{{ id }}').find('.btn-upload span').data('upload-title'));
+					$(this).hide();
+					$('#{{ id }}').val('');
+				});
+			});
+		</script>
+	</div>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'SonataAdminBundle:CRUD:base_show_field.html.twig' %}
+
+{% block field%}
+	{%- if value is empty -%}
+		&nbsp;
+	{% else %}
+		{{ pz_club_shortcut ~ value }}
+	{% endif %}
+{% endblock %}

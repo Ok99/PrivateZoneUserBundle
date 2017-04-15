@@ -1,0 +1,57 @@
+{#
+
+This file is part of the Sonata package.
+
+(c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+
+#}
+
+{% extends base_template %}
+
+{% block sonata_header %}{% endblock %}
+
+{% block body_attributes %}class="login-page"{% endblock %}
+
+{% block sonata_wrapper %}
+    <div class="login-box">
+        <div class="login-logo">
+            {{ pz_app_name }}
+        </div><!-- /.login-logo -->
+        <div class="login-box-body">
+            {% if error %}
+                <div class="alert alert-danger alert-error">{{ error|trans({}, 'FOSUserBundle')|raw }}</div>
+            {% else %}
+                <p class="login-box-msg">{{ 'title_user_authentication'|trans({}, 'SonataUserBundle') }}</p>
+            {% endif %}
+
+            <form action="{{ path("sonata_user_admin_security_check") }}" class="login-form" method="post">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
+                <div class="form-group has-feedback">
+                    <input type="text" name="_username" value="{{ last_username }}" required="required" class="form-control" placeholder="{{ 'security.login.username'|trans({}, 'SonataUserBundle') }}">
+                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                </div>
+                <div class="form-group has-feedback">
+                    <input type="password" name="_password" class="form-control" placeholder="{{ 'security.login.password'|trans({}, 'SonataUserBundle') }}">
+                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                </div>
+                <div class="row">
+                    <div class="col-xs-7">
+                        <div class="checkbox icheck">
+                            <label>
+                                <input type="checkbox" name="_remember_me"> {{ 'security.login.remember_me'|trans({}, 'FOSUserBundle') }}
+                            </label>
+                        </div>
+                    </div><!-- /.col -->
+                    <div class="col-xs-5">
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">{{ 'security.login.submit'|trans({}, 'FOSUserBundle') }}</button>
+                    </div><!-- /.col -->
+                </div>
+            </form>
+
+            <a href="{{ path('admin_privatezonecore_user_resetting_request') }}">{{ 'forgotten_password'|trans({}, 'SonataUserBundle') }}</a><br>
+        </div><!-- /.login-box-body -->
+    </div><!-- /.login-box -->
+{% endblock sonata_wrapper %}

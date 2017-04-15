@@ -1,0 +1,18 @@
+{
+    "name": "ok99/privatezone-user-bundle",
+    "type": "symfony-bundle",
+    "description": "Ok99 PrivateZoneCore UserBundle",
+    "keywords": ["symfony", "sonata"],
+    "homepage": "http://www.ok99.cz",
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "require": {
+    },
+    "require-dev": {
+    },
+    "suggest": {
+    },
+    "autoload": {
+        "psr-4": { "Ok99\\PrivateZoneCore\\UserBundle\\": "" }
+    }
+}

@@ -1,0 +1,27 @@
+{#
+
+This file is part of the Sonata package.
+
+(c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+
+#}
+
+{% extends 'Ok99PrivateZoneAdminBundle::standard_layout.html.twig' %}
+
+{% block sonata_header %}{% endblock %}
+
+{% block body_attributes %}class="login-page"{% endblock %}
+
+{% block sonata_wrapper %}
+	<div class="login-box">
+		<div class="login-logo">
+			{{ pz_app_name }}
+		</div><!-- /.login-logo -->
+		<div class="login-box-body">
+			<p>{{ 'resetting.check_email'|trans({'%email%': email}, 'FOSUserBundle') }}</p>
+		</div><!-- /.login-box-body -->
+	</div><!-- /.login-box -->
+{% endblock sonata_wrapper %}

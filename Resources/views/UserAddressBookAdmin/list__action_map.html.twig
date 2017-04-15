@@ -1,0 +1,17 @@
+{#
+
+This file is part of the Sonata package.
+
+(c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+
+#}
+
+{% if object.street or object.city %}
+	<a href="https://mapy.cz/zakladni?q={{ (object.street ~ (object.street ? ' ' : '') ~ object.city)|url_encode }}" class="btn btn-sm btn-default view_link" title="{{ 'action_map'|trans({}, 'SonataUserBundle') }}" target="_blank">
+		<i class="glyphicon glyphicon-map-marker"></i>
+		{{ 'action_map'|trans({}, 'SonataUserBundle') }}
+	</a>
+{% endif %}

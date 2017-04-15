@@ -1,0 +1,36 @@
+{#
+
+This file is part of the Sonata package.
+
+(c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+
+#}
+
+{% extends 'Ok99PrivateZoneAdminBundle::standard_layout.html.twig' %}
+
+{% block sonata_header %}{% endblock %}
+
+{% block body_attributes %}class="login-page"{% endblock %}
+
+{% block sonata_wrapper %}
+	<div class="login-box">
+		<div class="login-logo">
+			{{ pz_app_name }}
+		</div><!-- /.login-logo -->
+		<div class="login-box-body">
+			<form action="{{ path('admin_privatezonecore_user_resetting_reset', {'token': token}) }}" {{ form_enctype(form) }} method="POST" class="fos_user_resetting_reset">
+				{{ form_widget(form) }}
+				<div class="row">
+					<div class="col-xs-5">
+					</div><!-- /.col -->
+					<div class="col-xs-7">
+						<button type="submit" class="btn btn-primary btn-block btn-flat">{{ 'resetting.reset.submit'|trans({}, 'FOSUserBundle') }}</button>
+					</div><!-- /.col -->
+				</div>
+			</form>
+		</div><!-- /.login-box-body -->
+	</div><!-- /.login-box -->
+{% endblock sonata_wrapper %}

@@ -1,0 +1,26 @@
+{% extends 'Ok99PrivateZoneUserBundle:UserAdmin:base_list.html.twig' %}
+
+{% block navbar_title %}
+    {{ admin.trans(admin.label, {}, admin.translationdomain) }}
+    {% if sites is defined %}
+        <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <strong class="text-info">{{ currentSite.name }}</strong> <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                {% for site in sites %}
+                    <li>
+                        <a href="{{ admin.generateUrl('list', { 'site': site.id }) }}">
+                            {{ site.name }}
+                            {% if currentSite and site.id == currentSite.id %}
+                                <span class="pull-right">
+                                        <i class="fa fa-check"></i>
+                                    </span>
+                            {% endif %}
+                        </a>
+                    </li>
+                {% endfor%}
+            </ul>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'Ok99PrivateZoneAdminBundle:CRUD:base_edit.html.twig' %}
+
+{% block actions %}
+    {% if admin.isAdmin() %}
+        <div class="btn-group">{% spaceless %}
+            {#{% include 'Ok99PrivateZoneAdminBundle:Button:show_button.html.twig' %}#}
+            {% include 'Ok99PrivateZoneAdminBundle:Button:history_button.html.twig' %}
+            {#{% include 'Ok99PrivateZoneAdminBundle:Button:acl_button.html.twig' %}#}
+        {% endspaceless %}</div>
+    {% endif %}
+    {#% include 'Ok99PrivateZoneAdminBundle:Button:list_button.html.twig' %#}
+{% endblock %}
+
+{% use 'Ok99PrivateZoneUserBundle:UserAdmin:base_edit_form.html.twig' with form as parentForm %}

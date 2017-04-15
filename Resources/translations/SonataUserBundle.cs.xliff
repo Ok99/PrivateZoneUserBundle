@@ -1,0 +1,711 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="" >
+        <body>
+			<trans-unit id="batch">
+				<source>batch</source>
+				<target></target>
+			</trans-unit>
+			<trans-unit id="Action">
+				<source>Action</source>
+				<target></target>
+			</trans-unit>
+            <trans-unit id="title_user_registration">
+                <source>title_user_registration</source>
+                <target>title_user_registration</target>
+            </trans-unit>
+			<trans-unit id="title_user_resetting">
+				<source>title_user_resetting</source>
+				<target>Obnova hesla</target>
+			</trans-unit>
+            <trans-unit id="user_account.dashboard.title">
+                <source>user_account.dashboard.title</source>
+                <target>Profil uživatele</target>
+            </trans-unit>
+            <trans-unit id="title_user_account">
+                <source>title_user_account</source>
+                <target>Profil</target>
+            </trans-unit>
+            <trans-unit id="title_user_edit_profile">
+                <source>title_user_edit_profile</source>
+                <target>Upravit</target>
+            </trans-unit>
+            <trans-unit id="title_user_authentication">
+                <source>title_user_authentication</source>
+                <target>Přihlášení</target>
+            </trans-unit>
+            <trans-unit id="sonata_user_submit">
+                <source>sonata_user_submit</source>
+                <target>Odeslat</target>
+            </trans-unit>
+            <trans-unit id="User List">
+                <source>User List</source>
+                <target>Uživatelé</target>
+            </trans-unit>
+            <trans-unit id="breadcrumb.link_user_create">
+                <source>breadcrumb.link_user_create</source>
+                <target>Vytvořit</target>
+            </trans-unit>
+            <trans-unit id="breadcrumb.link_user_edit">
+                <source>breadcrumb.link_user_edit</source>
+                <target>Upravit</target>
+            </trans-unit>
+            <trans-unit id="breadcrumb.link_user_delete">
+                <source>breadcrumb.link_user_delete</source>
+                <target>Odstranit</target>
+            </trans-unit>
+            <trans-unit id="Group List">
+                <source>Group List</source>
+                <target>Skupiny</target>
+            </trans-unit>
+            <trans-unit id="breadcrumb.link_group_create">
+                <source>breadcrumb.link_group_create</source>
+                <target>Vytvořit</target>
+            </trans-unit>
+            <trans-unit id="breadcrumb.link_group_edit">
+                <source>breadcrumb.link_group_edit</source>
+                <target>Upravit</target>
+            </trans-unit>
+            <trans-unit id="users">
+                <source>users</source>
+                <target>Uživatelé</target>
+            </trans-unit>
+            <trans-unit id="groups">
+                <source>groups</source>
+                <target>Uživatelské skupiny</target>
+            </trans-unit>
+            <trans-unit id="switch_user_exit">
+                <source>switch_user_exit</source>
+                <target>Opustit přepnutí uživatele</target>
+            </trans-unit>
+            <trans-unit id="switch_user">
+                <source>switch_user</source>
+                <target>Přepnout uživatele</target>
+            </trans-unit>
+            <trans-unit id="switch_group_family">
+                <source>switch_group_family</source>
+                <target>Rodina</target>
+            </trans-unit>
+            <trans-unit id="switch_group_team">
+                <source>switch_group_team</source>
+                <target>Tréninková skupina</target>
+            </trans-unit>
+            <trans-unit id="switch_accounts_1">
+                <source>switch_accounts_1</source>
+                <target>Máte %count% propojený účet</target>
+            </trans-unit>
+            <trans-unit id="switch_accounts_2">
+                <source>switch_accounts_2</source>
+                <target>Máte %count% propojené účty</target>
+            </trans-unit>
+            <trans-unit id="switch_accounts_5">
+                <source>switch_accounts_5</source>
+                <target>Máte %count% propojených účtů</target>
+            </trans-unit>
+            <trans-unit id="switch_configration">
+                <source>switch_configration</source>
+                <target>Nastavení propojených účtů</target>
+            </trans-unit>
+            <trans-unit id="user_block_switch_back">
+                <source>user_block_switch_back</source>
+                <target>Přepnout</target>
+            </trans-unit>
+            <trans-unit id="user_block_logout">
+                <source>user_block_logout</source>
+                <target>Odhlásit</target>
+            </trans-unit>
+            <trans-unit id="user_form.label_username">
+                <source>form.label_username</source>
+                <target>Uživatelské jméno</target>
+            </trans-unit>
+            <trans-unit id="Email">
+                <source>Email</source>
+                <target>E-mailová adresa</target>
+            </trans-unit>
+            <trans-unit id="Plain Password">
+                <source>Plain Password</source>
+                <target>Heslo</target>
+            </trans-unit>
+            <trans-unit id="form.label_groups">
+                <source>form.label_groups</source>
+                <target>Uživ. skupiny</target>
+            </trans-unit>
+            <trans-unit id="Roles">
+                <source>Roles</source>
+                <target>Role</target>
+            </trans-unit>
+            <trans-unit id="Locked">
+                <source>Locked</source>
+                <target>Zámek</target>
+            </trans-unit>
+            <trans-unit id="form.label_expired">
+                <source>form.label_expired</source>
+                <target>Expirováno</target>
+            </trans-unit>
+            <trans-unit id="Enabled">
+                <source>Enabled</source>
+                <target>Aktivní</target>
+            </trans-unit>
+            <trans-unit id="form.label_credentials_expired">
+                <source>form.label_credentials_expired</source>
+                <target>Platnost příst. údajů vypršela</target>
+            </trans-unit>
+            <trans-unit id="user_form.label_name">
+                <source>form.label_name</source>
+                <target>Jméno</target>
+            </trans-unit>
+            <trans-unit id="Username">
+                <source>Username</source>
+                <target>Uživ. jméno</target>
+            </trans-unit>
+            <trans-unit id="filter.label_name">
+                <source>filter.label_name</source>
+                <target>Jméno</target>
+            </trans-unit>
+            <trans-unit id="filter.label_email">
+                <source>filter.label_email</source>
+                <target>E-Mailová adresa</target>
+            </trans-unit>
+            <trans-unit id="filter.label_locked">
+                <source>filter.label_locked</source>
+                <target>Zámek</target>
+            </trans-unit>
+            <trans-unit id="filter.label_id">
+                <source>filter.label_id</source>
+                <target>ID</target>
+            </trans-unit>
+            <trans-unit id="list.label_username">
+                <source>list.label_username</source>
+                <target>Uživatelské jméno</target>
+            </trans-unit>
+            <trans-unit id="list.label_name">
+                <source>list.label_name</source>
+                <target>Název</target>
+            </trans-unit>
+            <trans-unit id="list.label_email">
+                <source>list.label_email</source>
+                <target>E-Mailová adresa</target>
+            </trans-unit>
+            <trans-unit id="list.label_locked">
+                <source>list.label_locked</source>
+                <target>Zámek</target>
+            </trans-unit>
+            <trans-unit id="list.label_enabled">
+                <source>list.label_enabled</source>
+                <target>Povoleno</target>
+            </trans-unit>
+            <trans-unit id="Created At">
+                <source>Created At</source>
+                <target>Vytvořeno</target>
+            </trans-unit>
+            <trans-unit id="Impersonating">
+                <source>Impersonating</source>
+                <target>Přepnout uživatele</target>
+            </trans-unit>
+            <trans-unit id="list.label_roles">
+                <source>list.label_roles</source>
+                <target>Role</target>
+            </trans-unit>
+            <trans-unit id="label_two_step_code">
+                <source>label_two_step_code</source>
+                <target>Dvoustupňové ověření</target>
+            </trans-unit>
+            <trans-unit id="message_two_step_code_help">
+                <source>message_two_step_code_help</source>
+                <target>Zadejte ověřovací kód vytvořen vaší mobilní aplikací</target>
+            </trans-unit>
+            <trans-unit id="label_two_step_code_error">
+                <source>label_two_step_code_error</source>
+                <target>Ověřovací kód není platný</target>
+            </trans-unit>
+            <trans-unit id="sonata_user">
+                <source>sonata_user</source>
+                <target>Uživatelé</target>
+            </trans-unit>
+            <trans-unit id="form.label_website">
+                <source>form.label_website</source>
+                <target>Webová stránka</target>
+            </trans-unit>
+            <trans-unit id="form.label_biography">
+                <source>form.label_biography</source>
+                <target>Životopis</target>
+            </trans-unit>
+            <trans-unit id="form.label_gender">
+                <source>form.label_gender</source>
+                <target>Pohlaví</target>
+            </trans-unit>
+            <trans-unit id="form.label_locale">
+                <source>form.label_locale</source>
+                <target>Jazyk</target>
+            </trans-unit>
+            <trans-unit id="form.label_timezone">
+                <source>form.label_timezone</source>
+                <target>Časová zóna</target>
+            </trans-unit>
+            <trans-unit id="form.label_phone">
+                <source>form.label_phone</source>
+                <target>Telefon</target>
+            </trans-unit>
+            <trans-unit id="form.label_facebook_uid">
+                <source>form.label_facebook_uid</source>
+                <target>Facebook UID</target>
+            </trans-unit>
+            <trans-unit id="form.label_facebook_name">
+                <source>form.label_facebook_name</source>
+                <target>Facebook jméno</target>
+            </trans-unit>
+            <trans-unit id="form.label_twitter_uid">
+                <source>form.label_twitter_uid</source>
+                <target>Twitter UID</target>
+            </trans-unit>
+            <trans-unit id="form.label_twitter_name">
+                <source>form.label_twitter_name</source>
+                <target>Twitter jméno</target>
+            </trans-unit>
+            <trans-unit id="form.label_gplus_uid">
+                <source>form.label_gplus_uid</source>
+                <target>Google+ UID</target>
+            </trans-unit>
+            <trans-unit id="form.label_gplus_name">
+                <source>form.label_gplus_name</source>
+                <target>Google+ jméno</target>
+            </trans-unit>
+            <trans-unit id="form.label_token">
+                <source>form.label_token</source>
+                <target>Token</target>
+            </trans-unit>
+            <trans-unit id="form.label_two_step_verification_code">
+                <source>form.label_two_step_verification_code</source>
+                <target>Ověřovací kód</target>
+            </trans-unit>
+            <trans-unit id="show.label_username">
+                <source>show.label_username</source>
+                <target>Uživatelské jméno</target>
+            </trans-unit>
+            <trans-unit id="show.label_email">
+                <source>show.label_email</source>
+                <target>E-mailová adresa</target>
+            </trans-unit>
+            <trans-unit id="Groups">
+                <source>Groups</source>
+                <target>Uživ. skupiny</target>
+            </trans-unit>
+            <trans-unit id="Date Of Birth">
+                <source>Date Of Birth</source>
+                <target>Datum narození</target>
+            </trans-unit>
+            <trans-unit id="Firstname">
+                <source>Firstname</source>
+                <target>Jméno</target>
+            </trans-unit>
+            <trans-unit id="Lastname">
+                <source>Lastname</source>
+                <target>Příjmení</target>
+            </trans-unit>
+            <trans-unit id="Nickname">
+                <source>Nickname</source>
+                <target>Přezdívka</target>
+            </trans-unit>
+            <trans-unit id="Website">
+                <source>Website</source>
+                <target>Webová stránka</target>
+            </trans-unit>
+            <trans-unit id="Biography">
+                <source>Biography</source>
+                <target>Životopis</target>
+            </trans-unit>
+            <trans-unit id="Gender">
+                <source>Gender</source>
+                <target>Pohlaví</target>
+            </trans-unit>
+            <trans-unit id="Locale">
+                <source>Locale</source>
+                <target>Jazyk</target>
+            </trans-unit>
+            <trans-unit id="Timezone">
+                <source>Timezone</source>
+                <target>Časové pásmo</target>
+            </trans-unit>
+            <trans-unit id="Phone">
+                <source>Phone</source>
+                <target>Telefon</target>
+            </trans-unit>
+            <trans-unit id="Photo">
+                <source>Photo</source>
+                <target>Foto</target>
+            </trans-unit>
+            <trans-unit id="Facebook Uid">
+                <source>Facebook Uid</source>
+                <target>Facebook UID</target>
+            </trans-unit>
+            <trans-unit id="Facebook Name">
+                <source>Facebook Name</source>
+                <target>Facebook jméno</target>
+            </trans-unit>
+            <trans-unit id="Twitter Uid">
+                <source>Twitter Uid</source>
+                <target>Twitter UID</target>
+            </trans-unit>
+            <trans-unit id="Twitter Name">
+                <source>Twitter Name</source>
+                <target>Twitter jméno</target>
+            </trans-unit>
+            <trans-unit id="Gplus Uid">
+                <source>Gplus Uid</source>
+                <target>Google+ UID</target>
+            </trans-unit>
+            <trans-unit id="Gplus Name">
+                <source>Gplus Name</source>
+                <target>Google+ jméno</target>
+            </trans-unit>
+            <trans-unit id="Token">
+                <source>Token</source>
+                <target>Token</target>
+            </trans-unit>
+            <trans-unit id="Two Step Verification Code">
+                <source>Two Step Verification Code</source>
+                <target>Ověřovací kód</target>
+            </trans-unit>
+            <trans-unit id="User.Profile">
+                <source>User.Profile</source>
+                <target>Profil</target>
+            </trans-unit>
+            <trans-unit id="User.General">
+                <source>User.General</source>
+                <target>Obecné</target>
+            </trans-unit>
+            <trans-unit id="Group.General">
+                <source>Group.General</source>
+                <target>Obecné</target>
+            </trans-unit>
+            <trans-unit id="User.Social">
+                <source>User.Social</source>
+                <target>Sociální sítě</target>
+            </trans-unit>
+            <trans-unit id="User.Avatar">
+                <source>User.Avatar</source>
+                <target>Profilová fotka</target>
+            </trans-unit>
+            <trans-unit id="User.Photo">
+                <source>User.Photo</source>
+                <target>Foto</target>
+            </trans-unit>
+            <trans-unit id="User.Photo.Addressbook">
+                <source>User.Photo.Addressbook</source>
+                <target>Fotka do adresáře</target>
+            </trans-unit>
+            <trans-unit id="Security.Status">
+                <source>Security.Status</source>
+                <target>Status</target>
+            </trans-unit>
+            <trans-unit id="Security.Groups">
+                <source>Security.Groups</source>
+                <target>Uživatelské skupiny</target>
+            </trans-unit>
+            <trans-unit id="Security.Keys">
+                <source>Security.Keys</source>
+                <target>Klíče</target>
+            </trans-unit>
+            <trans-unit id="Security.Roles">
+                <source>Security.Roles</source>
+                <target>Role</target>
+            </trans-unit>
+            <trans-unit id="Image">
+                <source>Image</source>
+                <target>Obrázek</target>
+            </trans-unit>
+            <trans-unit id="breadcrumb.link_user_show">
+                <source>breadcrumb.link_user_show</source>
+                <target>Ukázat</target>
+            </trans-unit>
+            <trans-unit id="form.label_date_of_birth">
+                <source>form.label_date_of_birth</source>
+                <target>Datum narození</target>
+            </trans-unit>
+            <trans-unit id="gender_unknown">
+                <source>gender_unknown</source>
+                <target>neznámé pohlaví</target>
+            </trans-unit>
+            <trans-unit id="gender_female">
+                <source>gender_female</source>
+                <target>žena</target>
+            </trans-unit>
+            <trans-unit id="gender_male">
+                <source>gender_male</source>
+                <target>muž</target>
+            </trans-unit>
+            <trans-unit id="sonata_profile_title">
+                <source>sonata_profile_title</source>
+                <target>Můj profil</target>
+            </trans-unit>
+            <trans-unit id="link_show_profile">
+                <source>link_show_profile</source>
+                <target>link_show_profile</target>
+            </trans-unit>
+            <trans-unit id="link_edit_profile">
+                <source>link_edit_profile</source>
+                <target>Upravit profil</target>
+            </trans-unit>
+            <trans-unit id="title_user_edit_authentication">
+                <source>title_user_edit_authentication</source>
+                <target>Autentifikace</target>
+            </trans-unit>
+            <trans-unit id="link_edit_authentication">
+                <source>link_edit_authentication</source>
+                <target>Autentifikace</target>
+            </trans-unit>
+            <trans-unit id="label_profile_gender">
+                <source>label_profile_gender</source>
+                <target>Pohlaví</target>
+            </trans-unit>
+            <trans-unit id="label_profile_firstname">
+                <source>label_profile_firstname</source>
+                <target>Křestní jméno</target>
+            </trans-unit>
+            <trans-unit id="label_profile_lastname">
+                <source>label_profile_lastname</source>
+                <target>Příjmení</target>
+            </trans-unit>
+            <trans-unit id="label_profile_website">
+                <source>label_profile_website</source>
+                <target>Webová stránka</target>
+            </trans-unit>
+            <trans-unit id="label_profile_dob">
+                <source>label_profile_dob</source>
+                <target>Datum narození</target>
+            </trans-unit>
+            <trans-unit id="label_profile_biography">
+                <source>label_profile_biography</source>
+                <target>Životopis</target>
+            </trans-unit>
+            <trans-unit id="label_profile_locale">
+                <source>label_profile_locale</source>
+                <target>Jazyk</target>
+            </trans-unit>
+            <trans-unit id="label_profile_timezone">
+                <source>label_profile_timezone</source>
+                <target>Časová zóna</target>
+            </trans-unit>
+            <trans-unit id="label_profile_phone">
+                <source>label_profile_phone</source>
+                <target>Telefon</target>
+            </trans-unit>
+            <trans-unit id="profile.flash.updated">
+                <source>profile.flash.updated</source>
+                <target>Váš profil byl aktualizován.</target>
+            </trans-unit>
+            <trans-unit id="sonata_change_password_link">
+                <source>sonata_change_password_link</source>
+                <target>Změnit heslok</target>
+            </trans-unit>
+            <trans-unit id="link_register">
+                <source>link_register</source>
+                <target>Registrovat</target>
+            </trans-unit>
+            <trans-unit id="link_login">
+                <source>link_login</source>
+                <target>Přihlásit se</target>
+            </trans-unit>
+            <trans-unit id="link_logout">
+                <source>link_logout</source>
+                <target>Odhlásit</target>
+            </trans-unit>
+            <trans-unit id="registration.flash.user_created">
+                <source>registration.flash.user_created</source>
+                <target>Váš účet byl úspěšně vytvořen!</target>
+            </trans-unit>
+            <trans-unit id="forgotten_password">
+                <source>forgotten_password</source>
+                <target>Zapomenuté heslo?</target>
+            </trans-unit>
+            <trans-unit id="sonata_user_profile_breadcrumb_index">
+                <source>sonata_user_profile_breadcrumb_index</source>
+                <target>Index</target>
+            </trans-unit>
+            <trans-unit id="sonata_user_profile_breadcrumb_edit">
+                <source>sonata_user_profile_breadcrumb_edit</source>
+                <target>Upravit</target>
+            </trans-unit>
+            <trans-unit id="sonata_user_already_authenticated">
+                <source>sonata_user_already_authenticated</source>
+                <target>Již jste přihlášen(a)</target>
+            </trans-unit>
+            <trans-unit id="security.login.username">
+                <source>security.login.username</source>
+                <target>Uživatelské jméno</target>
+            </trans-unit>
+            <trans-unit id="security.login.password">
+                <source>security.login.password</source>
+                <target>Heslo</target>
+            </trans-unit>
+            <trans-unit id="form.username">
+                <source>form.username</source>
+                <target>Uživatelské jméno</target>
+            </trans-unit>
+            <trans-unit id="Name">
+                <source>Name</source>
+                <target>Název</target>
+            </trans-unit>
+            <trans-unit id="form.email">
+                <source>form.email</source>
+                <target>E-mail</target>
+            </trans-unit>
+            <trans-unit id="form.password">
+                <source>form.password</source>
+                <target>Heslo</target>
+            </trans-unit>
+            <trans-unit id="form.password_confirmation">
+                <source>form.password_confirmation</source>
+                <target>Kontrola hesla</target>
+            </trans-unit>
+            <trans-unit id="Street">
+                <source>Street</source>
+                <target>Ulice</target>
+            </trans-unit>
+            <trans-unit id="City">
+                <source>City</source>
+                <target>Město</target>
+            </trans-unit>
+            <trans-unit id="Zip">
+                <source>Zip</source>
+                <target>PSČ</target>
+            </trans-unit>
+            <trans-unit id="Regnum">
+                <source>Regnum</source>
+                <target>Reg. číslo</target>
+            </trans-unit>
+            <trans-unit id="Sportident">
+                <source>Sportident</source>
+                <target>SportIdent</target>
+            </trans-unit>
+            <trans-unit id="User.Registration">
+                <source>User.Registration</source>
+                <target>Registrace</target>
+            </trans-unit>
+            <trans-unit id="User.Contact">
+                <source>User.Contact</source>
+                <target>Kontakt</target>
+            </trans-unit>
+            <trans-unit id="User.User">
+                <source>User.User</source>
+                <target>Uživatel</target>
+            </trans-unit>
+            <trans-unit id="Trainer.Team members">
+                <source>Trainer.Team members</source>
+                <target>Trenér</target>
+            </trans-unit>
+            <trans-unit id="Trainer.TeamMembers">
+                <source>Trainer.TeamMembers</source>
+                <target>Tréninková skupina</target>
+            </trans-unit>
+            <trans-unit id="Parent.Family members">
+                <source>Parent.Family members</source>
+                <target>Rodič</target>
+            </trans-unit>
+            <trans-unit id="Parent.FamilyMembers">
+                <source>Parent.FamilyMembers</source>
+                <target>Členi rodiny</target>
+            </trans-unit>
+            <trans-unit id="Is Trainer">
+                <source>Is Trainer</source>
+                <target>Trenér</target>
+            </trans-unit>
+            <trans-unit id="Is Parent">
+                <source>Is Parent</source>
+                <target>Rodič</target>
+            </trans-unit>
+            <trans-unit id="Suggest Event Classes">
+                <source>Suggest Event Classes</source>
+                <target>V přihlášce nabízej pouze kategorie odpovídající věku</target>
+            </trans-unit>
+            <trans-unit id="group.is_default">
+                <source>group.is_default</source>
+                <target>Základní</target>
+            </trans-unit>
+            <trans-unit id="Sponsor">
+                <source>Sponsor</source>
+                <target>Sponzor</target>
+            </trans-unit>
+            <trans-unit id="user_wallet_amount">
+                <source>user_wallet_amount</source>
+                <target>Stav konta</target>
+            </trans-unit>
+            <trans-unit id="user_messages_new_1">
+                <source>user_messages_new_1</source>
+                <target>Máte novou zprávu</target>
+            </trans-unit>
+            <trans-unit id="user_messages_new_2">
+                <source>user_messages_new_2</source>
+                <target>Máte %count% nové zprávy</target>
+            </trans-unit>
+            <trans-unit id="user_messages_new_5">
+                <source>user_messages_new_5</source>
+                <target>Máte %count% nových zpráv</target>
+            </trans-unit>
+			<trans-unit id="user_messages_all">
+				<source>user_messages_all</source>
+				<target>Všechny zprávy</target>
+            </trans-unit>
+            <trans-unit id="Address Book">
+                <source>Address Book</source>
+                <target>Adresář</target>
+            </trans-unit>
+            <trans-unit id="User Name">
+                <source>User Name</source>
+                <target>Jméno</target>
+            </trans-unit>
+			<trans-unit id="Address">
+				<source>Address</source>
+				<target>Adresa</target>
+			</trans-unit>
+			<trans-unit id="action_map">
+				<source>action_map</source>
+				<target>Mapa</target>
+			</trans-unit>
+			<trans-unit id="User.Basic">
+				<source>User.Basic</source>
+				<target>Základní údaje</target>
+			</trans-unit>
+            <trans-unit id="User.Parent">
+                <source>User.Parent</source>
+                <target>Rodič</target>
+            </trans-unit>
+            <trans-unit id="Training Groups">
+                <source>Training Groups</source>
+                <target>Patřím do tréninkové skupiny</target>
+            </trans-unit>
+            <trans-unit id="Email Parent">
+                <source>Email Parent</source>
+                <target>E-mailová adresa rodiče</target>
+            </trans-unit>
+            <trans-unit id="Phone Parent">
+                <source>Phone Parent</source>
+                <target>Telefon rodiče</target>
+            </trans-unit>
+            <trans-unit id="user_profile_upload">
+                <source>user_profile_upload</source>
+                <target>Vložit fotku</target>
+            </trans-unit>
+            <trans-unit id="user_profile_upload_again">
+                <source>user_profile_upload_again</source>
+                <target>Změnit fotku</target>
+            </trans-unit>
+            <trans-unit id="user_profile_remove">
+                <source>user_profile_remove</source>
+                <target>Odstranit</target>
+            </trans-unit>
+            <trans-unit id="user_profile_avatar_save">
+                <source>user_profile_avatar_save</source>
+                <target>Uložit profilovou fotku</target>
+            </trans-unit>
+            <trans-unit id="user_profile_popover_close">
+                <source>user_profile_popover_close</source>
+                <target>Zavřít</target>
+            </trans-unit>
+            <trans-unit id="user_profile_drop_info">
+                <source>user_profile_drop_info</source>
+                <target>Pro úplné odstranění fotky je nutné profil uložit.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

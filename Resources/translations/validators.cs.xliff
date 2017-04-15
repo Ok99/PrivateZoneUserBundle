@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="" >
+        <body>
+            <trans-unit id="fos_user.date_of_birth.blank">
+                <source>fos_user.date_of_birth.blank</source>
+                <target>Vyplňte datum narození</target>
+            </trans-unit>
+            <trans-unit id="fos_user.firstname.blank">
+                <source>fos_user.firstname.blank</source>
+                <target>Vyplňte jméno</target>
+            </trans-unit>
+            <trans-unit id="fos_user.lastname.blank">
+                <source>fos_user.lastname.blank</source>
+                <target>Vyplňte příjmení</target>
+            </trans-unit>
+            <trans-unit id="fos_user.regnum.blank">
+                <source>fos_user.regnum.blank</source>
+                <target>Vyplňte registrační číslo</target>
+            </trans-unit>
+            <trans-unit id="fos_user.regnum.used">
+                <source>fos_user.regnum.used</source>
+                <target>Toto registrační číslo je již zaregistrované</target>
+            </trans-unit>
+            <trans-unit id="fos_user.password.mismatch">
+                <source>fos_user.password.mismatch</source>
+                <target>Zadaná hesla se neshodují</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

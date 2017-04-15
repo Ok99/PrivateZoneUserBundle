@@ -1,0 +1,5 @@
+{% extends 'SonataAdminBundle:CRUD:list_string.html.twig' %}
+
+{% block field %}{% spaceless %}
+	{% if object.regnum %}{{ pz_club_shortcut }}{{ object.regnum }}{% endif %}
+{% endspaceless %}{% endblock %}

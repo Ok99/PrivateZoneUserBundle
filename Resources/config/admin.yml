@@ -1,0 +1,44 @@
+services:
+    ok99.privatezone.user.admin.user:
+        class: Ok99\PrivateZoneCore\UserBundle\Admin\UserAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: Administration, label: users }
+        arguments: [null, Ok99\PrivateZoneCore\UserBundle\Entity\User, Ok99PrivateZoneUserBundle:UserAdmin]
+        calls:
+            - [setContainer, [@service_container]]
+            - [setEntityManager, [@doctrine.orm.default_entity_manager]]
+            - [setClubConfigurationPool, [@ok99.privatezone.club_configuration_pool]]
+            - [setUserManager, [@fos_user.user_manager]]
+            - [setTranslationDomain, [SonataUserBundle]]
+            - [setTemplate, [list, Ok99PrivateZoneUserBundle:UserAdmin:list.html.twig]]
+            - [setTemplate, [outer_list_rows_list, Ok99PrivateZoneUserBundle:UserAdmin:list_outer_rows_list.html.twig]]
+            - [setTemplate, [edit, Ok99PrivateZoneUserBundle:UserAdmin:edit.html.twig]]
+
+    ok99.privatezone.user.admin.group:
+        class: Ok99\PrivateZoneCore\UserBundle\Admin\GroupAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: Administration, label: groups }
+        arguments: [null, Ok99\PrivateZoneCore\UserBundle\Entity\Group, %sonata.user.admin.group.controller%]
+        calls:
+            - [setTranslationDomain, [%sonata.user.admin.group.translation_domain%]]
+
+    ok99.privatezone.user_login_log.admin:
+        class: Ok99\PrivateZoneCore\UserBundle\Admin\UserLoginLogAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: Administration, label: Login log }
+        arguments: [null, Ok99\PrivateZoneCore\UserBundle\Entity\UserLoginLog, null]
+
+    ok99.privatezone.user_address_book.admin:
+        class: Ok99\PrivateZoneCore\UserBundle\Admin\UserAddressBookAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: Administration, label: Address Book }
+        arguments: [null, Ok99\PrivateZoneCore\UserBundle\Entity\User, null, @ok99.privatezone.club_configuration_pool]
+        calls:
+            - [setTranslationDomain, [SonataUserBundle]]
+            - [setTemplate, [show, Ok99PrivateZoneUserBundle:UserAddressBookAdmin:show.html.twig]]
+
+    ok99.privatezone.security.interactive_login_listener:
+        class: Ok99\PrivateZoneCore\UserBundle\Security\LoginListener
+        arguments: [@request_stack, @fos_user.user_manager, @doctrine.orm.default_entity_manager, @session, @ok99.privatezone.exception_handler]
+        tags:
+            - { name: kernel.event_listener, event: security.interactive_login, method: onSecurityInteractiveLogin }

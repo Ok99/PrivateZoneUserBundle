@@ -1,0 +1,16 @@
+{% extends 'Ok99PrivateZoneAdminBundle:CRUD:base_list.html.twig' %}
+
+{% block actions %}
+    {% spaceless %}
+        {% if admin.isAdmin() %}
+			{% if admin.hasRoute('export') and admin.isGranted("EXPORT") and admin.getExportFormats()|length %}
+                <a href="{{ admin.generateUrl('export', admin.modelmanager.paginationparameters(admin.datagrid, 0) + {'format' : 'xlsx'}) }}" class="btn btn-default">
+                    <i class="glyphicon glyphicon-export"></i>
+                    Export
+                </a>
+                &nbsp;
+			{% endif %}
+            {% include 'Ok99PrivateZoneAdminBundle:Button:create_button.html.twig' %}
+        {% endif %}
+    {% endspaceless %}
+{% endblock %}

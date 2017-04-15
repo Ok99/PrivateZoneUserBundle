@@ -1,0 +1,10 @@
+services:
+    ok99.privatezone.user.form.type.user_avatar:
+        class: Ok99\PrivateZoneCore\UserBundle\Form\UserAvatarType
+        tags:
+            - { name: form.type, alias: user_avatar }
+
+    ok99.privatezone.user.form.type.user_photo:
+        class: Ok99\PrivateZoneCore\UserBundle\Form\UserPhotoType
+        tags:
+            - { name: form.type, alias: user_photo }

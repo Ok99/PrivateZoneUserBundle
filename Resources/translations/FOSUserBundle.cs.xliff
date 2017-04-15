@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="" >
+        <body>
+            <trans-unit id="form.username">
+                <source>form.username</source>
+                <target>Uživatelské jméno</target>
+            </trans-unit>
+            <trans-unit id="form.email">
+                <source>form.email</source>
+                <target>Email</target>
+            </trans-unit>
+            <trans-unit id="form.email_parent">
+                <source>form.email_parent</source>
+                <target>Email rodiče</target>
+            </trans-unit>
+            <trans-unit id="form.password">
+                <source>form.password</source>
+                <target>Heslo</target>
+            </trans-unit>
+            <trans-unit id="form.password_confirmation">
+                <source>form.password_confirmation</source>
+                <target>Ověření hesla</target>
+            </trans-unit>
+            <trans-unit id="form.new_password">
+                <source>form.new_password</source>
+                <target>Nové heslo</target>
+            </trans-unit>
+            <trans-unit id="form.current_password">
+                <source>form.current_password</source>
+                <target>Současné heslo</target>
+            </trans-unit>
+            <trans-unit id="form.new_password_confirmation">
+                <source>form.new_password_confirmation</source>
+                <target>Ověření hesla</target>
+            </trans-unit>
+            <trans-unit id="Bad credentials.">
+                <source>Bad credentials.</source>
+                <target><![CDATA[Chybně zadané heslo nebo uživatelské jméno.<br/>V případě potíží zašlete e-mail na <a href="mailto:privatni.zona@seznam.cz">privatni.zona@seznam.cz</a>.]]></target>
+            </trans-unit>
+            <trans-unit id="resetting.request.username">
+                <source>resetting.request.username</source>
+                <target>Uživatelské jméno nebo e-mail</target>
+            </trans-unit>
+            <trans-unit id="resetting.request.invalid_username">
+                <source>resetting.request.invalid_username</source>
+                <target><![CDATA[Účet s uživatelským jménem "%username%" neexistuje.<br/>V případě potíží zašlete e-mail na <a href="mailto:privatni.zona@seznam.cz">privatni.zona@seznam.cz</a>.]]></target>
+            </trans-unit>
+            <trans-unit id="resetting.request.invalid_email">
+                <source>resetting.request.invalid_email</source>
+                <target><![CDATA[Účet s e-mailovou adresou "%email%" neexistuje.<br/>V případě potíží zašlete e-mail na <a href="mailto:privatni.zona@seznam.cz">privatni.zona@seznam.cz</a>.]]></target>
+            </trans-unit>
+            <trans-unit id="resetting.request.empty_email">
+                <source>resetting.request.empty_email</source>
+                <target><![CDATA[Účet nemá zadanou e-mailovou adresu.<br/>Obraťte se prosím na správce na adrese <a href="mailto:privatni.zona@seznam.cz">privatni.zona@seznam.cz</a>.]]></target>
+            </trans-unit>
+            <trans-unit id="resetting.email.subject">
+                <source>resetting.email.subject</source>
+                <target>Zapomenuté heslo</target>
+            </trans-unit>
+            <trans-unit id="resetting.email.message">
+                <source>resetting.email.message</source>
+                <target><![CDATA[Ahoj,
+
+                pro nastavení nového hesla proklikněte tento odkaz:
+
+                %confirmationUrl%]]></target>
+            </trans-unit>
+            <trans-unit id="User account is disabled.">
+                <source>User account is disabled.</source>
+                <target><![CDATA[Účet je neaktivní. <br/>V případě potíží zašlete e-mail na <a href="mailto:privatni.zona@seznam.cz">privatni.zona@seznam.cz</a>.]]></target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
