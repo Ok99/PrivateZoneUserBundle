@@ -67,6 +67,13 @@
                 </option>
             </constraint>
         </property>
+
+        <property name="sportident">
+            <constraint name="Type">
+                <option name="type">numeric</option>
+                <option name="message">fos_user.sportident.wrong</option>
+            </constraint>
+        </property>
     </class>
 
 </constraint-mapping>

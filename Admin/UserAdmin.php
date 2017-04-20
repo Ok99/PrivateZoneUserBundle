@@ -98,7 +98,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                 ->with('Registration', array('class' => 'col-md-6'))
                     ->add('regnum', null, array('required' => true, 'read_only' => !$this->isAdmin(), 'attr' => array('onkeyup' => '$("input[name=\""+$(this).attr("name").substr(0, $(this).attr("name").indexOf("["))+"[username]\"]").val($(this).val())')))
                     //->add('licence', null, array('required' => false))
-                    ->add('sportident', 'integer', array('required' => false))
+                    ->add('sportident', null, array('required' => false))
                     ->add('trainingGroups', 'sonata_type_model', array(
                         'required' => false,
                         'expanded' => true,

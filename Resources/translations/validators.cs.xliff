@@ -26,6 +26,10 @@
                 <source>fos_user.password.mismatch</source>
                 <target>Zadaná hesla se neshodují</target>
             </trans-unit>
+            <trans-unit id="fos_user.sportident.wrong">
+                <source>fos_user.sportident.wrong</source>
+                <target>SportIdent musí být pouze číslo</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
