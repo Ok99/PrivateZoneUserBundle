@@ -11,6 +11,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Ok99\PrivateZoneBundle\Entity\Message;
 use Ok99\PrivateZoneBundle\Entity\RemoteControl;
 use Ok99\PrivateZoneBundle\Entity\TrainingGroup;
+use Ok99\PrivateZoneBundle\Entity\Wallet;
 use Sonata\UserBundle\Model\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -438,6 +439,18 @@ class User extends BaseUser implements UserInterface
     public function __toString()
     {
         return sprintf('%s %s%s', $this->getName(), $this->getClubShortcut(), $this->getRegnum());
+    }
+
+    /**
+     * @param string $name
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        if (strpos($name, 'walletAmount_') !== false) {
+            list($field, $month, $year) = explode('_', $name);
+            return $this->getWalletAmountByMonth($year, $month);
+        }
     }
 
     /**
@@ -1603,6 +1616,8 @@ class User extends BaseUser implements UserInterface
         if (!is_null($this->walletAmount)) return $this->walletAmount;
 
         $amount = 0;
+
+        /** @var Wallet $payment */
         foreach ($this->wallet as $payment) {
             if ($payment->getIsConfirmed() && !$payment->getIsClubPayment()) {
                 $amount += $payment->getAmount();
@@ -1610,6 +1625,27 @@ class User extends BaseUser implements UserInterface
         }
 
         $this->walletAmount = $amount;
+
+        return $amount;
+    }
+
+    /**
+     * @param int $year
+     * @param int $month
+     * @return int
+     */
+    public function getWalletAmountByMonth($year, $month)
+    {
+        $amount = 0;
+
+        /** @var Wallet $payment */
+        foreach ($this->wallet as $payment) {
+            if ($payment->getIsConfirmed() && !$payment->getIsClubPayment()) {
+                if ($payment->getPaymentDate()->format('Y') < $year || $payment->getPaymentDate()->format('n') <= $month) {
+                    $amount += $payment->getAmount();
+                }
+            }
+        }
 
         return $amount;
     }
