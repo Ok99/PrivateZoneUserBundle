@@ -81,7 +81,7 @@ class UserRepository extends EntityRepository
     public function getActiveUsersByAge($ageMin, $ageMax)
     {
         if (!$ageMin) $ageMin = 0;
-        if (!$ageMax) $ageMin = 999;
+        if (!$ageMax) $ageMax = 999;
 
         $qb = $this->createQueryBuilder('u');
         $query = $qb
