@@ -61,7 +61,8 @@ class UserAddressBookAdmin extends BaseUserAdmin
     protected function configureListFields(\Sonata\AdminBundle\Datagrid\ListMapper $listMapper)
     {
         $listMapper
-            ->add('name', null, array(
+            ->addIdentifier('avatar', null, array('template' => 'Ok99PrivateZoneUserBundle:UserAddressBookAdmin:list_avatar.html.twig', 'label' => ' '))
+            ->addIdentifier('name', null, array(
                 'label' => 'User Name',
                 'sortable' => true,
                 'sort_field_mapping'=> array('fieldName'=>'lastname'),

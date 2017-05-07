@@ -1,0 +1,5 @@
+{% extends 'SonataAdminBundle:CRUD:list_string.html.twig' %}
+
+{% block field %}{% spaceless %}
+	<img src="{{ path('symbio_webtools_thumbnail', { 'width': '60', 'height': '60', 'path': object.avatarPathname }) }}" class="user-avatar-image" alt="">
+{% endspaceless %}{% endblock %}
