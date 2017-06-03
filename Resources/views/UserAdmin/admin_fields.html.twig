@@ -16,8 +16,8 @@
 		</span>
 
 		<div class="user-profile--avatar-field">
-			{% if app.user.avatar %}
-				<img src="{{ path('symbio_webtools_thumbnail', {'width': 160, 'height': 160, 'path': app.user.avatar }) }}" class="user-profile--avatar" alt="" />
+			{% if object.avatar %}
+				<img src="{{ path('symbio_webtools_thumbnail', {'width': 160, 'height': 160, 'path': object.avatar }) }}" class="user-profile--avatar" alt="" />
 			{% endif %}
 		</div>
 		<div class="user-profile--drop-desc" style="display: none;">
@@ -207,8 +207,8 @@
 			<img src="/bundles/ok99privatezonemedia/img/ajax-loader.gif" alt="" class="loading" />
 		</span>
 
-		{% if app.user.photo %}
-			<img src="{{ path('symbio_webtools_thumbnail_ratio', {'width': 250, 'height': 350, 'path': app.user.photo }) }}" class="user-profile--photo" alt="" />
+		{% if object.photo %}
+			<img src="{{ path('symbio_webtools_thumbnail_ratio', {'width': 250, 'height': 350, 'path': object.photo }) }}" class="user-profile--photo" alt="" />
 		{% endif %}
 
 		<div class="user-profile--drop-desc">
