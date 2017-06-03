@@ -36,10 +36,21 @@ class UserRepository extends EntityRepository
     {
         $query = $this->getActiveUsersQuery();
         try {
-            return $query->getResult();
+            $users = $query->getResult();
         } catch (NoResultException $e) {
             return null;
         }
+
+        $collator = new \Collator('cs_CZ');
+        usort($users, function (User $a, User $b) use ($collator) {
+            if ($a->getName() != $b->getName()) {
+                return $collator->compare($a->getName(), $b->getName());
+            } else {
+                return strnatcmp($a->getRegnum(), $b->getRegnum());
+            }
+        });
+
+        return $users;
     }
 
     /**
@@ -67,10 +78,21 @@ class UserRepository extends EntityRepository
     {
         $query = $this->getUsersQuery();
         try {
-            return $query->getResult();
+            $users = $query->getResult();
         } catch (NoResultException $e) {
             return null;
         }
+
+        $collator = new \Collator('cs_CZ');
+        usort($users, function (User $a, User $b) use ($collator) {
+            if ($a->getName() != $b->getName()) {
+                return $collator->compare($a->getName(), $b->getName());
+            } else {
+                return strnatcmp($a->getRegnum(), $b->getRegnum());
+            }
+        });
+
+        return $users;
     }
 
     /**
@@ -100,9 +122,20 @@ class UserRepository extends EntityRepository
             ->getQuery();
 
         try {
-            return $query->getResult();
+            $users = $query->getResult();
         } catch (NoResultException $e) {
             return [];
         }
+
+        $collator = new \Collator('cs_CZ');
+        usort($users, function (User $a, User $b) use ($collator) {
+            if ($a->getName() != $b->getName()) {
+                return $collator->compare($a->getName(), $b->getName());
+            } else {
+                return strnatcmp($a->getRegnum(), $b->getRegnum());
+            }
+        });
+
+        return $users;
     }
 }
