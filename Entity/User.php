@@ -1670,6 +1670,21 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
+     * Has family member
+     * @param User $user
+     * @return bool
+     */
+    public function hasFamilyMember(User $user)
+    {
+        foreach($this->getFamilyMembers() as $member) {
+            if ($member->getId() == $user->getId()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Has family members
      * @param User|null $excludedUser
      * @return bool
