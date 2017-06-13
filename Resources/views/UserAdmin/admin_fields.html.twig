@@ -16,8 +16,8 @@
 		</span>
 
 		<div class="user-profile--avatar-field">
-			{% if object.avatar %}
-				<img src="{{ path('symbio_webtools_thumbnail', {'width': 160, 'height': 160, 'path': object.avatar }) }}" class="user-profile--avatar" alt="" />
+			{% if value %}
+				<img src="{{ path('symbio_webtools_thumbnail', {'width': 160, 'height': 160, 'path': value }) }}" class="user-profile--avatar" alt="" />
 			{% endif %}
 		</div>
 		<div class="user-profile--drop-desc" style="display: none;">
@@ -100,8 +100,6 @@
 										cropData = popover.find('img.user-profile--avatar-crop-image').cropper('getData');
 
 									popover.find('.loading').show();
-
-									console.log(cropData);
 
 									$.ajax({
 										type: 'post',
@@ -207,8 +205,8 @@
 			<img src="/bundles/ok99privatezonemedia/img/ajax-loader.gif" alt="" class="loading" />
 		</span>
 
-		{% if object.photo %}
-			<img src="{{ path('symbio_webtools_thumbnail_ratio', {'width': 250, 'height': 350, 'path': object.photo }) }}" class="user-profile--photo" alt="" />
+		{% if value %}
+			<img src="{{ path('symbio_webtools_thumbnail_ratio', {'width': 250, 'height': 350, 'path': value }) }}" class="user-profile--photo" alt="" />
 		{% endif %}
 
 		<div class="user-profile--drop-desc">
