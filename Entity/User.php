@@ -244,6 +244,7 @@ class User extends BaseUser implements UserInterface
      */
     private $remoteControlRequests;
 
+    private $remoteUsers = null;
     private $teamMembers = null;
     private $familyMembers = null;
 
@@ -1659,12 +1660,15 @@ class User extends BaseUser implements UserInterface
     {
         if (!is_null($this->familyMembers)) return $this->familyMembers;
 
-        $this->familyMembers = new ArrayCollection();
+        $this->familyMembers = [];
         foreach($this->remoteControlRequests as $request) {
             if ($request->getIsConfirmed() && $request->getRemoteControlGroup()->getCode() == RemoteControl::CODE_FAMILY) {
-                $this->familyMembers->add($request->getRecipient());
+                $this->familyMembers[] = $request->getRecipient();
             }
         }
+
+        $collator = new \Collator('cs_CZ');
+        $collator->sort($this->familyMembers);
 
         return $this->familyMembers;
     }
@@ -1692,7 +1696,7 @@ class User extends BaseUser implements UserInterface
     public function hasFamilyMembers(User $excludedUser = null)
     {
         if (!$excludedUser) {
-            return $this->getFamilyMembers() && $this->getFamilyMembers()->count() > 0;
+            return $this->getFamilyMembers() && count($this->getFamilyMembers()) > 0;
         } else {
             foreach($this->getFamilyMembers() as $member) {
                 if ($member->getId() != $excludedUser->getId()) {
@@ -1712,12 +1716,15 @@ class User extends BaseUser implements UserInterface
     {
         if (!is_null($this->teamMembers)) return $this->teamMembers;
 
-        $this->teamMembers = new ArrayCollection();
+        $this->teamMembers = [];
         foreach($this->remoteControlRequests as $request) {
             if ($request->getIsConfirmed() && $request->getRemoteControlGroup()->getCode() == RemoteControl::CODE_TEAM) {
-                $this->teamMembers->add($request->getRecipient());
+                $this->teamMembers[] = $request->getRecipient();
             }
         }
+
+        $collator = new \Collator('cs_CZ');
+        $collator->sort($this->teamMembers);
 
         return $this->teamMembers;
     }
@@ -1730,7 +1737,7 @@ class User extends BaseUser implements UserInterface
     public function hasTeamMembers(User $excludedUser = null)
     {
         if (!$excludedUser) {
-            return $this->getTeamMembers() && $this->getTeamMembers()->count() > 0;
+            return $this->getTeamMembers() && count($this->getTeamMembers()) > 0;
         } else {
             foreach($this->getTeamMembers() as $member) {
                 if ($member->getId() != $excludedUser->getId()) {
@@ -1956,6 +1963,56 @@ class User extends BaseUser implements UserInterface
         $this->controlSidebarLightSkin = $controlSidebarLightSkin;
 
         return $this;
+    }
+
+    /**
+     * Get all remote users
+     *
+     * @return User[]
+     */
+    public function getRemoteUsers()
+    {
+        if (is_null($this->remoteUsers)) {
+            $this->remoteUsers = array_merge($this->getFamilyMembers(), $this->getTeamMembers());
+            $this->remoteUsers = array_unique($this->remoteUsers);
+            (new \Collator('cs_CZ'))->sort($this->remoteUsers);
+        }
+
+        return $this->remoteUsers;
+    }
+
+    /**
+     * Has remote users
+     * @param User|null $excludedUser
+     * @return bool
+     */
+    public function hasRemoteUsers(User $excludedUser = null)
+    {
+        if (!$excludedUser) {
+            return $this->getRemoteUsers() && count($this->getRemoteUsers()) > 0;
+        } else {
+            foreach($this->getRemoteUsers() as $member) {
+                if ($member->getId() != $excludedUser->getId()) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    /**
+     * Has remote user
+     * @param User $user
+     * @return bool
+     */
+    public function hasRemoteUser(User $user)
+    {
+        foreach($this->getRemoteUsers() as $member) {
+            if ($member->getId() == $user->getId()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
