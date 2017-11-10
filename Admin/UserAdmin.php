@@ -417,10 +417,27 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
             'SportIdent' => 'sportident',
             'Datum narození' => 'date_of_birth',
             'Email' => 'email',
+            'Email rodiče' => 'email_parent',
             'Telefon' => 'phone',
+            'Telefon rodiče' => 'phone_parent',
             'Ulice' => 'street',
             'Město' => 'city',
         );
+    }
+
+    /**
+     * @param string $field
+     * @return string
+     */
+    public function getExportXlsxFieldFormat($field)
+    {
+        switch($field) {
+            case 'date_of_birth':
+                return \PHPExcel_Style_NumberFormat::FORMAT_DATE_XLSX22;
+                break;
+            default:
+                return \PHPExcel_Style_NumberFormat::FORMAT_TEXT;
+        }
     }
 
     /**
