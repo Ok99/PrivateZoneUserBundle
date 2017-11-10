@@ -385,7 +385,15 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
      * @inheritdoc
      */
     public function getExportName() {
-        return 'Clenove';
+        return 'Clenove_oddilu';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getExportListTitle()
+    {
+        return 'Členové oddílu';
     }
 
     /**
