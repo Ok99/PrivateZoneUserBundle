@@ -95,7 +95,7 @@ class ResettingFOSUser1Controller extends \Sonata\UserBundle\Controller\Resettin
             $recipients[] = $user->getEmail();
         }
         if ($user->getEmailParent() && $user->getAge() < $clubConfigurationPool->getSettings()->getAgeToParentalSupervision()) {
-            $recipients[] = $user->getEmailParent();
+            $recipients[] = array_map(function($email){ return trim($email); }, explode(',', $user->getEmailParent()));
         }
 
         try {
