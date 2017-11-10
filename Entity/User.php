@@ -4,6 +4,10 @@ namespace Ok99\PrivateZoneCore\UserBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Egulias\EmailValidator\EmailValidator;
+use Egulias\EmailValidator\Validation\DNSCheckValidation;
+use Egulias\EmailValidator\Validation\MultipleValidationWithAnd;
+use Egulias\EmailValidator\Validation\RFCValidation;
 use FOS\UserBundle\Model\GroupInterface;
 use FOS\UserBundle\Model\UserInterface as FOSUserInterface;
 use FOS\UserBundle\Model\User as BaseUser;
@@ -14,6 +18,7 @@ use Ok99\PrivateZoneBundle\Entity\TrainingGroup;
 use Ok99\PrivateZoneBundle\Entity\Wallet;
 use Sonata\UserBundle\Model\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Table(name="fos_user_user",indexes={
@@ -129,7 +134,10 @@ class User extends BaseUser implements UserInterface
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255, nullable=true)
-     * @Assert\Email(message="E-mail nebyl zadán správně.")
+     * @Assert\Callback(
+     *     callback={"Ok99\PrivateZoneCore\UserBundle\Entity\User","validateEmail"},
+     *     groups={"Registration","Profile"}
+     * )
      */
     protected $email;
 
@@ -144,6 +152,10 @@ class User extends BaseUser implements UserInterface
      * @var string
      *
      * @ORM\Column(name="email_parent", type="string", length=255, nullable=true)
+     * @Assert\Callback(
+     *     callback={"Ok99\PrivateZoneCore\UserBundle\Entity\User","validateEmailParent"},
+     *     groups={"Registration","Profile"}
+     * )
      */
     protected $emailParent;
 
@@ -444,13 +456,64 @@ class User extends BaseUser implements UserInterface
 
     /**
      * @param string $name
-     * @return mixed
+     * @return mixed|null
      */
     public function __get($name)
     {
         if (strpos($name, 'walletAmount_') !== false) {
             list($field, $month, $year) = explode('_', $name);
             return $this->getWalletAmountByMonth($year, $month);
+        }
+        return null;
+    }
+
+    /**
+     * @param string $value
+     * @param ExecutionContextInterface $context
+     */
+    public static function validateEmail($value, ExecutionContextInterface $context)
+    {
+        if ($value) {
+            $validator = new EmailValidator();
+            $multipleValidations = new MultipleValidationWithAnd([
+                new RFCValidation(),
+                new DNSCheckValidation()
+            ]);
+
+            if (!$validator->isValid($value, $multipleValidations)) {
+                $context->buildViolation('fos_user.email.wrong')
+                    ->atPath('email')
+                    ->addViolation();
+            }
+        }
+    }
+
+    /**
+     * @param string $value
+     * @param ExecutionContextInterface $context
+     */
+    public static function validateEmailParent($value, ExecutionContextInterface $context)
+    {
+        if ($value) {
+            $validator = new EmailValidator();
+            $multipleValidations = new MultipleValidationWithAnd([
+                new RFCValidation(),
+                new DNSCheckValidation()
+            ]);
+
+            if (strpos($value, ',') !== false) {
+                $emails = array_map(function($email){ return trim($email); }, explode(',', $value));
+            } else {
+                $emails = [$value];
+            }
+
+            foreach($emails as $email) {
+                if (!$validator->isValid($email, $multipleValidations)) {
+                    $context->buildViolation('fos_user.emails.wrong')
+                        ->atPath('emailParent')
+                        ->addViolation();
+                }
+            }
         }
     }
 

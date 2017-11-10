@@ -72,8 +72,11 @@
             <constraint name="Type">
                 <option name="type">numeric</option>
                 <option name="message">fos_user.sportident.wrong</option>
+                <option name="groups">
+                    <value>Registration</value>
+                    <value>Profile</value>
+                </option>
             </constraint>
         </property>
     </class>
-
 </constraint-mapping>

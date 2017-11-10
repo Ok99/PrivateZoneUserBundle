@@ -30,6 +30,14 @@
                 <source>fos_user.sportident.wrong</source>
                 <target>SportIdent musí být pouze číslo</target>
             </trans-unit>
+            <trans-unit id="fos_user.email.wrong">
+                <source>fos_user.email.wrong</source>
+                <target>E-mail není zadán správně</target>
+            </trans-unit>
+            <trans-unit id="fos_user.emails.wrong">
+                <source>fos_user.emails.wrong</source>
+                <target>E-maily nejsou zadány správně</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -111,7 +111,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
 
                 if ($this->getSubject()->getAge() < $this->clubConfigurationPool->getSettings()->getAgeToParentalSupervision()) {
                     $formMapper->with('Parent', array('class' => 'col-md-6'))
-                        ->add('emailParent', null, array('label' => 'Email'))
+                        ->add('emailParent', null, array('label' => 'Parent Emails'))
                         ->add('phoneParent', null, array('required' => false, 'label' => 'Phone'))
                     ->end();
                 }
