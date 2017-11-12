@@ -29,29 +29,46 @@ file that was distributed with this source code.
 
             <form action="{{ path("sonata_user_admin_security_check") }}" class="login-form" method="post">
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
-                <div class="form-group has-feedback">
-                    <input type="text" name="_username" value="{{ last_username }}" required="required" class="form-control" placeholder="{{ 'security.login.username'|trans({}, 'SonataUserBundle') }}">
+                <div class="form-group has-feedback"{{ pz_club_configuration_pool.isDemo() ? ' style="display:none"' : '' }}>
+                    <input type="text" name="_username" value="" required="required" class="form-control" placeholder="{{ 'security.login.username'|trans({}, 'SonataUserBundle') }}">
                     <span class="glyphicon glyphicon-user form-control-feedback"></span>
                 </div>
-                <div class="form-group has-feedback">
-                    <input type="password" name="_password" class="form-control" placeholder="{{ 'security.login.password'|trans({}, 'SonataUserBundle') }}">
+                <div class="form-group has-feedback"{{ pz_club_configuration_pool.isDemo() ? ' style="display:none"' : '' }}>
+                    <input type="{{ pz_club_configuration_pool.isDemo() ? 'text' : 'password' }}" name="_password" class="form-control" placeholder="{{ 'security.login.password'|trans({}, 'SonataUserBundle') }}">
                     <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                 </div>
-                <div class="row">
-                    <div class="col-xs-7">
-                        <div class="checkbox icheck">
-                            <label>
-                                <input type="checkbox" name="_remember_me"> {{ 'security.login.remember_me'|trans({}, 'FOSUserBundle') }}
-                            </label>
-                        </div>
-                    </div><!-- /.col -->
-                    <div class="col-xs-5">
-                        <button type="submit" class="btn btn-primary btn-block btn-flat">{{ 'security.login.submit'|trans({}, 'FOSUserBundle') }}</button>
-                    </div><!-- /.col -->
-                </div>
+                {% if not pz_club_configuration_pool.isDemo() %}
+                    <div class="row">
+                        <div class="col-xs-7">
+                            <div class="checkbox icheck">
+                                <label>
+                                    <input type="checkbox" name="_remember_me"> {{ 'security.login.remember_me'|trans({}, 'FOSUserBundle') }}
+                                </label>
+                            </div>
+                        </div><!-- /.col -->
+                        <div class="col-xs-5">
+                            <button type="submit" class="btn btn-primary btn-block btn-flat">{{ 'security.login.submit'|trans({}, 'FOSUserBundle') }}</button>
+                        </div><!-- /.col -->
+                    </div>
+                {% endif %}
+
+                {% if pz_club_configuration_pool.isDemo() %}
+                    <script type="text/javascript">
+                        function setAdmin(){$('input[name="_username"]').val('administrator');$('input[name="_password"]').val('nimda');}
+                        function setUser(){$('input[name="_username"]').val('uzivatel');$('input[name="_password"]').val('letavizu');}
+                    </script>
+                    <div class="form-group has-feedback">
+                        <button type="submit" class="btn btn-primary btn-block btn-flat" onclick="setAdmin();">Administrátor</button>
+                    </div>
+                    <div class="form-group has-feedback">
+                        <button type="submit" class="btn btn-primary btn-block btn-flat" onclick="setUser();">Uživatel</button>
+                    </div>
+                {% endif %}
             </form>
 
-            <a href="{{ path('admin_privatezonecore_user_resetting_request') }}">{{ 'forgotten_password'|trans({}, 'SonataUserBundle') }}</a><br>
+            {% if not pz_club_configuration_pool.isDemo() %}
+                <a href="{{ path('admin_privatezonecore_user_resetting_request') }}">{{ 'forgotten_password'|trans({}, 'SonataUserBundle') }}</a><br>
+            {% endif %}
         </div><!-- /.login-box-body -->
     </div><!-- /.login-box -->
 {% endblock sonata_wrapper %}
