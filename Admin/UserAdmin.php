@@ -261,7 +261,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
 
     public function showListBtnInDashboard()
     {
-        return $this->isAdmin() && !$this->clubConfigurationPool->isDemo();
+        return $this->isAdmin();
     }
 
     public function showInAddBlock()
