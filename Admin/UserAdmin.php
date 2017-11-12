@@ -116,22 +116,25 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                     ->end();
                 }
 
-                $formMapper->with('User', array('class' => 'col-md-6'))
-                    ->add('username', null, array('required' => false, 'read_only' => true))
-                    ->add('plainPassword', 'text', array(
-                        'required' => (!$this->getSubject() || is_null($this->getSubject()->getId()))
-                    ));
-                    if ($this->isAdmin()) {
-                        $formMapper->add('groups', 'sonata_type_model', array(
-                            'required' => false,
-                            'expanded' => true,
-                            'multiple' => true,
-                            'btn_add' => false,
-                            'query'    => $userGroupsQuery
+                if (!$this->clubConfigurationPool->isDemo()) {
+                    $formMapper->with('User', array('class' => 'col-md-6'))
+                        ->add('username', null, array('required' => false, 'read_only' => true))
+                        ->add('plainPassword', 'text', array(
+                            'required' => (!$this->getSubject() || is_null($this->getSubject()->getId()))
                         ));
-                    }
-                $formMapper->end()
-            ->end()
+                        if ($this->isAdmin()) {
+                            $formMapper->add('groups', 'sonata_type_model', array(
+                                'required' => false,
+                                'expanded' => true,
+                                'multiple' => true,
+                                'btn_add' => false,
+                                'query'    => $userGroupsQuery
+                            ));
+                        }
+                    $formMapper->end();
+                }
+
+            $formMapper->end();
         ;
 
         if ($this->isAdmin()) {
