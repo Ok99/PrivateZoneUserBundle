@@ -246,14 +246,22 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
         return parent::isGranted($name, $object);
     }
 
+    /**
+     * @return bool
+     */
+    public function showCreateButton()
+    {
+        return !$this->clubConfigurationPool->isDemo();
+    }
+
     public function showAddBtnInDashboard()
     {
-        return $this->isAdmin();
+        return $this->isAdmin() && !$this->clubConfigurationPool->isDemo();
     }
 
     public function showListBtnInDashboard()
     {
-        return $this->isAdmin();
+        return $this->isAdmin() && !$this->clubConfigurationPool->isDemo();
     }
 
     public function showInAddBlock()
