@@ -427,8 +427,6 @@ class User extends BaseUser implements UserInterface
      */
     private $updatedAt;
 
-    private $walletAmount = null;
-
     /**
      * Constructor
      */
@@ -1677,8 +1675,6 @@ class User extends BaseUser implements UserInterface
      */
     public function getWalletAmount()
     {
-        if (!is_null($this->walletAmount)) return $this->walletAmount;
-
         $amount = 0;
 
         /** @var Wallet $payment */
@@ -1687,8 +1683,6 @@ class User extends BaseUser implements UserInterface
                 $amount += $payment->getAmount();
             }
         }
-
-        $this->walletAmount = $amount;
 
         return $amount;
     }
