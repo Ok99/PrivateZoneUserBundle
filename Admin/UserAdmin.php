@@ -116,7 +116,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                     ->end();
                 }
 
-                if (!$this->clubConfigurationPool->isDemo()) {
+                if (!$this->clubConfigurationPool->isDemo() || $this->isGranted('ROLE_SUPER_ADMIN')) {
                     $formMapper->with('User', array('class' => 'col-md-6'))
                         ->add('username', null, array('required' => false, 'read_only' => true))
                         ->add('plainPassword', 'text', array(
@@ -254,12 +254,12 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
      */
     public function showCreateButton()
     {
-        return !$this->clubConfigurationPool->isDemo();
+        return !$this->clubConfigurationPool->isDemo() || $this->isGranted('ROLE_SUPER_ADMIN');
     }
 
     public function showAddBtnInDashboard()
     {
-        return $this->isAdmin() && !$this->clubConfigurationPool->isDemo();
+        return $this->isAdmin() && (!$this->clubConfigurationPool->isDemo() || $this->isGranted('ROLE_SUPER_ADMIN'));
     }
 
     public function showListBtnInDashboard()
