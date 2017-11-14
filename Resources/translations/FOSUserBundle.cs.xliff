@@ -36,7 +36,7 @@
             </trans-unit>
             <trans-unit id="Bad credentials.">
                 <source>Bad credentials.</source>
-                <target><![CDATA[Chybně zadané heslo nebo uživatelské jméno.<br/>V případě potíží zašlete e-mail na <a href="mailto:privatni.zona@seznam.cz">privatni.zona@seznam.cz</a>.]]></target>
+                <target><![CDATA[Chybně zadané heslo nebo uživatelské jméno.<br/>V případě potíží zašlete e-mail na <a href="mailto:info@privatni-zona.cz">info@privatni-zona.cz</a>.]]></target>
             </trans-unit>
             <trans-unit id="resetting.request.username">
                 <source>resetting.request.username</source>
@@ -44,15 +44,15 @@
             </trans-unit>
             <trans-unit id="resetting.request.invalid_username">
                 <source>resetting.request.invalid_username</source>
-                <target><![CDATA[Účet s uživatelským jménem "%username%" neexistuje.<br/>V případě potíží zašlete e-mail na <a href="mailto:privatni.zona@seznam.cz">privatni.zona@seznam.cz</a>.]]></target>
+                <target><![CDATA[Účet s uživatelským jménem "%username%" neexistuje.<br/>V případě potíží zašlete e-mail na <a href="mailto:info@privatni-zona.cz">info@privatni-zona.cz</a>.]]></target>
             </trans-unit>
             <trans-unit id="resetting.request.invalid_email">
                 <source>resetting.request.invalid_email</source>
-                <target><![CDATA[Účet s e-mailovou adresou "%email%" neexistuje.<br/>V případě potíží zašlete e-mail na <a href="mailto:privatni.zona@seznam.cz">privatni.zona@seznam.cz</a>.]]></target>
+                <target><![CDATA[Účet s e-mailovou adresou "%email%" neexistuje.<br/>V případě potíží zašlete e-mail na <a href="mailto:info@privatni-zona.cz">info@privatni-zona.cz</a>.]]></target>
             </trans-unit>
             <trans-unit id="resetting.request.empty_email">
                 <source>resetting.request.empty_email</source>
-                <target><![CDATA[Účet nemá zadanou e-mailovou adresu.<br/>Obraťte se prosím na správce na adrese <a href="mailto:privatni.zona@seznam.cz">privatni.zona@seznam.cz</a>.]]></target>
+                <target><![CDATA[Účet nemá zadanou e-mailovou adresu.<br/>Obraťte se prosím na správce na adrese <a href="mailto:info@privatni-zona.cz">info@privatni-zona.cz</a>.]]></target>
             </trans-unit>
             <trans-unit id="resetting.email.subject">
                 <source>resetting.email.subject</source>
@@ -68,7 +68,7 @@
             </trans-unit>
             <trans-unit id="User account is disabled.">
                 <source>User account is disabled.</source>
-                <target><![CDATA[Účet je neaktivní. <br/>V případě potíží zašlete e-mail na <a href="mailto:privatni.zona@seznam.cz">privatni.zona@seznam.cz</a>.]]></target>
+                <target><![CDATA[Účet je neaktivní. <br/>V případě potíží zašlete e-mail na <a href="mailto:info@privatni-zona.cz">info@privatni-zona.cz</a>.]]></target>
             </trans-unit>
         </body>
     </file>
