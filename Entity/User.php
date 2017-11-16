@@ -2032,6 +2032,7 @@ class User extends BaseUser implements UserInterface
         if (is_null($this->remoteUsers)) {
             $this->remoteUsers = array_merge($this->getFamilyMembers(), $this->getTeamMembers());
             $this->remoteUsers = array_unique($this->remoteUsers);
+            $this->remoteUsers = array_filter($this->remoteUsers, function(User $user) { return $user->getId() != $this->getId(); });
             (new \Collator('cs_CZ'))->sort($this->remoteUsers);
         }
 
