@@ -98,7 +98,6 @@ class User extends BaseUser implements UserInterface
      * @var \DateTime
      *
      * @ORM\Column(name="date_of_birth", type="datetime", nullable=true)
-     * @Assert\NotBlank(message="Datum narození musí být zadáno.")
      */
     protected $dateOfBirth;
 
@@ -133,7 +132,7 @@ class User extends BaseUser implements UserInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="email", type="string", length=255, nullable=true)
+     * @ORM\Column(name="email", type="string", length=255)
      * @Assert\Callback(
      *     callback={"Ok99\PrivateZoneCore\UserBundle\Entity\User","validateEmail"},
      *     groups={"Registration","Profile"}
@@ -144,7 +143,7 @@ class User extends BaseUser implements UserInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="email_canonical", type="string", length=255, nullable=true)
+     * @ORM\Column(name="email_canonical", type="string", length=255, unique=true)
      */
     protected $emailCanonical;
 
@@ -263,7 +262,7 @@ class User extends BaseUser implements UserInterface
     /**
      * @ORM\ManyToMany(targetEntity="Group")
      * @ORM\JoinTable(name="user_group",
-     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")})
      */
     protected $groups;
