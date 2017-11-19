@@ -90,12 +90,13 @@ class ResettingFOSUser1Controller extends \Sonata\UserBundle\Controller\Resettin
 
         $clubConfigurationPool = $this->container->get('ok99.privatezone.club_configuration_pool');
 
-        $recipients = array();
+        $recipients = [];
         if ($user->getEmail()) {
             $recipients[] = $user->getEmail();
         }
         if ($user->getEmailParent() && $user->getAge() < $clubConfigurationPool->getSettings()->getAgeToParentalSupervision()) {
-            $recipients[] = array_map(function($email){ return trim($email); }, explode(',', $user->getEmailParent()));
+            $recipients = array_merge($recipients, array_map(function($email){ return trim($email); }, explode(',', $user->getEmailParent())));
+            $recipients = array_unique($recipients);
         }
 
         try {
