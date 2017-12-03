@@ -26,7 +26,7 @@
 		</div>
 		<div class="user-profile--avatar-crop" style="display: none"></div>
 
-		<div class="user-profile--avatar-popover popover top fade" role="tooltip" data-send-url="{{ path('admin_privatezonecore_user_user_store_cropped_avatar') }}">
+		<div class="user-profile--avatar-popover popover top fade" role="tooltip" data-send-url="{{ path('admin_privatezonecore_user_user_store_cropped_avatar', {'userId': form.parent.vars.data.id}) }}">
 			<h3 class="popover-title">Ořez profilové fotky</h3>
 			<div class="popover-content">
 				<div>

@@ -8,7 +8,6 @@ use Ok99\PrivateZoneCore\UserBundle\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class UserAdminController extends SecuredCRUDController
 {
@@ -44,9 +43,10 @@ class UserAdminController extends SecuredCRUDController
      * Store avatar
      *
      * @param Request $request
+     * @param int $userId
      * @return Response
      */
-    public function storeCroppedAvatarAction(Request $request)
+    public function storeCroppedAvatarAction(Request $request, $userId)
     {
         $response = new AjaxResponse();
         $response->setSuccess(false);
@@ -115,7 +115,11 @@ class UserAdminController extends SecuredCRUDController
                 @unlink($pathname);
 
                 /** @var User $user */
-                $user = $this->container->get('security.token_storage')->getToken()->getUser();
+                if (!$this->admin->isAdmin()) {
+                    $user = $this->container->get('security.token_storage')->getToken()->getUser();
+                } else {
+                    $user = $this->get('doctrine.orm.entity_manager')->getRepository('Ok99PrivateZoneUserBundle:User')->find($userId);
+                }
 
                 // remove all old avatars
                 if ($user->getAvatar() && file_exists($documentRoot . $user->getAvatar())) {
