@@ -261,12 +261,12 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
      */
     public function showCreateButton()
     {
-        return !$this->clubConfigurationPool->isDemo() || $this->isGranted('ROLE_SUPER_ADMIN');
+        return $this->isAdmin();
     }
 
     public function showAddBtnInDashboard()
     {
-        return $this->isAdmin() && (!$this->clubConfigurationPool->isDemo() || $this->isGranted('ROLE_SUPER_ADMIN'));
+        return $this->isAdmin();
     }
 
     public function showListBtnInDashboard()
