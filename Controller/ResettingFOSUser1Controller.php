@@ -49,74 +49,67 @@ class ResettingFOSUser1Controller extends \Sonata\UserBundle\Controller\Resettin
      */
     public function sendEmailAction()
     {
-        $username = $this->container->get('request')->request->get('username');
+        $usernameOrEmail = $this->container->get('request')->request->get('username');
+        $userManager = $this->container->get('fos_user.user_manager');
+
+        // email
+        if (filter_var($usernameOrEmail, FILTER_VALIDATE_EMAIL)) {
+            $users = $userManager->findUsersBy(['email' => $usernameOrEmail]);
+        }
+        // username
+        else {
+            $users = $userManager->findUsersBy(['username' => $usernameOrEmail]);
+        }
+
+        if (!$users) {
+            return $this->container->get('templating')->renderResponse('FOSUserBundle:Resetting:request.html.'.$this->getEngine(), array(
+                filter_var($usernameOrEmail, FILTER_VALIDATE_EMAIL) ? 'invalid_email' : 'invalid_username' => $usernameOrEmail,
+                'csrf_token' => $this->container->get('form.csrf_provider')->generateCsrfToken('authenticate'),
+                'base_template' => 'Ok99PrivateZoneAdminBundle::standard_layout.html.twig',
+                'admin_pool' => $this->container->get('sonata.admin.pool'),
+            ));
+        }
+
+        $this->container->get('session')->set(static::SESSION_EMAIL, $usernameOrEmail);
 
         /** @var $user User */
-        $user = $this->container->get('fos_user.user_manager')->findUserByUsernameOrEmail($username);
+        foreach($users as $user) {
+            if (null === $user->getConfirmationToken()) {
+                /** @var $tokenGenerator \FOS\UserBundle\Util\TokenGeneratorInterface */
+                $tokenGenerator = $this->container->get('fos_user.util.token_generator');
+                $user->setConfirmationToken($tokenGenerator->generateToken());
+            }
 
-        if (null === $user) {
-            return $this->container->get('templating')->renderResponse('FOSUserBundle:Resetting:request.html.'.$this->getEngine(), array(
-                filter_var($username, FILTER_VALIDATE_EMAIL) ? 'invalid_email' : 'invalid_username' => $username,
-                'csrf_token' => $this->container->get('form.csrf_provider')->generateCsrfToken('authenticate'),
-                'base_template' => 'Ok99PrivateZoneAdminBundle::standard_layout.html.twig',
-                'admin_pool' => $this->container->get('sonata.admin.pool'),
-            ));
+            $clubConfigurationPool = $this->container->get('ok99.privatezone.club_configuration_pool');
+
+            $recipients = [];
+            if ($user->getEmail()) {
+                $recipients[] = $user->getEmail();
+            }
+            if ($user->getEmailParent() && $user->getAge() < $clubConfigurationPool->getSettings()->getAgeToParentalSupervision()) {
+                $recipients = array_merge($recipients, array_map(function($email){ return trim($email); }, explode(',', $user->getEmailParent())));
+                $recipients = array_unique($recipients);
+            }
+
+            try {
+                $clubConfigurationPool->getMailer()->send(
+                    'Ok99PrivateZoneUserBundle:Resetting:email',
+                    array('no-reply@' . $clubConfigurationPool->getHostName() => $clubConfigurationPool->getAppName()),
+                    $recipients,
+                    $this->container->get('translator')->trans('resetting.email.subject', array(), 'FOSUserBundle'),
+                    array(
+                        'confirmationUrl' => $this->container->get('router')->generate('fos_user_resetting_reset', array(
+                            'token' => $user->getConfirmationToken()
+                        ), true),
+                    )
+                );
+            } catch (\Exception $e) {
+                $this->container->get('ok99.privatezone.exception_handler')->handle($e);
+            }
+
+            $user->setPasswordRequestedAt(new \DateTime());
+            $this->container->get('fos_user.user_manager')->updateUser($user);
         }
-
-        if (null === $user->getEmail()) {
-            return $this->container->get('templating')->renderResponse('FOSUserBundle:Resetting:request.html.'.$this->getEngine(), array(
-                'empty_email' => 1,
-                filter_var($username, FILTER_VALIDATE_EMAIL) ? 'invalid_email' : 'invalid_username' => $username,
-                'csrf_token' => $this->container->get('form.csrf_provider')->generateCsrfToken('authenticate'),
-                'base_template' => 'Ok99PrivateZoneAdminBundle::standard_layout.html.twig',
-                'admin_pool' => $this->container->get('sonata.admin.pool'),
-            ));
-        }
-
-        /*if ($user->isPasswordRequestNonExpired($this->container->getParameter('fos_user.resetting.token_ttl'))) {
-            return $this->container->get('templating')->renderResponse('FOSUserBundle:Resetting:passwordAlreadyRequested.html.'.$this->getEngine(), array(
-                'base_template' => 'Ok99PrivateZoneAdminBundle::standard_layout.html.twig',
-                'admin_pool' => $this->container->get('sonata.admin.pool'),
-            ));
-        }*/
-
-        if (null === $user->getConfirmationToken()) {
-            /** @var $tokenGenerator \FOS\UserBundle\Util\TokenGeneratorInterface */
-            $tokenGenerator = $this->container->get('fos_user.util.token_generator');
-            $user->setConfirmationToken($tokenGenerator->generateToken());
-        }
-
-        $this->container->get('session')->set(static::SESSION_EMAIL, $user->getEmail() /*$this->getObfuscatedEmail($user)*/);
-
-        $clubConfigurationPool = $this->container->get('ok99.privatezone.club_configuration_pool');
-
-        $recipients = [];
-        if ($user->getEmail()) {
-            $recipients[] = $user->getEmail();
-        }
-        if ($user->getEmailParent() && $user->getAge() < $clubConfigurationPool->getSettings()->getAgeToParentalSupervision()) {
-            $recipients = array_merge($recipients, array_map(function($email){ return trim($email); }, explode(',', $user->getEmailParent())));
-            $recipients = array_unique($recipients);
-        }
-
-        try {
-            $clubConfigurationPool->getMailer()->send(
-                'Ok99PrivateZoneUserBundle:Resetting:email',
-                array('no-reply@' . $clubConfigurationPool->getHostName() => $clubConfigurationPool->getAppName()),
-                $recipients,
-                $this->container->get('translator')->trans('resetting.email.subject', array(), 'FOSUserBundle'),
-                array(
-                    'confirmationUrl' => $this->container->get('router')->generate('fos_user_resetting_reset', array(
-                        'token' => $user->getConfirmationToken()
-                    ), true),
-                )
-            );
-        } catch (\Exception $e) {
-            $this->container->get('ok99.privatezone.exception_handler')->handle($e);
-        }
-
-        $user->setPasswordRequestedAt(new \DateTime());
-        $this->container->get('fos_user.user_manager')->updateUser($user);
 
         return new RedirectResponse($this->container->get('router')->generate('admin_privatezonecore_user_resetting_check_email'));
     }
