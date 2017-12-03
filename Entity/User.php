@@ -17,6 +17,7 @@ use Ok99\PrivateZoneBundle\Entity\RemoteControl;
 use Ok99\PrivateZoneBundle\Entity\TrainingGroup;
 use Ok99\PrivateZoneBundle\Entity\Wallet;
 use Sonata\UserBundle\Model\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
@@ -25,9 +26,16 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *     @ORM\Index(name="IDX_REGNUM", columns={"regnum"})
  * })
  * @ORM\Entity(repositoryClass="Ok99\PrivateZoneCore\UserBundle\Entity\Repository\UserRepository")
+ * @UniqueEntity(fields="usernameCanonical", errorPath="username", message="fos_user.username.already_used")
+ * @ORM\AttributeOverrides({
+ *      @ORM\AttributeOverride(name="email", column=@ORM\Column(type="string", name="email", length=255, unique=false, nullable=true)),
+ *      @ORM\AttributeOverride(name="emailCanonical", column=@ORM\Column(type="string", name="email_canonical", length=255, unique=false, nullable=true))
+ * })
  */
 class User extends BaseUser implements UserInterface
 {
+    const ID_HANDLER = 'User/id';
+
     /**
      * @var integer $id
      *
@@ -132,10 +140,9 @@ class User extends BaseUser implements UserInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="email", type="string", length=255)
+     * @ORM\Column(name="email", type="string", length=255, nullable=true, unique=false)
      * @Assert\Callback(
      *     callback={"Ok99\PrivateZoneCore\UserBundle\Entity\User","validateEmail"},
-     *     groups={"Registration","Profile"}
      * )
      */
     protected $email;
@@ -143,7 +150,7 @@ class User extends BaseUser implements UserInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="email_canonical", type="string", length=255, unique=true)
+     * @ORM\Column(name="email_canonical", type="string", length=255, nullable=true, unique=false)
      */
     protected $emailCanonical;
 
@@ -153,7 +160,6 @@ class User extends BaseUser implements UserInterface
      * @ORM\Column(name="email_parent", type="string", length=255, nullable=true)
      * @Assert\Callback(
      *     callback={"Ok99\PrivateZoneCore\UserBundle\Entity\User","validateEmailParent"},
-     *     groups={"Registration","Profile"}
      * )
      */
     protected $emailParent;
@@ -433,7 +439,7 @@ class User extends BaseUser implements UserInterface
     {
         $this->salt = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
 
-        $this->roles = array();
+        $this->roles = [];
 
         $this->groups = new \Doctrine\Common\Collections\ArrayCollection();
         $this->trainingGroups = new \Doctrine\Common\Collections\ArrayCollection();
@@ -462,6 +468,18 @@ class User extends BaseUser implements UserInterface
             return $this->getWalletAmountByMonth($year, $month);
         }
         return null;
+    }
+
+    /**
+     * @Assert\Callback
+     */
+    public function validate(\Symfony\Component\Validator\Context\ExecutionContextInterface $context)
+    {
+        if (!$this->getId() && !$this->getPlainPassword()) {
+            $context->buildViolation('fos_user.password.blank')
+                ->atPath('plainPassword')
+                ->addViolation();
+        }
     }
 
     /**
@@ -2082,5 +2100,22 @@ class User extends BaseUser implements UserInterface
             $properties[$key] = $value;
         }
         return $properties;
+    }
+
+    /**
+     * Hook on pre-persist operations
+     */
+    public function prePersist()
+    {
+        $this->createdAt = new \DateTime;
+        $this->updatedAt = new \DateTime;
+    }
+
+    /**
+     * Hook on pre-update operations
+     */
+    public function preUpdate()
+    {
+        $this->updatedAt = new \DateTime;
     }
 }

@@ -5,66 +5,70 @@
         http://symfony.com/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd">
 
     <class name="Ok99\PrivateZoneCore\UserBundle\Entity\User">
+        <property name="username">
+            <constraint name="NotBlank">
+                <option name="message">fos_user.username.blank</option>
+            </constraint>
+            <constraint name="Length">
+                <option name="min">4</option>
+                <option name="minMessage">fos_user.username.short</option>
+                <option name="max">4</option>
+                <option name="maxMessage">fos_user.username.long</option>
+            </constraint>
+        </property>
+
+        <property name="email">
+            <constraint name="NotBlank">
+                <option name="message">fos_user.email.blank</option>
+            </constraint>
+            <constraint name="Length">
+                <option name="min">2</option>
+                <option name="minMessage">fos_user.email.short</option>
+                <option name="max">254</option>
+                <option name="maxMessage">fos_user.email.long</option>
+            </constraint>
+        </property>
+
+        <property name="plainPassword">
+            <constraint name="Length">
+                <option name="min">2</option>
+                <option name="max">4096</option>
+                <option name="minMessage">fos_user.password.short</option>
+            </constraint>
+        </property>
+
         <property name="firstname">
             <constraint name="NotBlank">
                 <option name="message">fos_user.firstname.blank</option>
-                <option name="groups">
-                    <value>Registration</value>
-                    <value>Profile</value>
-                </option>
             </constraint>
             <constraint name="Length">
                 <option name="max">255</option>
                 <option name="maxMessage">fos_user.firstname.long</option>
-                <option name="groups">
-                    <value>Registration</value>
-                    <value>Profile</value>
-                </option>
             </constraint>
         </property>
 
         <property name="lastname">
             <constraint name="NotBlank">
                 <option name="message">fos_user.lastname.blank</option>
-                <option name="groups">
-                    <value>Registration</value>
-                    <value>Profile</value>
-                </option>
             </constraint>
             <constraint name="Length">
                 <option name="max">255</option>
                 <option name="maxMessage">fos_user.lastname.long</option>
-                <option name="groups">
-                    <value>Registration</value>
-                    <value>Profile</value>
-                </option>
             </constraint>
         </property>
 
         <property name="regnum">
             <constraint name="NotBlank">
                 <option name="message">fos_user.regnum.blank</option>
-                <option name="groups">
-                    <value>Registration</value>
-                    <value>Profile</value>
-                </option>
             </constraint>
         </property>
 
         <property name="dateOfBirth">
             <constraint name="NotBlank">
                 <option name="message">fos_user.date_of_birth.blank</option>
-                <option name="groups">
-                    <value>Registration</value>
-                    <value>Profile</value>
-                </option>
             </constraint>
             <constraint name="DateTime">
                 <option name="message">fos_user.date_of_birth.wrong</option>
-                <option name="groups">
-                    <value>Registration</value>
-                    <value>Profile</value>
-                </option>
             </constraint>
         </property>
 
@@ -72,10 +76,6 @@
             <constraint name="Type">
                 <option name="type">numeric</option>
                 <option name="message">fos_user.sportident.wrong</option>
-                <option name="groups">
-                    <value>Registration</value>
-                    <value>Profile</value>
-                </option>
             </constraint>
         </property>
     </class>

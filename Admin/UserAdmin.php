@@ -53,7 +53,10 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
     protected function configureRoutes(RouteCollection $collection)
     {
         $collection->clearExcept(array('list', 'create', 'edit', 'export'));
-        $collection->add('store_cropped_avatar', 'store-cropped-avatar');
+        if ($this->isGranted('ROLE_SUPER_ADMIN')) {
+            $collection->add('delete');
+        }
+        $collection->add('store_cropped_avatar', 'store-cropped-avatar/{userId}');
         $collection->add('store_property', 'store-property');
     }
 
@@ -85,8 +88,8 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                         'required' => true,
                         'translation_domain' => $this->getTranslationDomain()
                     ))*/
-                    ->add('avatar', 'user_avatar', array('label' => 'User.Avatar', 'required' => false,))
-                    ->add('photo', 'user_photo', array('label' => 'User.Photo.Addressbook', 'required' => false))
+                    ->add('avatar', $this->id($this->getSubject()) ? 'user_avatar' : 'hidden', array('label' => 'User.Avatar', 'required' => false,))
+                    ->add('photo', $this->id($this->getSubject()) ? 'user_photo' : 'hidden', array('label' => 'User.Photo.Addressbook', 'required' => false))
                 ->end()
                 ->with('Contact', array('class' => 'col-md-6'))
                     ->add('email')
@@ -146,15 +149,19 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
             ;
         }
 
-        if ($this->isGranted('ROLE_SUPER_ADMIN')) {
-//            $formMapper->with('Roles')
-//                ->add('realRoles', 'sonata_security_roles', array(
-//                    'label'    => 'form.label_roles',
-//                    'expanded' => true,
-//                    'multiple' => true,
-//                    'required' => false
-//                ))
-//            ->end();
+        /*if ($this->isGranted('ROLE_SUPER_ADMIN')) {
+            $formMapper->with('Roles')
+                ->add('realRoles', 'sonata_security_roles', array(
+                    'label'    => 'form.label_roles',
+                    'expanded' => true,
+                    'multiple' => true,
+                    'required' => false
+                ))
+            ->end();
+        }*/
+
+        if ($this->id($this->getSubject())) {
+            $this->getRequest()->getSession()->set(User::ID_HANDLER, $this->id($this->getSubject()));
         }
     }
 
@@ -273,6 +280,23 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getFormBuilder()
+    {
+        $this->formOptions['data_class'] = $this->getClass();
+
+        $options = $this->formOptions;
+        $options['validation_groups'] = 'Default';
+
+        $formBuilder = $this->getFormContractor()->getFormBuilder( $this->getUniqid(), $options);
+
+        $this->defineFormBuilder($formBuilder);
+
+        return $formBuilder;
+    }
+
+    /**
      * @return array
      */
     public function getFormTheme()
@@ -310,9 +334,14 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
         return $query;
     }
 
+    /**
+     * @param User $object
+     * @return mixed|void
+     */
     public function prePersist($object)
     {
         $object->setUsername($object->getRegnum());
+        $object->setClubShortcut($this->clubConfigurationPool->getClubShortcut());
     }
 
     public function preUpdate($object)
