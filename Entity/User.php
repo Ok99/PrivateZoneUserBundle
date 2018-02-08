@@ -1720,7 +1720,7 @@ class User extends BaseUser implements UserInterface
                     $payment->getPaymentDate()->format('Y') < $year
                     ||
                     (
-                        $payment->getPaymentDate()->format('Y') === $month
+                        $payment->getPaymentDate()->format('Y') === $year
                         &&
                         $payment->getPaymentDate()->format('n') <= $month
                     )
