@@ -1716,7 +1716,15 @@ class User extends BaseUser implements UserInterface
         /** @var Wallet $payment */
         foreach ($this->wallet as $payment) {
             if ($payment->getIsConfirmed() && !$payment->getIsClubPayment()) {
-                if ($payment->getPaymentDate()->format('Y') < $year || $payment->getPaymentDate()->format('n') <= $month) {
+                if (
+                    $payment->getPaymentDate()->format('Y') < $year
+                    ||
+                    (
+                        $payment->getPaymentDate()->format('Y') === $month
+                        &&
+                        $payment->getPaymentDate()->format('n') <= $month
+                    )
+                ) {
                     $amount += $payment->getAmount();
                 }
             }
