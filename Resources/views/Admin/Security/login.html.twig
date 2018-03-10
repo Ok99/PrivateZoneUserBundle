@@ -18,7 +18,7 @@ file that was distributed with this source code.
 {% block sonata_wrapper %}
     <div class="login-box">
         <div class="login-logo">
-            {{ pz_app_name }}
+            Privátní zóna <em>.</em>
         </div><!-- /.login-logo -->
         <div class="login-box-body">
             {% if error %}
@@ -62,7 +62,7 @@ file that was distributed with this source code.
                         <button type="submit" class="btn btn-primary btn-block btn-flat" onclick="setAdmin();">Administrátor</button>
                     </div>
                     <div class="form-group has-feedback button">
-                        <button type="submit" class="btn btn-primary btn-block btn-flat" onclick="setUser();">Uživatel</button>
+                        <button type="submit" class="btn btn-primary btn-block btn-flat" onclick="setUser();">Běžný člen</button>
                     </div>
                 {% endif %}
             </form>
@@ -72,4 +72,7 @@ file that was distributed with this source code.
             {% endif %}
         </div><!-- /.login-box-body -->
     </div><!-- /.login-box -->
+    <script type="text/javascript">
+        $(document).ready(function(){$('.icheckbox_flat-blue').removeClass('icheckbox_flat-blue').addClass('icheckbox_flat-green');});
+    </script>
 {% endblock sonata_wrapper %}
