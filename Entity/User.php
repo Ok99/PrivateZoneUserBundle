@@ -1743,8 +1743,13 @@ class User extends BaseUser implements UserInterface
         if (!is_null($this->familyMembers)) return $this->familyMembers;
 
         $this->familyMembers = [];
+        /** @var RemoteControl $request */
         foreach($this->remoteControlRequests as $request) {
-            if ($request->getIsConfirmed() && $request->getRemoteControlGroup()->getCode() == RemoteControl::CODE_FAMILY) {
+            if (
+                $request->getIsConfirmed()
+                && $request->getRemoteControlGroup()->getCode() == RemoteControl::CODE_FAMILY
+                && $request->getRecipient()->isEnabled()
+            ) {
                 $this->familyMembers[] = $request->getRecipient();
             }
         }
@@ -1799,8 +1804,13 @@ class User extends BaseUser implements UserInterface
         if (!is_null($this->teamMembers)) return $this->teamMembers;
 
         $this->teamMembers = [];
+        /** @var RemoteControl $request */
         foreach($this->remoteControlRequests as $request) {
-            if ($request->getIsConfirmed() && $request->getRemoteControlGroup()->getCode() == RemoteControl::CODE_TEAM) {
+            if (
+                $request->getIsConfirmed()
+                && $request->getRemoteControlGroup()->getCode() == RemoteControl::CODE_TEAM
+                && $request->getRecipient()->isEnabled()
+            ) {
                 $this->teamMembers[] = $request->getRecipient();
             }
         }
