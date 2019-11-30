@@ -433,6 +433,13 @@ class User extends BaseUser implements UserInterface
     private $updatedAt;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="last_data_update_at", type="datetime", nullable=true)
+     */
+    private $lastDataUpdateAt;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -1314,6 +1321,26 @@ class User extends BaseUser implements UserInterface
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * Sets the last update date
+     *
+     * @param \DateTime|null $lastDataUpdateAt
+     */
+    public function setLastDataUpdateAt(\DateTime $lastDataUpdateAt = null)
+    {
+        $this->lastDataUpdateAt = $lastDataUpdateAt;
+    }
+
+    /**
+     * Returns the last update date
+     *
+     * @return \DateTime|null
+     */
+    public function getLastDataUpdateAt()
+    {
+        return $this->lastDataUpdateAt;
     }
 
     /**
