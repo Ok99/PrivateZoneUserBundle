@@ -50,8 +50,8 @@ class LoginListener
                 $this->exceptionHandler->handle($e);
             }
 
-            if (!$user->getDateOfBirth()) {
-                $this->session->getFlashBag()->add('redirect_to_user_profile', true);
+            if (!$user->getEmail()) {
+                $this->session->getFlashBag()->add('welcome_redirect_to_user_profile', true);
             }
         }
     }
