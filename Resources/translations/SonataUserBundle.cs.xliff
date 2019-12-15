@@ -564,7 +564,7 @@
             </trans-unit>
             <trans-unit id="Street">
                 <source>Street</source>
-                <target>Ulice</target>
+                <target>Ulice a č.p.</target>
             </trans-unit>
             <trans-unit id="City">
                 <source>City</source>

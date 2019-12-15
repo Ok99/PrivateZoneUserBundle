@@ -2,9 +2,13 @@
 
 namespace Ok99\PrivateZoneCore\UserBundle\Controller;
 
+use Exporter\Source\ArraySourceIterator;
 use Ok99\PrivateZoneBundle\Controller\SecuredCRUDController;
+use Ok99\PrivateZoneBundle\EntityAudit\AuditReader;
 use Ok99\PrivateZoneBundle\HttpFoundation\AjaxResponse;
+use Ok99\PrivateZoneCore\UserBundle\Admin\UserAdmin;
 use Ok99\PrivateZoneCore\UserBundle\Entity\User;
+use Sonata\AdminBundle\Exception\ModelManagerException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -431,5 +435,69 @@ class UserAdminController extends SecuredCRUDController
         }
 
         return $image;
+    }
+
+    /**
+     * @param Request|null $request
+     * @return Response
+     */
+    public function exportAction(Request $request = null)
+    {
+        $this->admin->setExportType(UserAdmin::EXPORT_TYPE_COMMON);
+
+        return parent::exportAction($request);
+    }
+
+    /**
+     * @param Request|null $request
+     * @param int $year
+     * @return Response
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \SimpleThings\EntityAudit\AuditException
+     */
+    public function yearDiffAction(Request $request, $year)
+    {
+        $this->admin->setExportType(UserAdmin::EXPORT_TYPE_DIFF);
+        $this->admin->setExportName(sprintf('Zmeny_osobnich_udaju_%s_%s', $year - 1, $year));
+
+        $request = $this->resolveRequest($request);
+
+        if (false === $this->admin->isGranted('EXPORT')) {
+            throw new AccessDeniedException();
+        }
+
+        $reader = new AuditReader(
+            $this->get('doctrine.orm.entity_manager'),
+            $this->get('simplethings_entityaudit.config')
+        );
+
+        $intersectFields = array_map(function(){ return ''; }, array_flip(array_values($this->admin->getExportFields())));
+
+        $users = $this->get('doctrine.orm.entity_manager')->getRepository('Ok99PrivateZoneUserBundle:User')->getActiveUsers();
+
+        $diffData = [];
+
+        /** @var User $user */
+        foreach($users as $user) {
+            $currentRev = $reader->getLastRevision($this->admin->getClass(), $user->getId(), $year);
+            $prevRev = $reader->getLastRevision($this->admin->getClass(), $user->getId(), $year - 1);
+
+            if ($currentRev && $prevRev) {
+                $diff = $reader->diff($this->admin->getClass(), $user->getId(), $prevRev, $currentRev);
+                $diff = array_filter($diff, function ($field) { return $field['old'] !== $field['new']; });
+                $diff = array_intersect_key($diff, $intersectFields);
+
+                if ($diff) {
+                    $diff = array_map(function ($field) { return $field['new']; }, $diff); // TODO
+                    $diffData[] = array_values(array_merge($intersectFields, $diff));
+                }
+            }
+        }
+
+        $this->setExportSource(new ArraySourceIterator($diffData));
+
+        return parent::exportAction($request);
     }
 }

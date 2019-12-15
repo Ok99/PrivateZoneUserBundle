@@ -18,6 +18,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
 {
+    const EXPORT_TYPE_COMMON = 'common';
+    const EXPORT_TYPE_DIFF = 'diff';
+
     public static $ROLE_ADMIN = 'ROLE_OK99_PRIVATEZONE_USER_ADMIN_USER_ADMIN';
 
     protected $baseRoutePattern = 'klub/uzivatele';
@@ -35,21 +38,55 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
     /** @var ClubConfigurationPool */
     protected $clubConfigurationPool;
 
+    /** @var string */
+    protected $exportType;
+
+    /** @var string */
+    protected $exportName;
+
+    /**
+     * @param ContainerInterface $container
+     */
     public function setContainer(ContainerInterface $container)
     {
         $this->container = $container;
     }
 
+    /**
+     * @param EntityManager $entityManager
+     */
     public function setEntityManager(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
     }
 
+    /**
+     * @param ClubConfigurationPool $clubConfigurationPool
+     */
     public function setClubConfigurationPool(ClubConfigurationPool $clubConfigurationPool)
     {
         $this->clubConfigurationPool = $clubConfigurationPool;
     }
 
+    /**
+     * @return string
+     */
+    public function getExportType()
+    {
+        return $this->exportType;
+    }
+
+    /**
+     * @param string $exportType
+     */
+    public function setExportType($exportType)
+    {
+        $this->exportType = $exportType;
+    }
+
+    /**
+     * @param RouteCollection $collection
+     */
     protected function configureRoutes(RouteCollection $collection)
     {
         $collection->clearExcept(array('list', 'create', 'edit', 'export'));
@@ -58,6 +95,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
         }
         $collection->add('store_cropped_avatar', 'store-cropped-avatar/{userId}');
         $collection->add('store_property', 'store-property');
+        $collection->add('year_diff', 'export-zmen-osobnich-udaju/{year}');
     }
 
     /**
@@ -422,10 +460,30 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
     /** EXPORT */
 
     /**
+     * @param string $exportName
+     */
+    public function setExportName($exportName)
+    {
+        $this->exportName = $exportName;
+    }
+
+    /**
      * @inheritdoc
      */
-    public function getExportName() {
-        return 'Clenove_oddilu';
+    public function getExportName(){
+        if ($this->exportName) {
+            return $this->exportName;
+        }
+
+        switch($this->exportType) {
+            case self::EXPORT_TYPE_COMMON:
+                $exportName = 'Clenove_oddilu';
+                break;
+            case self::EXPORT_TYPE_DIFF:
+                $exportName = 'Zmeny_osobnich_udaju';
+                break;
+        }
+        return $exportName;
     }
 
     /**
@@ -433,7 +491,15 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
      */
     public function getExportListTitle()
     {
-        return 'Členové oddílu';
+        switch($this->exportType) {
+            case self::EXPORT_TYPE_COMMON:
+                $exportListTitle = 'Členové oddílu';
+                break;
+            case self::EXPORT_TYPE_DIFF:
+                $exportListTitle = 'Změny osobních údajů';
+                break;
+        }
+        return $exportListTitle;
     }
 
     /**
@@ -449,7 +515,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
      * @inheritdoc
      */
     public function getExportFields() {
-        return array(
+        return [
             'Jméno' => 'firstname',
             'Příjmení' => 'lastname',
             'Reg. číslo' => 'regnum',
@@ -460,9 +526,9 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
             'Email rodiče' => 'email_parent',
             'Telefon' => 'phone',
             'Telefon rodiče' => 'phone_parent',
-            'Ulice' => 'street',
+            'Ulice a č.p.' => 'street',
             'Město' => 'city',
-        );
+        ];
     }
 
     /**
