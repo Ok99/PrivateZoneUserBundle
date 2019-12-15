@@ -710,6 +710,30 @@
                 <source>user_profile_drop_info</source>
                 <target>Pro úplné odstranění fotky je nutné profil uložit.</target>
             </trans-unit>
+            <trans-unit id='flash_user_deactivate_success'>
+                <source>flash_user_deactivate_success</source>
+                <target>Uživatel %name% byl úspěšně deaktivován.</target>
+            </trans-unit>
+			<trans-unit id="link_deactivate">
+				<source>link_deactivate</source>
+				<target>Deaktivovat</target>
+			</trans-unit>
+			<trans-unit id="title_deactivation">
+				<source>title_deactivation</source>
+				<target>Deaktivace</target>
+			</trans-unit>
+			<trans-unit id="title_deactivate">
+				<source>title_deactivate</source>
+				<target>Potvrzení deaktivace</target>
+			</trans-unit>
+            <trans-unit id="message_deactivate_confirmation">
+                <source>message_deactivate_confirmation</source>
+                <target>Opravdu chcete deaktivovat uživatele %object%?</target>
+            </trans-unit>
+            <trans-unit id="btn_deactivate">
+                <source>btn_deactivate</source>
+                <target>Ano, deaktivovat</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

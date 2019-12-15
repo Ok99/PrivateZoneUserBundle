@@ -92,7 +92,7 @@
 
                             {% if admin.isAdmin() and admin.hasroute('delete') and admin.isGranted('DELETE', object) %}
                                 {{ 'delete_or'|trans({}, 'SonataAdminBundle') }}
-                                <a class="btn btn-danger" href="{{ admin.generateObjectUrl('delete', object) }}"><i class="fa fa-minus-circle"></i> {{ 'link_delete'|trans({}, 'SonataAdminBundle') }}</a>
+                                <a class="btn btn-danger" href="{{ admin.generateObjectUrl('delete', object) }}"><i class="fa fa-minus-circle"></i> {{ 'link_deactivate'|trans({}, 'SonataUserBundle') }}</a>
                             {% endif %}
                         {% else %}
                             {% if admin.hasroute('edit') and admin.isGranted('EDIT') %}

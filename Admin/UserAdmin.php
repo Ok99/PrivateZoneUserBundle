@@ -89,13 +89,20 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
      */
     protected function configureRoutes(RouteCollection $collection)
     {
-        $collection->clearExcept(array('list', 'create', 'edit', 'export'));
-        if ($this->isGranted('ROLE_SUPER_ADMIN')) {
-            $collection->add('delete');
-        }
+        $collection->clearExcept(array('list', 'create', 'edit', 'export', 'delete'));
         $collection->add('store_cropped_avatar', 'store-cropped-avatar/{userId}');
         $collection->add('store_property', 'store-property');
         $collection->add('year_diff', 'export-zmen-osobnich-udaju/{year}');
+    }
+
+    /**
+     * @return array
+     */
+    public function getBatchActions()
+    {
+        $actions = parent::getBatchActions();
+        unset($actions['delete']);
+        return $actions;
     }
 
     /**
@@ -230,7 +237,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
             ->addIdentifier('name', null, array('label' => 'User Name'))
             ->add('regnum', null, array('template' => 'Ok99PrivateZoneUserBundle:UserAdmin:list_regnum.html.twig'))
             ->add('groups', null, array('template' => 'Ok99PrivateZoneUserBundle:UserAdmin:list_groups_field.html.twig'))
-            ->add('enabled', null, array('editable' => true))
+            ->add('enabled', null, array('editable' => false))
         ;
 
         if ($this->isGranted('ROLE_SUPER_ADMIN')/*$this->isGranted('ROLE_ALLOWED_TO_SWITCH')*/) {
@@ -280,6 +287,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
 
         switch($name) {
             case 'CREATE':
+            case 'DELETE':
                 if (!$this->isAdmin()) {
                     return false;
                 }
