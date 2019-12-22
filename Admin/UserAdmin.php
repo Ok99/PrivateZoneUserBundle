@@ -250,7 +250,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
             $listMapper->add('_action', 'actions', array(
                 'actions' => array(
                     'edit' => array(),
-                    'delete' => array(),
+                    'delete' => array('template' => 'Ok99PrivateZoneUserBundle:UserAdmin:list__action_deactivate.html.twig'),
                 )
             ));
         }
