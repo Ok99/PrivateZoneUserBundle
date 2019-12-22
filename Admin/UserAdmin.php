@@ -238,6 +238,10 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
             ->add('regnum', null, array('template' => 'Ok99PrivateZoneUserBundle:UserAdmin:list_regnum.html.twig'))
             ->add('groups', null, array('template' => 'Ok99PrivateZoneUserBundle:UserAdmin:list_groups_field.html.twig'))
             ->add('enabled', null, array('editable' => false))
+            ->add('privacyPolicyAgreed', null, array(
+                'editable' => false,
+                'template' => 'Ok99PrivateZoneUserBundle:UserAdmin:list_is_privacy_policy_agree.html.twig',
+            ))
         ;
 
         if ($this->isGranted('ROLE_SUPER_ADMIN')/*$this->isGranted('ROLE_ALLOWED_TO_SWITCH')*/) {

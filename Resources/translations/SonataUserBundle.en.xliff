@@ -586,6 +586,10 @@
                 <source>btn_deactivate</source>
                 <target>Yes, deactivate</target>
             </trans-unit>
+            <trans-unit id="Privacy Policy Agreed">
+                <source>Privacy Policy Agreed</source>
+                <target>GDPR approval</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
