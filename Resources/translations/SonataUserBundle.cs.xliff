@@ -578,9 +578,17 @@
                 <source>Regnum</source>
                 <target>Reg. číslo</target>
             </trans-unit>
+            <trans-unit id="Sportident Sport">
+                <source>Sportident Sport</source>
+                <target>Sekce</target>
+            </trans-unit>
+            <trans-unit id="Sportident Type">
+                <source>Sportident Type</source>
+                <target>Typ SI</target>
+            </trans-unit>
             <trans-unit id="Sportident">
                 <source>Sportident</source>
-                <target>SportIdent</target>
+                <target>Číslo SI čipu</target>
             </trans-unit>
             <trans-unit id="User.Registration">
                 <source>User.Registration</source>
@@ -670,6 +678,10 @@
 				<source>User.Basic</source>
 				<target>Základní údaje</target>
 			</trans-unit>
+			<trans-unit id="User.SportIdent">
+				<source>User.SportIdent</source>
+				<target>SportIdent čipy</target>
+			</trans-unit>
             <trans-unit id="User.Parent">
                 <source>User.Parent</source>
                 <target>Rodič</target>
@@ -737,6 +749,14 @@
             <trans-unit id="Privacy Policy Agreed">
                 <source>Privacy Policy Agreed</source>
                 <target>GDPR souhlas</target>
+            </trans-unit>
+            <trans-unit id="sportident_sport_placeholder">
+                <source>sportident_sport_placeholder</source>
+                <target>všechny</target>
+            </trans-unit>
+            <trans-unit id="sportident_type_placeholder">
+                <source>sportident_type_placeholder</source>
+                <target>všechny</target>
             </trans-unit>
         </body>
     </file>

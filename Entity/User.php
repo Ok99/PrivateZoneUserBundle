@@ -12,6 +12,9 @@ use FOS\UserBundle\Model\GroupInterface;
 use FOS\UserBundle\Model\UserInterface as FOSUserInterface;
 use FOS\UserBundle\Model\User as BaseUser;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Ok99\PrivateZoneBundle\Entity\Event;
+use Ok99\PrivateZoneBundle\Entity\EventSport;
+use Ok99\PrivateZoneBundle\Entity\EventSportidentType;
 use Ok99\PrivateZoneBundle\Entity\Message;
 use Ok99\PrivateZoneBundle\Entity\RemoteControl;
 use Ok99\PrivateZoneBundle\Entity\TrainingGroup;
@@ -35,6 +38,12 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 class User extends BaseUser implements UserInterface
 {
     const ID_HANDLER = 'User/id';
+
+    public static $sportidentAliases = [
+        'sportident',
+        'sportident2',
+        'sportident3',
+    ];
 
     /**
      * @var integer $id
@@ -98,9 +107,71 @@ class User extends BaseUser implements UserInterface
     /**
      * @var integer
      *
+     * @ORM\ManyToOne(targetEntity="Ok99\PrivateZoneBundle\Entity\EventSport")
+     * @ORM\JoinColumn(name="sportident_sport_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
+     */
+    private $sportidentSport;
+
+    /**
+     * @var integer
+     *
+     * @ORM\ManyToOne(targetEntity="Ok99\PrivateZoneBundle\Entity\EventSportidentType")
+     * @ORM\JoinColumn(name="sportident_type_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
+     */
+    private $sportidentType;
+
+    /**
+     * @var integer
+     *
      * @ORM\Column(name="sportident", type="string", length=16, nullable=true)
      */
     protected $sportident;
+
+    /**
+     * @var integer
+     *
+     * @ORM\ManyToOne(targetEntity="Ok99\PrivateZoneBundle\Entity\EventSport")
+     * @ORM\JoinColumn(name="sportident2_sport_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
+     */
+    private $sportident2Sport;
+
+    /**
+     * @var integer
+     *
+     * @ORM\ManyToOne(targetEntity="Ok99\PrivateZoneBundle\Entity\EventSportidentType")
+     * @ORM\JoinColumn(name="sportident2_type_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
+     */
+    private $sportident2Type;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="sportident2", type="string", length=16, nullable=true)
+     */
+    protected $sportident2;
+
+    /**
+     * @var integer
+     *
+     * @ORM\ManyToOne(targetEntity="Ok99\PrivateZoneBundle\Entity\EventSport")
+     * @ORM\JoinColumn(name="sportident3_sport_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
+     */
+    private $sportident3Sport;
+
+    /**
+     * @var integer
+     *
+     * @ORM\ManyToOne(targetEntity="Ok99\PrivateZoneBundle\Entity\EventSportidentType")
+     * @ORM\JoinColumn(name="sportident3_type_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
+     */
+    private $sportident3Type;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="sportident3", type="string", length=16, nullable=true)
+     */
+    protected $sportident3;
 
     /**
      * @var \DateTime
@@ -671,25 +742,6 @@ class User extends BaseUser implements UserInterface
     public function getLicence()
     {
         return $this->licence;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSportident()
-    {
-        return $this->sportident;
-    }
-
-    /**
-     * @param $sportident
-     * @return $this
-     */
-    public function setSportident($sportident)
-    {
-        $this->sportident = $sportident;
-
-        return $this;
     }
 
     public function getSalt()
@@ -1642,15 +1694,17 @@ class User extends BaseUser implements UserInterface
      */
     public function getAddress()
     {
-        if ($this->getStreet() && $this->getCity()) {
-            return sprintf('%s, %s', $this->getStreet(), $this->getCity());
-        } elseif ($this->getStreet()) {
-            return $this->getStreet();
-        } elseif ($this->getCity()) {
-            return $this->getCity();
-        } else {
-            return '';
+        $chunks = [];
+        if ($this->getStreet()) {
+            $chunks[] = $this->getStreet();
         }
+        if ($this->getCity()) {
+            $chunks[] = $this->getCity();
+        }
+        if ($this->getZip()) {
+            $chunks[] = $this->getZip();
+        }
+        return implode(', ', $chunks);
     }
 
     /**
@@ -2162,5 +2216,254 @@ class User extends BaseUser implements UserInterface
     public function preUpdate()
     {
         $this->updatedAt = new \DateTime;
+    }
+
+    /**
+     * @return EventSport|int
+     */
+    public function getSportidentSport()
+    {
+        return $this->sportidentSport;
+    }
+
+    /**
+     * @param EventSport $sportidentSport
+     * @return $this
+     */
+    public function setSportidentSport($sportidentSport)
+    {
+        $this->sportidentSport = $sportidentSport;
+
+        return $this;
+    }
+
+    /**
+     * @return EventSportidentType|int
+     */
+    public function getSportidentType()
+    {
+        return $this->sportidentType;
+    }
+
+    /**
+     * @param EventSportidentType $sportidentType
+     * @return $this
+     */
+    public function setSportidentType($sportidentType)
+    {
+        $this->sportidentType = $sportidentType;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSportident()
+    {
+        return $this->sportident;
+    }
+
+    /**
+     * @param $sportident
+     * @return $this
+     */
+    public function setSportident($sportident)
+    {
+        $this->sportident = $sportident;
+
+        return $this;
+    }
+
+    /**
+     * @return EventSport|int
+     */
+    public function getSportident2Sport()
+    {
+        return $this->sportident2Sport;
+    }
+
+    /**
+     * @param EventSport $sportident2Sport
+     * @return $this
+     */
+    public function setSportident2Sport($sportident2Sport)
+    {
+        $this->sportident2Sport = $sportident2Sport;
+
+        return $this;
+    }
+
+    /**
+     * @return EventSportidentType|int
+     */
+    public function getSportident2Type()
+    {
+        return $this->sportident2Type;
+    }
+
+    /**
+     * @param EventSportidentType $sportident2Type
+     * @return $this
+     */
+    public function setSportident2Type($sportident2Type)
+    {
+        $this->sportident2Type = $sportident2Type;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSportident2()
+    {
+        return $this->sportident2;
+    }
+
+    /**
+     * @param $sportident2
+     * @return $this
+     */
+    public function setSportident2($sportident2)
+    {
+        $this->sportident2 = $sportident2;
+
+        return $this;
+    }
+
+    /**
+     * @return EventSport|int
+     */
+    public function getSportident3Sport()
+    {
+        return $this->sportident3Sport;
+    }
+
+    /**
+     * @param EventSport $sportident3Sport
+     * @return $this
+     */
+    public function setSportident3Sport($sportident3Sport)
+    {
+        $this->sportident3Sport = $sportident3Sport;
+
+        return $this;
+    }
+
+    /**
+     * @return EventSportidentType|int
+     */
+    public function getSportident3Type()
+    {
+        return $this->sportident3Type;
+    }
+
+    /**
+     * @param EventSportidentType $sportident3Type
+     * @return $this
+     */
+    public function setSportident3Type($sportident3Type)
+    {
+        $this->sportident3Type = $sportident3Type;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSportident3()
+    {
+        return $this->sportident3;
+    }
+
+    /**
+     * @param $sportident3
+     * @return $this
+     */
+    public function setSportident3($sportident3)
+    {
+        $this->sportident3 = $sportident3;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSportidents()
+    {
+        $sportidents = [];
+        foreach (self::$sportidentAliases as $alias) {
+            if ($this->{$alias}) {
+                $sportidents[] = $this->{$alias};
+            }
+        }
+        return $sportidents;
+    }
+
+    /**
+     * @param Event $event
+     * @param string $generalLabel
+     * @param string|null $locale
+     * @return array
+     */
+    public function getSportidentsByEvent(Event $event, $generalLabel, $locale = null)
+    {
+        $sportidents = $_sportidents = [];
+
+        foreach (self::$sportidentAliases as $alias) {
+            if (
+                $this->{$alias}
+                &&
+                (
+                    !$this->{$alias.'Sport'}
+                    ||
+                    $this->{$alias.'Sport'} == $event->getEventSport()
+                )
+                &&
+                (
+                    !$this->{$alias.'Type'}
+                    ||
+                    !$event->getEventSportidentType()
+                    ||
+                    $this->{$alias.'Type'} == $event->getEventSportidentType()
+                    ||
+                    (
+                        $event->getEventSportidentType()->getOrisId() > EventSportidentType::CONTACT_ORIS_ID
+                        &&
+                        $this->{$alias.'Type'}->getOrisId() == EventSportidentType::CONTACT_ORIS_ID
+                    )
+                )
+            ) {
+                $typeOrisId = $this->{$alias.'Type'} ? $this->{$alias.'Type'}->getOrisId() : 0;
+
+                if (!isset($_sportidents[$typeOrisId])) {
+                    $_sportidents[$typeOrisId] = [];
+                }
+
+                $_sportidents[$typeOrisId][] = [
+                    'key' => $this->{$alias},
+                    'label' => sprintf(
+                        '%s (%s)',
+                        $this->{$alias.'Type'} ? $this->{$alias.'Type'}->getName($locale) : $generalLabel,
+                        $this->{$alias}
+                    )
+                ];
+            }
+        }
+
+        if ($_sportidents) {
+            krsort($_sportidents);
+
+            foreach($_sportidents as $typeSportidents) {
+                foreach($typeSportidents as $sportident) {
+                    $sportidents[] = $sportident;
+                }
+            }
+        }
+
+        return $sportidents;
     }
 }

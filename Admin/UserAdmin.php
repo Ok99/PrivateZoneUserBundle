@@ -115,9 +115,22 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
         $trainingGroupsQuery = $this->entityManager->getRepository('Ok99PrivateZoneBundle:TrainingGroup')->getGroupsQuery($this->getRequest()->getLocale());
         $userGroupsQuery = $this->entityManager->getRepository('Ok99PrivateZoneUserBundle:Group')->getGroupsQuery();
 
+        $eventSportChoices = [];
+        foreach ($this->entityManager->getRepository('Ok99PrivateZoneBundle:EventSport')->getActiveSports() as $eventSport) {
+            $eventSportChoices[$eventSport->getId()] = $eventSport;
+        }
+        ksort($eventSportChoices);
+
+        $eventSportidentTypeChoices = [];
+        foreach ($this->entityManager->getRepository('Ok99PrivateZoneBundle:EventSportidentType')->getActiveSportidentTypes() as $eventSportidentType) {
+            $eventSportidentTypeChoices[$eventSportidentType->getId()] = $eventSportidentType;
+        }
+        ksort($eventSportidentTypeChoices);
+
         $formMapper
             ->tab('User')
                 ->with('Basic', array('class' => 'col-md-6'))
+                    ->add('regnum', null, array('required' => false, 'disabled' => $this->id($this->getSubject()), 'attr' => array('onkeyup' => '$("input[name=\""+$(this).attr("name").substr(0, $(this).attr("name").indexOf("["))+"[username]\"]").val($(this).val())')))
                     ->add('firstname', null, array('required' => true))
                     ->add('lastname', null, array('required' => true))
                     ->add('nickname', null, array('required' => false))
@@ -135,26 +148,57 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                     ))*/
                     ->add('avatar', $this->id($this->getSubject()) ? 'user_avatar' : 'hidden', array('label' => 'User.Avatar', 'required' => false,))
                     ->add('photo', $this->id($this->getSubject()) ? 'user_photo' : 'hidden', array('label' => 'User.Photo.Addressbook', 'required' => false))
+                    ->add('suggestEventClasses', null, array('required' => false))
                 ->end()
                 ->with('Contact', array('class' => 'col-md-6'))
                     ->add('email')
                     ->add('phone', null, array('required' => false))
                     ->add('street', null, array('required' => false))
                     ->add('city', null, array('required' => false))
-                    //->add('zip', null, array('required' => false))
-                ->end()
-                ->with('Registration', array('class' => 'col-md-6'))
-                    ->add('regnum', null, array('required' => true, 'read_only' => $this->id($this->getSubject()) && (!$this->isAdmin() || ($this->clubConfigurationPool->isDemo() && !$this->isGranted('ROLE_SUPER_ADMIN'))), 'attr' => array('onkeyup' => '$("input[name=\""+$(this).attr("name").substr(0, $(this).attr("name").indexOf("["))+"[username]\"]").val($(this).val())')))
-                    //->add('licence', null, array('required' => false))
+                    ->add('zip', null, array('required' => false))
+                ->end();
+
+                $formMapper->with('SportIdent', array('class' => 'col-md-6'))
+                    ->add('sportidentSport', null, array(
+                        'choices' => $eventSportChoices,
+                        'placeholder' => $this->translator->trans('sportident_sport_placeholder', [], 'SonataUserBundle'),
+                    ))
+                    ->add('sportidentType', null, array(
+                        'choices' => $eventSportidentTypeChoices,
+                        'placeholder' => $this->translator->trans('sportident_type_placeholder', [], 'SonataUserBundle'),
+                    ))
                     ->add('sportident', null, array('required' => false))
-                    ->add('trainingGroups', 'sonata_type_model', array(
+
+                    ->add('sportident2Sport', null, array(
+                        'label' => 'Sportident Sport',
+                        'choices' => $eventSportChoices,
+                        'placeholder' => $this->translator->trans('sportident_sport_placeholder', [], 'SonataUserBundle'),
+                    ))
+                    ->add('sportident2Type', null, array(
+                        'label' => 'Sportident Type',
+                        'choices' => $eventSportidentTypeChoices,
+                        'placeholder' => $this->translator->trans('sportident_type_placeholder', [], 'SonataUserBundle'),
+                    ))
+                    ->add('sportident2', null, array('required' => false, 'label' => 'Sportident'))
+
+                    ->add('sportident3Sport', null, array(
+                        'label' => 'Sportident Sport',
+                        'choices' => $eventSportChoices,
+                        'placeholder' => $this->translator->trans('sportident_sport_placeholder', [], 'SonataUserBundle'),
+                    ))
+                    ->add('sportident3Type', null, array(
+                        'label' => 'Sportident Type',
+                        'choices' => $eventSportidentTypeChoices,
+                        'placeholder' => $this->translator->trans('sportident_type_placeholder', [], 'SonataUserBundle'),
+                    ))
+                    ->add('sportident3', null, array('required' => false, 'label' => 'Sportident'))
+/*                    ->add('trainingGroups', 'sonata_type_model', array(
                         'required' => false,
                         'expanded' => true,
                         'multiple' => true,
                         'btn_add'  => false,
                         'query'    => $trainingGroupsQuery
-                    ))
-                    ->add('suggestEventClasses', null, array('required' => false))
+                    ))*/
                 ->end();
 
                 if ($this->getSubject()->getAge() < $this->clubConfigurationPool->getSettings()->getAgeToParentalSupervision()) {
@@ -165,34 +209,32 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                 }
 
                 if (!$this->clubConfigurationPool->isDemo() || $this->isGranted('ROLE_SUPER_ADMIN')) {
-                    $formMapper->with('User', array('class' => 'col-md-6'))
-                        ->add('username', null, array('required' => false, 'read_only' => true))
-                        ->add('plainPassword', 'text', array(
-                            'required' => (!$this->getSubject() || is_null($this->getSubject()->getId()))
-                        ));
+                    $formMapper->with('User', array('class' => 'col-md-6'));
                         if ($this->isAdmin()) {
-                            $formMapper->add('groups', 'sonata_type_model', array(
-                                'required' => false,
-                                'expanded' => true,
-                                'multiple' => true,
-                                'btn_add' => false,
-                                'query'    => $userGroupsQuery
+                            $formMapper
+                                ->add('enabled', null, array('required' => false))
+                                ->add('sponsor', null, array('required' => false));
+                        }
+                        $formMapper
+                            ->add('username', null, array('required' => false, 'read_only' => true))
+                            ->add('plainPassword', 'text', array(
+                                'required' => (!$this->getSubject() || is_null($this->getSubject()->getId()))
                             ));
+                        if ($this->isAdmin()) {
+                            $formMapper
+                                ->add('groups', 'sonata_type_model', array(
+                                    'required' => false,
+                                    'expanded' => true,
+                                    'multiple' => true,
+                                    'btn_add' => false,
+                                    'query'    => $userGroupsQuery
+                                ));
                         }
                     $formMapper->end();
                 }
 
             $formMapper->end();
         ;
-
-        if ($this->isAdmin()) {
-            $formMapper
-                ->with('Status', array('class' => 'col-md-6'))
-                    ->add('enabled', null, array('required' => false))
-                    ->add('sponsor', null, array('required' => false))
-                ->end()
-            ;
-        }
 
         /*if ($this->isGranted('ROLE_SUPER_ADMIN')) {
             $formMapper->with('Roles')
@@ -503,20 +545,32 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
         return $exportName;
     }
 
+    protected $exportListTitle;
+
+    /**
+     * @param $title
+     */
+    public function setExportListTitle($title)
+    {
+        $this->exportListTitle = $title;
+    }
+
     /**
      * @inheritdoc
      */
     public function getExportListTitle()
     {
-        switch($this->exportType) {
-            case self::EXPORT_TYPE_COMMON:
-                $exportListTitle = 'Členové oddílu';
-                break;
-            case self::EXPORT_TYPE_DIFF:
-                $exportListTitle = 'Změny osobních údajů';
-                break;
+        if (!$this->exportListTitle) {
+            switch($this->exportType) {
+                case self::EXPORT_TYPE_COMMON:
+                    $this->exportListTitle = 'Členové oddílu';
+                    break;
+                case self::EXPORT_TYPE_DIFF:
+                    $this->exportListTitle = 'Změny osobních údajů';
+                    break;
+            }
         }
-        return $exportListTitle;
+        return $this->exportListTitle;
     }
 
     /**
@@ -537,7 +591,9 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
             'Příjmení' => 'lastname',
             'Reg. číslo' => 'regnum',
             'Licence' => 'licence',
-            'SportIdent' => 'sportident',
+            'SportIdent 1' => 'sportident',
+            'SportIdent 2' => 'sportident2',
+            'SportIdent 3' => 'sportident3',
             'Datum narození' => 'date_of_birth',
             'Email' => 'email',
             'Email rodiče' => 'email_parent',
@@ -545,6 +601,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
             'Telefon rodiče' => 'phone_parent',
             'Ulice a č.p.' => 'street',
             'Město' => 'city',
+            'PSČ' => 'zip',
         ];
     }
 

@@ -4,6 +4,7 @@ namespace Ok99\PrivateZoneCore\UserBundle\Admin;
 
 use Knp\Menu\ItemInterface as MenuItemInterface;
 use Ok99\PrivateZoneBundle\Service\ClubConfigurationPool;
+use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\UserBundle\Admin\Entity\UserAdmin as BaseUserAdmin;
 
@@ -70,7 +71,6 @@ class UserAddressBookAdmin extends BaseUserAdmin
                 'admin_code' => 'ok99.privatezone.user.admin.user'
             ))
             ->add('regnum', null, array('template' => 'Ok99PrivateZoneUserBundle:UserAdmin:list_regnum.html.twig'))
-            ->add('nickname')
             ->add('address')
             ->add('email')
             ->add('phone')
@@ -92,7 +92,17 @@ class UserAddressBookAdmin extends BaseUserAdmin
             ->add('regnum')
             ->add('nickname')
             ->add('licence')
-            ->add('sportident')
+            ->add('sportident', 'doctrine_orm_callback', [
+                'callback' => function(ProxyQueryInterface $queryBuilder, $alias, $field, $value) {
+                    if ($value == null || $value['value'] == null) {
+                        return;
+                    }
+
+                    $queryCondition = sprintf('%s.sportident = :si OR %s.sportident2 = :si OR %s.sportident3 = :si', $alias, $alias, $alias);
+                    $queryBuilder->andWhere($queryCondition)->setParameter('si', $value['value']);;
+                },
+                'operator_type' => 'sonata_type_equal',
+            ])
             ->add('street')
             ->add('city')
             ->add('email')
@@ -107,10 +117,16 @@ class UserAddressBookAdmin extends BaseUserAdmin
             ->add('dateOfBirth', 'date')
             ->add('regnum', null, array('template' => 'Ok99PrivateZoneUserBundle:UserAdmin:show_regnum.html.twig'))
             ->add('licence')
-            ->add('sportident', 'string')
-            ->add('nickname')
+            ->add('sportidents', 'html', [
+                'label' => 'SportIdent',
+                'template' => 'Ok99PrivateZoneUserBundle:UserAddressBookAdmin:show_sportidents.html.twig'
+            ])
             ->add('address')
         ;
+
+        if ($this->getSubject()->getNickname()) {
+            $showMapper->add('nickname');
+        }
 
         $showMapper->add('email');
         if ($this->getSubject()->getAge() < $this->clubConfigurationPool->getSettings()->getAgeToParentalSupervision()) {

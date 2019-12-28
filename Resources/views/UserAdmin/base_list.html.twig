@@ -4,10 +4,50 @@
     {% spaceless %}
         {% if admin.isAdmin() %}
             {% if admin.hasRoute('year_diff') and admin.isGranted("EXPORT") and admin.getExportFormats()|length %}
-                <a href="{{ admin.generateUrl('year_diff', {'year': 'now'|date('Y')}|merge(admin.modelmanager.paginationparameters(admin.datagrid, 0) + {'format' : 'xlsx'})) }}" class="btn btn-default">
+                <a href="{{ admin.generateUrl('year_diff', {'year': 'now'|date('Y')}|merge(admin.modelmanager.paginationparameters(admin.datagrid, 0) + {'format' : 'xlsx'})) }}" class="btn btn-default btn-year-diff">
                     <i class="glyphicon glyphicon-export"></i>
                     Změny osobních údajů
                 </a>
+                <div
+                        class="popover left fade"
+                        role="tooltip"
+                        style="display: block"
+                >
+                    <div class="arrow"></div>
+                    <h3 class="popover-title">Export změn osobních údajů</h3>
+                    <div class="popover-content">
+                        <div>
+                            <div class="editableform-loading" style="display: none;"></div>
+                            <div class="control-group form-group">
+                                <div>
+                                    <div class="editable-input">
+                                        Za rok:
+                                        <div class="container__date-inputs">
+                                            <div class="input--year">
+                                                <select class="select2">
+                                                    {% for year in years %}
+                                                        <option value="{{ year }}"{{ currentYear and year == currentYear ? ' selected="selected"' : '' }}>{{ year }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="editable-buttons">
+                                        <button type="submit" class="btn btn-info btn-sm editable-submit">
+                                            <i class="glyphicon glyphicon-ok"></i>
+                                            &nbsp;Exportovat
+                                        </button>
+                                        <button type="button" class="btn btn-default btn-sm editable-cancel">
+                                            <i class="glyphicon glyphicon-remove"></i>
+                                            &nbsp;Zavřít
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="editable-error-block help-block" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 &nbsp;
             {% endif %}
 			{% if admin.hasRoute('export') and admin.isGranted("EXPORT") and admin.getExportFormats()|length %}

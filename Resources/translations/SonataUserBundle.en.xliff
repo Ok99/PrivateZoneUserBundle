@@ -546,9 +546,17 @@
                 <source>Regnum</source>
                 <target>Registration number</target>
             </trans-unit>
+            <trans-unit id="Sportident Sport">
+                <source>Sportident Sport</source>
+                <target>Section</target>
+            </trans-unit>
+            <trans-unit id="Sportident Type">
+                <source>Sportident Type</source>
+                <target>SI type</target>
+            </trans-unit>
             <trans-unit id="Sportident">
                 <source>Sportident</source>
-                <target>SportIdent</target>
+                <target>SI number</target>
             </trans-unit>
             <trans-unit id="User.Registration">
                 <source>User.Registration</source>
@@ -589,6 +597,14 @@
             <trans-unit id="Privacy Policy Agreed">
                 <source>Privacy Policy Agreed</source>
                 <target>GDPR approval</target>
+            </trans-unit>
+            <trans-unit id="sportident_sport_placeholder">
+                <source>sportident_sport_placeholder</source>
+                <target>all</target>
+            </trans-unit>
+            <trans-unit id="sportident_type_placeholder">
+                <source>sportident_type_placeholder</source>
+                <target>all</target>
             </trans-unit>
         </body>
     </file>

@@ -4,13 +4,16 @@ namespace Ok99\PrivateZoneCore\UserBundle\Controller;
 
 use Exporter\Source\ArraySourceIterator;
 use Ok99\PrivateZoneBundle\Controller\SecuredCRUDController;
+use Ok99\PrivateZoneBundle\Entity\EventOrganizeEntry;
 use Ok99\PrivateZoneBundle\EntityAudit\AuditReader;
+use Ok99\PrivateZoneBundle\Export\XlsxWriter;
 use Ok99\PrivateZoneBundle\HttpFoundation\AjaxResponse;
 use Ok99\PrivateZoneCore\UserBundle\Admin\UserAdmin;
 use Ok99\PrivateZoneCore\UserBundle\Entity\User;
 use Sonata\AdminBundle\Exception\ModelManagerException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -438,6 +441,30 @@ class UserAdminController extends SecuredCRUDController
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function listAction(Request $request = null)
+    {
+        $entityManager = $this->getDoctrine();
+
+        $years = range(
+            $entityManager->getRepository('Ok99PrivateZoneUserBundle:User')
+                ->createQueryBuilder('u')
+                ->select('YEAR(u.createdAt) as year')
+                ->orderBy('u.createdAt', 'ASC')
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getSingleScalarResult() + 1
+            ,
+            (new \DateTime())->format('Y')
+        );
+        krsort($years);
+        $this->setResponseParameter('years', $years);
+
+        return parent::listAction($request);
+    }
+
+    /**
      * @param Request|null $request
      * @return Response
      */
@@ -460,44 +487,85 @@ class UserAdminController extends SecuredCRUDController
     public function yearDiffAction(Request $request, $year)
     {
         $this->admin->setExportType(UserAdmin::EXPORT_TYPE_DIFF);
-        $this->admin->setExportName(sprintf('Zmeny_osobnich_udaju_%s_%s', $year - 1, $year));
-
-        $request = $this->resolveRequest($request);
+        $this->admin->setExportName(sprintf('Zmeny_osobnich_udaju_%s', $year));
+        $this->admin->setExportListTitle(sprintf('Změny os. údajů za rok %s', $year));
 
         if (false === $this->admin->isGranted('EXPORT')) {
             throw new AccessDeniedException();
         }
 
+        /*** FETCH DATA ***/
         $reader = new AuditReader(
             $this->get('doctrine.orm.entity_manager'),
             $this->get('simplethings_entityaudit.config')
         );
 
         $intersectFields = array_map(function(){ return ''; }, array_flip(array_values($this->admin->getExportFields())));
-
-        $users = $this->get('doctrine.orm.entity_manager')->getRepository('Ok99PrivateZoneUserBundle:User')->getActiveUsers();
-
-        $diffData = [];
+        $usersData = [];
+        $usersDataRevisionsDiff = [];
 
         /** @var User $user */
-        foreach($users as $user) {
+        foreach($this->get('doctrine.orm.entity_manager')->getRepository('Ok99PrivateZoneUserBundle:User')->getActiveUsers() as $user) {
             $currentRev = $reader->getLastRevision($this->admin->getClass(), $user->getId(), $year);
-            $prevRev = $reader->getLastRevision($this->admin->getClass(), $user->getId(), $year - 1);
+            $userDataRevisionsDiff = [];
 
-            if ($currentRev && $prevRev) {
-                $diff = $reader->diff($this->admin->getClass(), $user->getId(), $prevRev, $currentRev);
-                $diff = array_filter($diff, function ($field) { return $field['old'] !== $field['new']; });
-                $diff = array_intersect_key($diff, $intersectFields);
+            if ($currentRev) {
+                $userData = array_intersect_key($reader->find($this->admin->getClass(), $user->getId(), $currentRev)->toArray(), $intersectFields);
 
-                if ($diff) {
-                    $diff = array_map(function ($field) { return $field['new']; }, $diff); // TODO
-                    $diffData[] = array_values(array_merge($intersectFields, $diff));
+                $prevRev = $reader->getLastRevision($this->admin->getClass(), $user->getId(), $year - 1);
+                if (!$prevRev) {
+                    foreach (range($year - 2, 2016) as $_year) {
+                        $prevRev = $reader->getLastRevision($this->admin->getClass(), $user->getId(), $_year);
+                        if ($prevRev) break;
+                    }
                 }
+
+                if ($prevRev) {
+                    $diff = $reader->diff($this->admin->getClass(), $user->getId(), $prevRev, $currentRev);
+                    $diff = array_filter($diff, function ($field) { return $field['old'] !== $field['new']; });
+                    $diff = array_intersect_key($diff, $intersectFields);
+
+                    if ($diff) {
+                        $userDataRevisionsDiff = array_map(function ($field) { return $field['new']; }, $diff);
+                    }
+                }
+            } else {
+                $userData = array_intersect_key($user->toArray(), $intersectFields);
             }
+
+            $usersData[$user->getId()] = array_merge($intersectFields, $userData); // sort by keys at first
+            $usersDataRevisionsDiff[$user->getId()] = $userDataRevisionsDiff;
         }
 
-        $this->setExportSource(new ArraySourceIterator($diffData));
+        /*** STORE DATA ***/
+        $writer = new XlsxWriter($this->admin, $this->container->get('phpexcel'), 'php://output', true, $this->admin->getExportFields());
 
-        return parent::exportAction($request);
+        return new StreamedResponse(function() use ($writer, $usersData, $usersDataRevisionsDiff) {
+            $writer->open();
+            $row = 1;
+
+            foreach ($usersData as $userId => $userData) {
+                $row++;
+                $column = 0;
+
+                foreach($userData as $field => $value) {
+                    $writer->getObjPHPExcel()->getActiveSheet()->setCellValueByColumnAndRow($column, $row, $this->admin->exportFieldRender($field, $value));
+                    $writer->getObjPHPExcel()->getActiveSheet()->getStyleByColumnAndRow($column, $row)->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+                    $writer->getObjPHPExcel()->getActiveSheet()->getStyleByColumnAndRow($column, $row)->getNumberFormat()->setFormatCode($this->admin->getExportXlsxFieldFormat($field));
+
+                    if (isset($usersDataRevisionsDiff[$userId][$field])) {
+                        $writer->getObjPHPExcel()->getActiveSheet()->getStyleByColumnAndRow($column, $row)->getFont()->setBold(true);
+                        $writer->getObjPHPExcel()->getActiveSheet()->getStyleByColumnAndRow($column, $row)->applyFromArray(array('fill' => array('type' => \PHPExcel_Style_Fill::FILL_SOLID, 'color' => array('rgb' => 'E3B9B8'))));
+                    }
+
+                    $column++;
+                }
+            }
+
+            $writer->close();
+        }, 200, array(
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => sprintf('attachment; filename="%s.xlsx"', $this->admin->getExportName()),
+        ));
     }
 }
