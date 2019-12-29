@@ -447,18 +447,19 @@ class UserAdminController extends SecuredCRUDController
     {
         $entityManager = $this->getDoctrine();
 
-        $years = range(
-            $entityManager->getRepository('Ok99PrivateZoneUserBundle:User')
+        $yearFrom = $entityManager->getRepository('Ok99PrivateZoneUserBundle:User')
                 ->createQueryBuilder('u')
                 ->select('YEAR(u.createdAt) as year')
                 ->orderBy('u.createdAt', 'ASC')
                 ->setMaxResults(1)
                 ->getQuery()
-                ->getSingleScalarResult() + 1
-            ,
-            (new \DateTime())->format('Y')
-        );
-        krsort($years);
+                ->getSingleScalarResult() + 1;
+
+        $yearTo = (new \DateTime())->format('Y');
+
+        $years = $yearFrom < $yearTo ? range($yearFrom, $yearTo) : [];
+        rsort($years);
+
         $this->setResponseParameter('years', $years);
 
         return parent::listAction($request);

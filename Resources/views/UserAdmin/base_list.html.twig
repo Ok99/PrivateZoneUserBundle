@@ -3,7 +3,7 @@
 {% block actions %}
     {% spaceless %}
         {% if admin.isAdmin() %}
-            {% if admin.hasRoute('year_diff') and admin.isGranted("EXPORT") and admin.getExportFormats()|length %}
+            {% if years|length and admin.hasRoute('year_diff') and admin.isGranted("EXPORT") and admin.getExportFormats()|length %}
                 <a href="{{ admin.generateUrl('year_diff', {'year': 'now'|date('Y')}|merge(admin.modelmanager.paginationparameters(admin.datagrid, 0) + {'format' : 'xlsx'})) }}" class="btn btn-default btn-year-diff">
                     <i class="glyphicon glyphicon-export"></i>
                     Změny osobních údajů
