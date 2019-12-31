@@ -758,6 +758,14 @@
                 <source>sportident_type_placeholder</source>
                 <target>všechny</target>
             </trans-unit>
+            <trans-unit id="User.PerformanceGroups">
+                <source>User.PerformanceGroups</source>
+                <target>Výkonnostní skupina</target>
+            </trans-unit>
+            <trans-unit id="User.TrainingGroups">
+                <source>User.TrainingGroups</source>
+                <target>Tréninková skupina</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

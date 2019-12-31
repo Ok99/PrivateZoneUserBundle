@@ -112,7 +112,6 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
     {
         $now = new \DateTime();
 
-        $trainingGroupsQuery = $this->entityManager->getRepository('Ok99PrivateZoneBundle:TrainingGroup')->getGroupsQuery($this->getRequest()->getLocale());
         $userGroupsQuery = $this->entityManager->getRepository('Ok99PrivateZoneUserBundle:Group')->getGroupsQuery();
 
         $eventSportChoices = [];
@@ -129,7 +128,22 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
 
         $formMapper
             ->tab('User')
-                ->with('Basic', array('class' => 'col-md-6'))
+                ->with('Basic', array('class' => 'col-md-6'));
+
+                    if ($this->getSubject()->getPerformanceGroups()) {
+                        $formMapper->add('performanceGroups', 'user_performance_groups', array(
+                            'label' => 'User.PerformanceGroups',
+                            'required' => false
+                        ));
+                    }
+                    if ($this->getSubject()->getTrainingGroups()) {
+                        $formMapper->add('trainingGroups', 'user_training_groups', array(
+                            'label' => 'User.TrainingGroups',
+                            'required' => false
+                        ));
+                    }
+
+                    $formMapper
                     ->add('regnum', null, array('required' => false, 'disabled' => $this->id($this->getSubject()), 'attr' => array('onkeyup' => '$("input[name=\""+$(this).attr("name").substr(0, $(this).attr("name").indexOf("["))+"[username]\"]").val($(this).val())')))
                     ->add('firstname', null, array('required' => true))
                     ->add('lastname', null, array('required' => true))
@@ -142,20 +156,11 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                         //'dp_default_date' => '1/1/'.($now->format('Y')-25),
                         'required' => true
                     ))
+                    ->add('suggestEventClasses', null, array('required' => false))
                     /*->add('gender', 'sonata_user_gender', array(
                         'required' => true,
                         'translation_domain' => $this->getTranslationDomain()
                     ))*/
-                    ->add('avatar', $this->id($this->getSubject()) ? 'user_avatar' : 'hidden', array('label' => 'User.Avatar', 'required' => false,))
-                    ->add('photo', $this->id($this->getSubject()) ? 'user_photo' : 'hidden', array('label' => 'User.Photo.Addressbook', 'required' => false))
-                    ->add('suggestEventClasses', null, array('required' => false))
-                ->end()
-                ->with('Contact', array('class' => 'col-md-6'))
-                    ->add('email')
-                    ->add('phone', null, array('required' => false))
-                    ->add('street', null, array('required' => false))
-                    ->add('city', null, array('required' => false))
-                    ->add('zip', null, array('required' => false))
                 ->end();
 
                 $formMapper->with('SportIdent', array('class' => 'col-md-6'))
@@ -192,13 +197,14 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                         'placeholder' => $this->translator->trans('sportident_type_placeholder', [], 'SonataUserBundle'),
                     ))
                     ->add('sportident3', null, array('required' => false, 'label' => 'Sportident'))
-/*                    ->add('trainingGroups', 'sonata_type_model', array(
-                        'required' => false,
-                        'expanded' => true,
-                        'multiple' => true,
-                        'btn_add'  => false,
-                        'query'    => $trainingGroupsQuery
-                    ))*/
+                ->end();
+
+                $formMapper->with('Contact', array('class' => 'col-md-6'))
+                    ->add('email')
+                    ->add('phone', null, array('required' => false))
+                    ->add('street', null, array('required' => false))
+                    ->add('city', null, array('required' => false))
+                    ->add('zip', null, array('required' => false))
                 ->end();
 
                 if ($this->getSubject()->getAge() < $this->clubConfigurationPool->getSettings()->getAgeToParentalSupervision()) {
@@ -208,30 +214,33 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                     ->end();
                 }
 
-                if (!$this->clubConfigurationPool->isDemo() || $this->isGranted('ROLE_SUPER_ADMIN')) {
-                    $formMapper->with('User', array('class' => 'col-md-6'));
-                        if ($this->isAdmin()) {
-                            $formMapper
-                                ->add('enabled', null, array('required' => false))
-                                ->add('sponsor', null, array('required' => false));
-                        }
+                $formMapper->with('User', array('class' => 'col-md-6'));
+                    if ($this->isAdmin()) {
                         $formMapper
-                            ->add('username', null, array('required' => false, 'read_only' => true))
-                            ->add('plainPassword', 'text', array(
-                                'required' => (!$this->getSubject() || is_null($this->getSubject()->getId()))
+                            ->add('enabled', null, array('required' => false))
+                            ->add('sponsor', null, array('required' => false));
+                    }
+                    $formMapper
+                        ->add('username', null, array('required' => false, 'read_only' => true))
+                        ->add('plainPassword', 'text', array(
+                            'required' => (!$this->getSubject() || is_null($this->getSubject()->getId()))
+                        ));
+                    if ($this->isAdmin()) {
+                        $formMapper
+                            ->add('groups', 'sonata_type_model', array(
+                                'required' => false,
+                                'expanded' => true,
+                                'multiple' => true,
+                                'btn_add' => false,
+                                'query'    => $userGroupsQuery
                             ));
-                        if ($this->isAdmin()) {
-                            $formMapper
-                                ->add('groups', 'sonata_type_model', array(
-                                    'required' => false,
-                                    'expanded' => true,
-                                    'multiple' => true,
-                                    'btn_add' => false,
-                                    'query'    => $userGroupsQuery
-                                ));
-                        }
-                    $formMapper->end();
-                }
+                    }
+                $formMapper->end();
+
+                $formMapper->with('Photo', array('class' => 'col-md-6'))
+                    ->add('avatar', $this->id($this->getSubject()) ? 'user_avatar' : 'hidden', array('label' => 'User.Avatar', 'required' => false))
+                    ->add('photo', $this->id($this->getSubject()) ? 'user_photo' : 'hidden', array('label' => 'User.Photo.Addressbook', 'required' => false))
+                ->end();
 
             $formMapper->end();
         ;

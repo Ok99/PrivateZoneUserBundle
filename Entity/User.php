@@ -16,6 +16,7 @@ use Ok99\PrivateZoneBundle\Entity\Event;
 use Ok99\PrivateZoneBundle\Entity\EventSport;
 use Ok99\PrivateZoneBundle\Entity\EventSportidentType;
 use Ok99\PrivateZoneBundle\Entity\Message;
+use Ok99\PrivateZoneBundle\Entity\PerformanceGroup;
 use Ok99\PrivateZoneBundle\Entity\RemoteControl;
 use Ok99\PrivateZoneBundle\Entity\TrainingGroup;
 use Ok99\PrivateZoneBundle\Entity\Wallet;
@@ -108,7 +109,7 @@ class User extends BaseUser implements UserInterface
      * @var integer
      *
      * @ORM\ManyToOne(targetEntity="Ok99\PrivateZoneBundle\Entity\EventSport")
-     * @ORM\JoinColumn(name="sportident_sport_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
+     * @ORM\JoinColumn(name="sportident_sport_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $sportidentSport;
 
@@ -116,7 +117,7 @@ class User extends BaseUser implements UserInterface
      * @var integer
      *
      * @ORM\ManyToOne(targetEntity="Ok99\PrivateZoneBundle\Entity\EventSportidentType")
-     * @ORM\JoinColumn(name="sportident_type_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
+     * @ORM\JoinColumn(name="sportident_type_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $sportidentType;
 
@@ -131,7 +132,7 @@ class User extends BaseUser implements UserInterface
      * @var integer
      *
      * @ORM\ManyToOne(targetEntity="Ok99\PrivateZoneBundle\Entity\EventSport")
-     * @ORM\JoinColumn(name="sportident2_sport_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
+     * @ORM\JoinColumn(name="sportident2_sport_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $sportident2Sport;
 
@@ -139,7 +140,7 @@ class User extends BaseUser implements UserInterface
      * @var integer
      *
      * @ORM\ManyToOne(targetEntity="Ok99\PrivateZoneBundle\Entity\EventSportidentType")
-     * @ORM\JoinColumn(name="sportident2_type_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
+     * @ORM\JoinColumn(name="sportident2_type_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $sportident2Type;
 
@@ -154,7 +155,7 @@ class User extends BaseUser implements UserInterface
      * @var integer
      *
      * @ORM\ManyToOne(targetEntity="Ok99\PrivateZoneBundle\Entity\EventSport")
-     * @ORM\JoinColumn(name="sportident3_sport_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
+     * @ORM\JoinColumn(name="sportident3_sport_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $sportident3Sport;
 
@@ -162,7 +163,7 @@ class User extends BaseUser implements UserInterface
      * @var integer
      *
      * @ORM\ManyToOne(targetEntity="Ok99\PrivateZoneBundle\Entity\EventSportidentType")
-     * @ORM\JoinColumn(name="sportident3_type_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
+     * @ORM\JoinColumn(name="sportident3_type_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $sportident3Type;
 
@@ -340,15 +341,33 @@ class User extends BaseUser implements UserInterface
      * @ORM\ManyToMany(targetEntity="Group")
      * @ORM\JoinTable(name="user_group",
      *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")})
+     *      inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id", onDelete="CASCADE")})
      */
     protected $groups;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Ok99\PrivateZoneBundle\Entity\TrainingGroup", inversedBy="members")
-     * @ORM\JoinTable(name="user_training_group")
+     * @ORM\ManyToMany(targetEntity="Ok99\PrivateZoneBundle\Entity\PerformanceGroup", mappedBy="members")
+     * @ORM\JoinTable(name="performance_group_members",
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="performance_group_id", referencedColumnName="id", onDelete="CASCADE")})
      */
-    protected $trainingGroups;
+    private $performanceGroups;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Ok99\PrivateZoneBundle\Entity\TrainingGroup", mappedBy="membersSupported")
+     * @ORM\JoinTable(name="training_group_members_supported",
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="training_group_id", referencedColumnName="id", onDelete="CASCADE")})
+     */
+    private $trainingGroupsSupported;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Ok99\PrivateZoneBundle\Entity\TrainingGroup", mappedBy="membersNotSupported")
+     * @ORM\JoinTable(name="training_group_members_not_supported",
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="training_group_id", referencedColumnName="id", onDelete="CASCADE")})
+     */
+    private $trainingGroupsNotSupported;
 
     /**
      * @ORM\OneToMany(targetEntity="Ok99\PrivateZoneBundle\Entity\Wallet", mappedBy="user", cascade={"persist"}, orphanRemoval=true)
@@ -518,11 +537,14 @@ class User extends BaseUser implements UserInterface
         $this->salt = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
 
         $this->roles = [];
+        $this->groups = new ArrayCollection();
 
-        $this->groups = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->trainingGroups = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->messages = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->remoteControlRequests = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->performanceGroups = new ArrayCollection();
+        $this->trainingGroupsSupported = new ArrayCollection();
+        $this->trainingGroupsNotSupported = new ArrayCollection();
+
+        $this->messages = new ArrayCollection();
+        $this->remoteControlRequests = new ArrayCollection();
     }
 
     /**
@@ -2006,39 +2028,6 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Add training group
-     *
-     * @param \Ok99\PrivateZoneBundle\Entity\TrainingGroup $trainingGroup
-     * @return User
-     */
-    public function addTrainingGroup(TrainingGroup $trainingGroup)
-    {
-        $this->trainingGroups[] = $trainingGroup;
-
-        return $this;
-    }
-
-    /**
-     * Remove training group
-     *
-     * @param \Ok99\PrivateZoneBundle\Entity\TrainingGroup $trainingGroup
-     */
-    public function removeTrainingGroup(TrainingGroup $trainingGroup)
-    {
-        $this->trainingGroups->removeElement($trainingGroup);
-    }
-
-    /**
-     * Get training groups
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getTrainingGroups()
-    {
-        return $this->trainingGroups ?: $this->trainingGroups = new ArrayCollection();
-    }
-
-    /**
      * @return string
      */
     public function getSkinColor()
@@ -2465,5 +2454,62 @@ class User extends BaseUser implements UserInterface
         }
 
         return $sportidents;
+    }
+
+    /**
+     * @param $performanceGroups
+     */
+    public function setPerformanceGroups($performanceGroups)
+    {
+    }
+
+    /**
+     * Get performanceGroups
+     *
+     * @return PerformanceGroup[]
+     */
+    public function getPerformanceGroups()
+    {
+        return $this->performanceGroups->toArray();
+    }
+
+    /**
+     * @param $trainingGroups
+     */
+    public function setTrainingGroups($trainingGroups)
+    {
+    }
+
+    /**
+     * Get trainingGroupsSupported
+     *
+     * @return TrainingGroup[]
+     */
+    public function getTrainingGroups()
+    {
+        return array_merge(
+            $this->trainingGroupsSupported->toArray(),
+            $this->trainingGroupsNotSupported->toArray()
+        );
+    }
+
+    /**
+     * Get trainingGroupsSupported
+     *
+     * @return TrainingGroup[]
+     */
+    public function getTrainingGroupsSupported()
+    {
+        return $this->trainingGroupsSupported->toArray();
+    }
+
+    /**
+     * Get trainingGroupsNotSupported
+     *
+     * @return TrainingGroup[]|ArrayCollection
+     */
+    public function getTrainingGroupsNotSupported()
+    {
+        return $this->trainingGroupsNotSupported;
     }
 }

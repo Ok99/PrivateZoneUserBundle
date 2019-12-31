@@ -60,8 +60,8 @@
 							var cropImage = new Image(),
 								imageCroppable = false,
 								popover = $('#field_container_{{ id }} .popover'),
-								popoverWidth = $('#field_container_{{ id }}').parents('.box-primary').innerWidth() + 2 * 14,
-								popoverOffsetTop = $('body').scrollTop() + popover.outerHeight()/2 - $('#field_container_{{ id }}').parents('.form-group').offset().top - $('.main-header').outerHeight();
+								fieldContainer = $('#field_container_{{ id }}').parents('.box-primary'),
+								popoverWidth = fieldContainer.innerWidth() + 2 * 14;
 
 							cropImage.classList.add('user-profile--avatar-crop-image');
 							cropImage.onload = function(e) {
@@ -85,8 +85,8 @@
 								popover.css({
 									positon: 'absolute',
 									minWidth: popoverWidth,
-									left: $(window).width()/2 - popoverWidth/2 - $('.main-sidebar').outerWidth(),
-									top: popoverOffsetTop
+									left: $(window).width()/2 - popoverWidth/2 - fieldContainer.offset().left,
+									top:  $(window).scrollTop() + $(window).height()/2 - popover.outerHeight()/2 - $('#field_container_{{ id }}').parents('.form-group').offset().top
 								}).addClass('in').show();
 
 								popover.find('.editable-buttons .btn-save').off('click').click(function(e){
@@ -256,4 +256,16 @@
 			});
 		</script>
 	</div>
+{% endblock %}
+
+{% block user_performance_groups_widget %}
+	{% for group in value %}
+		<strong>{{ group.name }}</strong>{{ not loop.last ? '<br/>' : '' }}
+	{% endfor %}
+{% endblock %}
+
+{% block user_training_groups_widget %}
+	{% for group in value %}
+		<strong>{{ group.name }}</strong> - {{ 'training_group.owner_label'|trans({}, 'Ok99PrivateZoneBundle')|lower }} <a href="mailto:{{ group.owner.email }}">{{ group.owner }}</a>{{ not loop.last ? '<br/>' : '' }}
+	{% endfor %}
 {% endblock %}

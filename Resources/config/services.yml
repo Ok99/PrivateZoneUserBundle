@@ -8,3 +8,13 @@ services:
         class: Ok99\PrivateZoneCore\UserBundle\Form\UserPhotoType
         tags:
             - { name: form.type, alias: user_photo }
+
+    ok99.privatezone.user.form.type.user_performance_groups:
+        class: Ok99\PrivateZoneCore\UserBundle\Form\UserPerformanceGroupsType
+        tags:
+            - { name: form.type, alias: user_performance_groups }
+
+    ok99.privatezone.user.form.type.user_training_groups:
+        class: Ok99\PrivateZoneCore\UserBundle\Form\UserTrainingGroupsType
+        tags:
+            - { name: form.type, alias: user_training_groups }

@@ -5,16 +5,15 @@ namespace Ok99\PrivateZoneCore\UserBundle\Entity\Repository;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Ok99\PrivateZoneCore\UserBundle\Entity\User;
 
 class UserRepository extends EntityRepository
 {
     /**
-     * Returns active users query
-     *
-     * @return Query
+     * @return QueryBuilder
      */
-    public function getActiveUsersQuery()
+    public function getActiveUsersQueryBuilder()
     {
         $qb = $this->createQueryBuilder('u');
         return $qb
@@ -23,7 +22,15 @@ class UserRepository extends EntityRepository
             ->andWhere('u.enabled = :true')
             ->setParameter('true', true)
             ->orderBy('u.lastname', 'asc')
-            ->addOrderBy('u.firstname', 'asc')
+            ->addOrderBy('u.firstname', 'asc');
+    }
+
+    /**
+     * @return Query
+     */
+    public function getActiveUsersQuery()
+    {
+        return $this->getActiveUsersQueryBuilder()
             ->getQuery();
     }
 
