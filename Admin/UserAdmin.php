@@ -299,11 +299,9 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                     switch($value['value']) {
                         case 1:
                             $queryBuilder->andWhere($queryBuilder->expr()->in($alias.'.id', $positiveUserIds));
-                            //$queryBuilder->andWhere('ppa.checksum = :checksum')->setParameter('checksum', $privacyPolicy->getChecksum());;
                             break;
                         case 2:
                             $queryBuilder->andWhere($queryBuilder->expr()->notin($alias.'.id', $positiveUserIds));
-                            //$queryBuilder->andWhere('ppa.checksum != :checksum')->setParameter('checksum', $privacyPolicy->getChecksum());;
                             break;
                     }
                 },
