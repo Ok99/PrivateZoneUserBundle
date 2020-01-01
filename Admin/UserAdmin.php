@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 use Knp\Menu\ItemInterface as MenuItemInterface;
 use Ok99\PrivateZoneBundle\AdminInterface\ExportAdminInterface;
+use Ok99\PrivateZoneBundle\Entity\UserPrivacyPolicy;
 use Ok99\PrivateZoneBundle\Service\ClubConfigurationPool;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -262,19 +263,62 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param DatagridMapper $filterMapper
+     * @throws \Exception
      */
     protected function configureDatagridFilters(DatagridMapper $filterMapper)
     {
+        $privacyPolicy = $this->clubConfigurationPool->getCurrentPrivacyPolicy();
+
         $filterMapper
             ->add('firstname')
             ->add('lastname')
             ->add('regnum')
             ->add('licence')
-            ->add('groups')
-            //->add('gender')
-            ->add('enabled')
-        ;
+            ->add('groups');
+
+        if ($privacyPolicy) {
+            $positiveUserIds = array_map(
+                function ($item) { return $item['id']; },
+                $this->entityManager->getRepository('Ok99PrivateZoneBundle:UserPrivacyPolicy')
+                    ->createQueryBuilder('p')
+                    ->select('u.id')
+                    ->leftJoin('p.user', 'u')
+                    ->where('p.checksum = :checksum')
+                    ->setParameter('checksum', $privacyPolicy->getChecksum())
+                    ->getQuery()->getScalarResult()
+            );
+
+            $filterMapper->add('privacyPolicyAgreed', 'doctrine_orm_callback', [
+                'field_type' => 'choice',
+                'callback' => function(ProxyQueryInterface $queryBuilder, $alias, $field, $value) use ($positiveUserIds) {
+                    if ($value == null || $value['value'] == null) {
+                        return;
+                    }
+
+                    switch($value['value']) {
+                        case 1:
+                            $queryBuilder->andWhere($queryBuilder->expr()->in($alias.'.id', $positiveUserIds));
+                            //$queryBuilder->andWhere('ppa.checksum = :checksum')->setParameter('checksum', $privacyPolicy->getChecksum());;
+                            break;
+                        case 2:
+                            $queryBuilder->andWhere($queryBuilder->expr()->notin($alias.'.id', $positiveUserIds));
+                            //$queryBuilder->andWhere('ppa.checksum != :checksum')->setParameter('checksum', $privacyPolicy->getChecksum());;
+                            break;
+                    }
+                },
+                'field_options' => array(
+                    'choices' => array(
+                        1 => 'label_type_yes',
+                        2 => 'label_type_no',
+                    ),
+                ),
+                'transform' => true,
+                'operator_type' => 'sonata_type_boolean',
+            ]);
+        }
+
+        $filterMapper->add('enabled');
     }
 
     /**

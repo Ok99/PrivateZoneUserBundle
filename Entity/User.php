@@ -19,6 +19,7 @@ use Ok99\PrivateZoneBundle\Entity\Message;
 use Ok99\PrivateZoneBundle\Entity\PerformanceGroup;
 use Ok99\PrivateZoneBundle\Entity\RemoteControl;
 use Ok99\PrivateZoneBundle\Entity\TrainingGroup;
+use Ok99\PrivateZoneBundle\Entity\UserPrivacyPolicy;
 use Ok99\PrivateZoneBundle\Entity\Wallet;
 use Sonata\UserBundle\Model\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -530,6 +531,11 @@ class User extends BaseUser implements UserInterface
     private $lastDataUpdateAt;
 
     /**
+     * @ORM\OneToMany(targetEntity="Ok99\PrivateZoneBundle\Entity\UserPrivacyPolicy", mappedBy="user", cascade={"persist"}, orphanRemoval=true)
+     */
+    protected $privacyPolicyAgreements;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -545,6 +551,8 @@ class User extends BaseUser implements UserInterface
 
         $this->messages = new ArrayCollection();
         $this->remoteControlRequests = new ArrayCollection();
+
+        $this->privacyPolicyAgreements = new ArrayCollection();
     }
 
     /**
@@ -2511,5 +2519,13 @@ class User extends BaseUser implements UserInterface
     public function getTrainingGroupsNotSupported()
     {
         return $this->trainingGroupsNotSupported;
+    }
+
+    /**
+     * @return UserPrivacyPolicy[]|ArrayCollection
+     */
+    public function getPrivacyPolicyAgreements()
+    {
+        return $this->privacyPolicyAgreements;
     }
 }
