@@ -6,7 +6,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 use Knp\Menu\ItemInterface as MenuItemInterface;
 use Ok99\PrivateZoneBundle\AdminInterface\ExportAdminInterface;
-use Ok99\PrivateZoneBundle\Entity\UserPrivacyPolicy;
 use Ok99\PrivateZoneBundle\Service\ClubConfigurationPool;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;

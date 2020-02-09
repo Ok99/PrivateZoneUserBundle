@@ -580,11 +580,11 @@
             </trans-unit>
             <trans-unit id="Sportident Sport">
                 <source>Sportident Sport</source>
-                <target>Sekce</target>
+                <target>Sekce svazu</target>
             </trans-unit>
             <trans-unit id="Sportident Type">
                 <source>Sportident Type</source>
-                <target>Typ SI</target>
+                <target>Typ SI čipu</target>
             </trans-unit>
             <trans-unit id="Sportident">
                 <source>Sportident</source>
@@ -752,11 +752,11 @@
             </trans-unit>
             <trans-unit id="sportident_sport_placeholder">
                 <source>sportident_sport_placeholder</source>
-                <target>všechny</target>
+                <target>všechny sekce</target>
             </trans-unit>
             <trans-unit id="sportident_type_placeholder">
                 <source>sportident_type_placeholder</source>
-                <target>všechny</target>
+                <target>univerzální</target>
             </trans-unit>
             <trans-unit id="User.PerformanceGroups">
                 <source>User.PerformanceGroups</source>
