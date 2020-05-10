@@ -352,7 +352,14 @@ class UserAdminController extends SecuredCRUDController
             $response->addError('Property is not set');
         }
 
-        if (!in_array($propertyName, ['skinColor','menuSidebarCollapsed','menuSidebarExpandOnHover','controlSidebarLightSkin','suggestEventClasses'])) {
+        if (!in_array($propertyName, [
+            'skinColor',
+            'menuSidebarCollapsed',
+            'menuSidebarExpandOnHover',
+            'controlSidebarLightSkin',
+            'suggestEventClasses',
+            'notifyEventEntryDates'
+        ])) {
             $response->addError('Access denied');
         }
 

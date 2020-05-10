@@ -686,6 +686,10 @@
                 <source>User.Parent</source>
                 <target>Rodič</target>
             </trans-unit>
+            <trans-unit id="User.EntryDatesNotifications">
+                <source>User.EntryDatesNotifications</source>
+                <target>Notifikace termínů přihlášek</target>
+            </trans-unit>
             <trans-unit id="Training Groups">
                 <source>Training Groups</source>
                 <target>Patřím do tréninkové skupiny</target>

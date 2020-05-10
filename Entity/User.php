@@ -3,6 +3,7 @@
 namespace Ok99\PrivateZoneCore\UserBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\DNSCheckValidation;
@@ -13,6 +14,9 @@ use FOS\UserBundle\Model\UserInterface as FOSUserInterface;
 use FOS\UserBundle\Model\User as BaseUser;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Ok99\PrivateZoneBundle\Entity\Event;
+use Ok99\PrivateZoneBundle\Entity\EventCup;
+use Ok99\PrivateZoneBundle\Entity\EventDiscipline;
+use Ok99\PrivateZoneBundle\Entity\EventLevel;
 use Ok99\PrivateZoneBundle\Entity\EventSport;
 use Ok99\PrivateZoneBundle\Entity\EventSportidentType;
 use Ok99\PrivateZoneBundle\Entity\Message;
@@ -535,6 +539,54 @@ class User extends BaseUser implements UserInterface
      */
     protected $privacyPolicyAgreements;
 
+    /*** NOTIFY ENTRY TERMS ***/
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="notify_event_entry_dates", type="boolean")
+     */
+    private $notifyEventEntryDates = true;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="amount_of_days_before_event_entry_date_to_notify", type="integer", nullable=true)
+     */
+    private $amountOfDaysBeforeEventEntryDateToNotify;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Ok99\PrivateZoneBundle\Entity\EventSport")
+     * @ORM\JoinTable(name="user_notify_event_sports",
+     *      joinColumns={@ORM\JoinColumn(name="event_sport_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")})
+     */
+    private $notifyEventSports;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Ok99\PrivateZoneBundle\Entity\EventLevel")
+     * @ORM\JoinTable(name="user_notify_event_levels",
+     *      joinColumns={@ORM\JoinColumn(name="event_level_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")})
+     */
+    private $notifyEventLevels;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Ok99\PrivateZoneBundle\Entity\EventDiscipline")
+     * @ORM\JoinTable(name="user_notify_event_disciplines",
+     *      joinColumns={@ORM\JoinColumn(name="event_discipline_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")})
+     */
+    private $notifyEventDisciplines;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Ok99\PrivateZoneBundle\Entity\EventCup")
+     * @ORM\JoinTable(name="user_notify_event_cups",
+     *      joinColumns={@ORM\JoinColumn(name="event_cup_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")})
+     */
+    private $notifyEventCups;
+
     /**
      * Constructor
      */
@@ -553,6 +605,11 @@ class User extends BaseUser implements UserInterface
         $this->remoteControlRequests = new ArrayCollection();
 
         $this->privacyPolicyAgreements = new ArrayCollection();
+
+        $this->notifyEventSports = new ArrayCollection();
+        $this->notifyEventLevels = new ArrayCollection();
+        $this->notifyEventDisciplines = new ArrayCollection();
+        $this->notifyEventCups = new ArrayCollection();
     }
 
     /**
@@ -2527,5 +2584,183 @@ class User extends BaseUser implements UserInterface
     public function getPrivacyPolicyAgreements()
     {
         return $this->privacyPolicyAgreements;
+    }
+
+    /**
+     * Set notifyEventEntryDates
+     *
+     * @param boolean $notifyEventEntryDates
+     * @return User
+     */
+    public function setNotifyEventEntryDates($notifyEventEntryDates)
+    {
+        $this->notifyEventEntryDates = $notifyEventEntryDates;
+
+        return $this;
+    }
+
+    /**
+     * Get notifyEventEntryDates
+     *
+     * @return boolean
+     */
+    public function getNotifyEventEntryDates()
+    {
+        return $this->notifyEventEntryDates;
+    }
+
+    /**
+     * Set amountOfDaysBeforeEventEntryDateToNotify
+     *
+     * @param integer $amountOfDaysBeforeEventEntryDateToNotify
+     * @return User
+     */
+    public function setAmountOfDaysBeforeEventEntryDateToNotify($amountOfDaysBeforeEventEntryDateToNotify)
+    {
+        $this->amountOfDaysBeforeEventEntryDateToNotify = $amountOfDaysBeforeEventEntryDateToNotify;
+
+        return $this;
+    }
+
+    /**
+     * Get amountOfDaysBeforeEventEntryDateToNotify
+     *
+     * @return integer
+     */
+    public function getAmountOfDaysBeforeEventEntryDateToNotify()
+    {
+        return $this->amountOfDaysBeforeEventEntryDateToNotify;
+    }
+
+    /**
+     * Add notifyEventSport
+     *
+     * @param EventSport $notifyEventSport
+     * @return User
+     */
+    public function addNotifyEventSports(EventSport $notifyEventSport)
+    {
+        $this->notifyEventSports[] = $notifyEventSport;
+
+        return $this;
+    }
+
+    /**
+     * Remove notifyEventSport
+     *
+     * @param EventSport $notifyEventSport
+     */
+    public function removeNotifyEventSports(EventSport $notifyEventSport)
+    {
+        $this->notifyEventSports->removeElement($notifyEventSport);
+    }
+
+    /**
+     * Get notifyEventSports
+     *
+     * @return Collection
+     */
+    public function getNotifyEventSports()
+    {
+        return $this->notifyEventSports;
+    }
+
+    /**
+     * Add notifyEventLevel
+     *
+     * @param EventLevel $notifyEventLevel
+     * @return User
+     */
+    public function addNotifyEventLevels(EventLevel $notifyEventLevel)
+    {
+        $this->notifyEventLevels[] = $notifyEventLevel;
+
+        return $this;
+    }
+
+    /**
+     * Remove notifyEventLevel
+     *
+     * @param EventLevel $notifyEventLevel
+     */
+    public function removeNotifyEventLevels(EventLevel $notifyEventLevel)
+    {
+        $this->notifyEventLevels->removeElement($notifyEventLevel);
+    }
+
+    /**
+     * Get notifyEventLevels
+     *
+     * @return Collection
+     */
+    public function getNotifyEventLevels()
+    {
+        return $this->notifyEventLevels;
+    }
+
+    /**
+     * Add notifyEventDiscipline
+     *
+     * @param EventDiscipline $notifyEventDiscipline
+     * @return User
+     */
+    public function addNotifyEventDisciplines(EventDiscipline $notifyEventDiscipline)
+    {
+        $this->notifyEventDisciplines[] = $notifyEventDiscipline;
+
+        return $this;
+    }
+
+    /**
+     * Remove notifyEventDiscipline
+     *
+     * @param EventDiscipline $notifyEventDiscipline
+     */
+    public function removeNotifyEventDisciplines(EventDiscipline $notifyEventDiscipline)
+    {
+        $this->notifyEventDisciplines->removeElement($notifyEventDiscipline);
+    }
+
+    /**
+     * Get notifyEventDisciplines
+     *
+     * @return Collection
+     */
+    public function getNotifyEventDisciplines()
+    {
+        return $this->notifyEventDisciplines;
+    }
+
+    /**
+     * Add notifyEventCup
+     *
+     * @param EventCup $notifyEventCup
+     * @return User
+     */
+    public function addNotifyEventCups(EventCup $notifyEventCup)
+    {
+        $this->notifyEventCups[] = $notifyEventCup;
+
+        return $this;
+    }
+
+    /**
+     * Remove notifyEventCup
+     *
+     * @param EventCup $notifyEventCup
+     */
+    public function removeNotifyEventCups(EventCup $notifyEventCup)
+    {
+        $this->notifyEventCups->removeElement($notifyEventCup);
+    }
+
+    /**
+     * Get notifyEventCups
+     *
+     * @return Collection
+     */
+    public function getNotifyEventCups()
+    {
+        return $this->notifyEventCups;
     }
 }
