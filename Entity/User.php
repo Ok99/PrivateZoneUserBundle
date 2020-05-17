@@ -2658,7 +2658,7 @@ class User extends BaseUser implements UserInterface
     /**
      * Get notifyEventSports
      *
-     * @return Collection
+     * @return EventSport[]|ArrayCollection
      */
     public function getNotifyEventSports()
     {
@@ -2691,7 +2691,7 @@ class User extends BaseUser implements UserInterface
     /**
      * Get notifyEventLevels
      *
-     * @return Collection
+     * @return EventLevel[]|ArrayCollection
      */
     public function getNotifyEventLevels()
     {
@@ -2724,7 +2724,7 @@ class User extends BaseUser implements UserInterface
     /**
      * Get notifyEventDisciplines
      *
-     * @return Collection
+     * @return EventDiscipline[]|ArrayCollection
      */
     public function getNotifyEventDisciplines()
     {
@@ -2757,7 +2757,7 @@ class User extends BaseUser implements UserInterface
     /**
      * Get notifyEventCups
      *
-     * @return Collection
+     * @return EventCup[]|ArrayCollection
      */
     public function getNotifyEventCups()
     {
