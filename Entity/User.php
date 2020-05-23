@@ -558,32 +558,32 @@ class User extends BaseUser implements UserInterface
     /**
      * @ORM\ManyToMany(targetEntity="Ok99\PrivateZoneBundle\Entity\EventSport")
      * @ORM\JoinTable(name="user_notify_event_sports",
-     *      joinColumns={@ORM\JoinColumn(name="event_sport_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")})
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="event_sport_id", referencedColumnName="id")})
      */
     private $notifyEventSports;
 
     /**
      * @ORM\ManyToMany(targetEntity="Ok99\PrivateZoneBundle\Entity\EventLevel")
      * @ORM\JoinTable(name="user_notify_event_levels",
-     *      joinColumns={@ORM\JoinColumn(name="event_level_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")})
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="event_level_id", referencedColumnName="id")})
      */
     private $notifyEventLevels;
 
     /**
      * @ORM\ManyToMany(targetEntity="Ok99\PrivateZoneBundle\Entity\EventDiscipline")
      * @ORM\JoinTable(name="user_notify_event_disciplines",
-     *      joinColumns={@ORM\JoinColumn(name="event_discipline_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")})
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="event_discipline_id", referencedColumnName="id")})
      */
     private $notifyEventDisciplines;
 
     /**
      * @ORM\ManyToMany(targetEntity="Ok99\PrivateZoneBundle\Entity\EventCup")
      * @ORM\JoinTable(name="user_notify_event_cups",
-     *      joinColumns={@ORM\JoinColumn(name="event_cup_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")})
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="event_cup_id", referencedColumnName="id")})
      */
     private $notifyEventCups;
 
