@@ -25,6 +25,7 @@ use Ok99\PrivateZoneBundle\Entity\RemoteControl;
 use Ok99\PrivateZoneBundle\Entity\TrainingGroup;
 use Ok99\PrivateZoneBundle\Entity\UserPrivacyPolicy;
 use Ok99\PrivateZoneBundle\Entity\Wallet;
+use Ok99\PrivateZoneBundle\Entity\WalletFinancialStatementBalance;
 use Sonata\UserBundle\Model\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -588,6 +589,11 @@ class User extends BaseUser implements UserInterface
     private $notifyEventCups;
 
     /**
+     * @ORM\OneToMany(targetEntity="\Ok99\PrivateZoneBundle\Entity\WalletFinancialStatementBalance", mappedBy="user", cascade={"persist"}, orphanRemoval=true)
+     */
+    private $financialStatementBalances;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -610,6 +616,8 @@ class User extends BaseUser implements UserInterface
         $this->notifyEventLevels = new ArrayCollection();
         $this->notifyEventDisciplines = new ArrayCollection();
         $this->notifyEventCups = new ArrayCollection();
+
+        $this->financialStatementBalances = new ArrayCollection();
     }
 
     /**
@@ -629,8 +637,8 @@ class User extends BaseUser implements UserInterface
     public function __get($name)
     {
         if (strpos($name, 'walletAmount_') !== false) {
-            list($field, $month, $year) = explode('_', $name);
-            return $this->getWalletAmountByMonth($year, $month);
+            list($field, $month, $year, $hasFinancialStatements) = explode('_', $name);
+            return $this->getWalletAmountByMonth($year, $month, (bool)$hasFinancialStatements);
         }
         return null;
     }
@@ -1875,20 +1883,75 @@ class User extends BaseUser implements UserInterface
     /**
      * @param int $year
      * @param int $month
+     * @param bool $hasFinancialStatements
      * @return int
      */
-    public function getWalletAmountByMonth($year, $month)
+    public function getWalletAmountByMonth($year, $month, $hasFinancialStatements = false)
     {
+        $lastStatementBalance = null;
+
         $amount = 0;
+
+        if ($hasFinancialStatements) {
+            $balances = [];
+
+            // find statements less or equal requested date
+            /** @var WalletFinancialStatementBalance $balance */
+            foreach($this->getFinancialStatementBalances()->getValues() as $balance) {
+                if (
+                    $balance->getFinancialStatement()->getYear() < $year
+                    ||
+                    (
+                        $balance->getFinancialStatement()->getYear() == $year
+                        &&
+                        $balance->getFinancialStatement()->getQuarter() * 3 <= $month
+                    )
+                ) {
+                    $balances[] = $balance;
+                }
+            }
+
+            if ($balances) {
+                // sort statements by date descendantly
+                usort($balances, function (WalletFinancialStatementBalance $a, WalletFinancialStatementBalance $b){
+                    return
+                        $a->getFinancialStatement()->getYear() < $b->getFinancialStatement()->getYear()
+                        ||
+                        (
+                            $a->getFinancialStatement()->getYear() == $b->getFinancialStatement()->getYear()
+                            &&
+                            $a->getFinancialStatement()->getQuarter() < $b->getFinancialStatement()->getQuarter()
+                        )
+                    ;
+                });
+
+                // get last balance
+                $lastStatementBalance = $balances[0];
+                $amount = $lastStatementBalance->getBalance();
+            }
+        }
 
         /** @var Wallet $payment */
         foreach ($this->wallet as $payment) {
-            if ($payment->getIsConfirmed() && !$payment->getIsClubPayment()) {
+            if (
+                $payment->getIsConfirmed()
+                && !$payment->getIsClubPayment()
+                &&
+                (
+                    !$hasFinancialStatements
+                    ||
+                    !$payment->getFinancialStatement()
+                    ||
+                    !$lastStatementBalance
+                    ||
+                    $payment->getFinancialStatement()->getCreatedAt() > $lastStatementBalance->getFinancialStatement()->getCreatedAt()
+                )
+            ) {
                 if (
                     $payment->getPaymentDate()->format('Y') < $year
                     ||
                     (
-                        $payment->getPaymentDate()->format('Y') === $year
+                        $payment->getPaymentDate()->format('Y') == $year
                         &&
                         $payment->getPaymentDate()->format('n') <= $month
                     )
@@ -2762,5 +2825,13 @@ class User extends BaseUser implements UserInterface
     public function getNotifyEventCups()
     {
         return $this->notifyEventCups;
+    }
+
+    /**
+     * @return ArrayCollection|WalletFinancialStatementBalance[]
+     */
+    public function getFinancialStatementBalances()
+    {
+        return $this->financialStatementBalances;
     }
 }
