@@ -1,7 +1,0 @@
-{% extends 'SonataAdminBundle:CRUD:base_show_field.html.twig' %}
-
-{% block field%}
-	{% if object.photo %}
-		<img src="{{ path('symbio_webtools_thumbnail_ratio', {'width': 400, 'height': 600, 'path': object.photo }) }}" class="user-profile--photo" alt="" />
-	{% endif %}
-{% endblock %}

@@ -1,9 +1,0 @@
-{% extends 'SonataAdminBundle:CRUD:base_show_field.html.twig' %}
-
-{% block field%}
-    {% for sportident in object.sportidents %}
-        {% set sport = attribute(object, 'sportident' ~ (loop.index0 ? loop.index : '') ~ 'Sport') %}
-        {% set type = attribute(object, 'sportident' ~ (loop.index0 ? loop.index : '') ~ 'Type') %}
-        {{ sportident }} ({{ type ? type.name(app.request.locale) : 'Sportident General'|trans({}, 'Ok99PrivateZoneBundle') }}{{ sport ? ', ' ~ sport.name(app.request.locale) : '' }})</br>
-    {% endfor %}
-{% endblock %}

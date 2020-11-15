@@ -54,10 +54,6 @@ class UserAddressBookAdmin extends BaseUserAdmin
         $collection->clearExcept(array('list', 'show'));
     }
 
-    protected function configureFormFields(\Sonata\AdminBundle\Form\FormMapper $formMapper)
-    {
-    }
-
     // Fields to be shown on lists
     protected function configureListFields(\Sonata\AdminBundle\Datagrid\ListMapper $listMapper)
     {
@@ -113,36 +109,6 @@ class UserAddressBookAdmin extends BaseUserAdmin
     // Fields to be shown on revisions
     protected function configureShowFields(\Sonata\AdminBundle\Show\ShowMapper $showMapper)
     {
-        $showMapper
-            ->add('dateOfBirth', 'date')
-            ->add('regnum', null, array('template' => 'Ok99PrivateZoneUserBundle:UserAdmin:show_regnum.html.twig'))
-            ->add('licence')
-            ->add('sportidents', 'html', [
-                'label' => 'SportIdent',
-                'template' => 'Ok99PrivateZoneUserBundle:UserAddressBookAdmin:show_sportidents.html.twig'
-            ])
-            ->add('address')
-        ;
-
-        if ($this->getSubject()->getNickname()) {
-            $showMapper->add('nickname');
-        }
-
-        $showMapper->add('email');
-        if ($this->getSubject()->getAge() < $this->clubConfigurationPool->getSettings()->getAgeToParentalSupervision()) {
-            $showMapper->add('emailParent');
-        }
-
-        $showMapper->add('phone');
-        if ($this->getSubject()->getAge() < $this->clubConfigurationPool->getSettings()->getAgeToParentalSupervision()) {
-            $showMapper->add('phoneParent');
-        }
-
-        if ($this->getSubject()->getPhoto()) {
-            $showMapper->add('photo', 'html', [
-                'template' => 'Ok99PrivateZoneUserBundle:UserAddressBookAdmin:show_photo.html.twig'
-            ]);
-        }
     }
 
     /**

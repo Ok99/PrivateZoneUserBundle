@@ -1,9 +1,124 @@
 {% extends 'Ok99PrivateZoneBundle:CRUD:base_show.html.twig' %}
 
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://api.mapy.cz/loader.js"></script>
+    <script>Loader.load()</script>
+{% endblock %}
+
+{% block navbar_title %}
+{% endblock %}
+
 {% block show_title %}
-    <tr class="sonata-ba-view-title">
-        <th colspan="2">
-            {{ object.name }}
-        </th>
-    </tr>
+{% endblock %}
+
+{% block show %}
+    <div class="sonata-ba-view">
+        <div class="row">
+            <div class="col-md-4">
+                <div class=" box box-primary">
+                    <div class="box-body">
+                        <img class="profile-user-img img-responsive img-circle" src="{{ path('symbio_webtools_thumbnail', { 'width': '60', 'height': '60', 'path': object.avatarPathname }) }}" alt="{{ object.name }}">
+                        <h3 class="profile-username text-center">{{ object.firstname ~ (object.nickname ? ' "' ~ object.nickname ~ '"' : '') ~ ' ' ~ object.lastname }}</h3>
+                        <p class="text-muted text-center">{{ object.clubShortcut|upper ~ ' ' ~ object.regnum }}</p>
+                        <ul class="list-group list-group-unbordered">
+                            <li class="list-group-item">
+                                <b><i class="fa fa-birthday-cake margin-r-5"></i> {{ 'Birthday'|trans({}, 'SonataUserBundle') }}</b> <a class="pull-right">{{ object.dateOfBirth|date('j. n.') }}</a>
+                            </li>
+                            <li class="list-group-item">
+                                <b><i class="fa fa-list-alt margin-r-5"></i> {{ 'License'|trans({}, 'SonataUserBundle') }}</b> <a class="pull-right">{{ object.licence|upper ?: 'C' }}</a>
+                            </li>
+                            {% if object.sportidents|length %}
+                                <li class="list-group-item">
+                                    <b><i class="fa fa-cog margin-r-5"></i> SportIdent</b> <a class="pull-right">{% spaceless %}
+                                        {% for sportident in object.sportidents %}
+                                            {% set sport = attribute(object, 'sportident' ~ (loop.index0 ? loop.index : '') ~ 'Sport') %}
+                                            {% set type = attribute(object, 'sportident' ~ (loop.index0 ? loop.index : '') ~ 'Type') %}
+                                            {{ sportident }} ({{ type ? type.name(app.request.locale) : 'Sportident General'|trans({}, 'Ok99PrivateZoneBundle') }}{{ sport ? ', ' ~ sport.name(app.request.locale) : '' }})</br>
+                                        {% endfor %}
+                                    {% endspaceless %}</a>
+                                </li>
+                            {% endif %}
+                            {% if object.phone %}
+                                <li class="list-group-item">
+                                    <b><i class="fa fa-phone margin-r-5"></i> {{ 'Phone'|trans({}, 'SonataUserBundle') }}</b> <a href="tel:{{ object.phone|replace({' ': ''}) }}" class="pull-right">{{ object.phone }}</a>
+                                </li>
+                            {% endif %}
+                            {% if object.phoneParent and object.age < pz_club_configuration_pool.settings.ageToParentalSupervision %}
+                                <li class="list-group-item">
+                                    <b><i class="fa fa-phone margin-r-5"></i> {{ 'Phone Parent'|trans({}, 'SonataUserBundle') }}</b>
+                                    {% for phone in object.parentPhones %}
+                                        <a href="tel:{{ phone|replace({' ': ''}) }}" class="pull-right">{{ phone }}</a>
+                                        {% if not loop.last %}<br/>{% endif %}
+                                    {% endfor %}
+                                </li>
+                            {% endif %}
+                            {% if object.email %}
+                                <li class="list-group-item">
+                                    <b><i class="fa fa-at margin-r-5"></i> E-mail</b> <a href="mailto:{{ object.email }}" class="pull-right">{{ object.email }}</a>
+                                </li>
+                            {% endif %}
+                            {% if object.emailParent and object.age < pz_club_configuration_pool.settings.ageToParentalSupervision %}
+                                <li class="list-group-item">
+                                    <b><i class="fa fa-at margin-r-5"></i> {{ 'Email Parent Short'|trans({}, 'SonataUserBundle') }}</b>
+                                    {% for email in object.parentEmails %}
+                                        <a href="mailto:{{ email }}" class="pull-right">{{ email }}</a>
+                                        {% if not loop.last %}<br/>{% endif %}
+                                    {% endfor %}
+                                </li>
+                            {% endif %}
+                            {% if object.address %}
+                                <li class="list-group-item list-item--last">
+                                    <b><i class="fa fa-map-marker margin-r-5"></i> {{ 'Address'|trans({}, 'SonataUserBundle') }}</b> <a class="pull-right">{{ object.address|replace({', ': '<br/>'})|raw }}</a>
+                                </li>
+                            {% endif %}
+                            {% if object.photo %}
+                                <img src="{{ path('symbio_webtools_thumbnail_ratio', {'width': 400, 'height': 600, 'path': object.photo }) }}" class="user-profile--photo" style="margin-top: 20px" alt="" />
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            {% if object.address %}
+                <div class="col-md-8">
+                    <div class=" box box-primary">
+                        <div class="box-body">
+                            <div id="address--map" style="width: 100%;"></div>
+                            <script>
+                                new SMap.Geocoder('{{ object.street ~ (object.city ? ' ' ~ object.city|trim('0123456789 ') : '') }}', function(geocoder){
+                                    if (geocoder.getResults()[0].results.length) {
+                                        var coords = geocoder.getResults()[0].results[0].coords,
+                                            position = SMap.Coords.fromWGS84(coords.x, coords.y),
+                                            map = new SMap(JAK.gel("address--map"), position, 16),
+                                            layer = new SMap.Layer.Marker();
+
+                                        map.addControl(new SMap.Control.Sync());
+                                        map.addDefaultLayer(SMap.DEF_BASE).enable();
+                                        map.addDefaultControls();
+                                        map.addControl(new SMap.Control.Sync({bottomSpace:30}));
+                                        map.addLayer(layer);
+
+                                        // remove compass
+                                        map.getControls().forEach(function (control) {
+                                            if (
+                                                typeof control._dom !== 'undefined'
+                                                && typeof control._dom.container !== 'undefined'
+                                                && control._dom.container.className.indexOf('compass') > -1
+                                            ) {
+                                                map.removeControl(control);
+                                            }
+                                        })
+
+                                        layer.enable();
+                                        layer.addMarker(new SMap.Marker(position, "{{ object.name }}", []));
+                                    }
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}

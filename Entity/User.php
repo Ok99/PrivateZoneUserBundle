@@ -877,6 +877,18 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
+     * @return string[]
+     */
+    public function getParentEmails()
+    {
+        $emails = explode(',', $this->getEmailParent());
+        $emails = array_map(function ($email){
+            return trim($email);
+        }, $emails);
+        return $emails;
+    }
+
+    /**
      * @param $emailParent
      * @return $this
      */
@@ -1085,6 +1097,18 @@ class User extends BaseUser implements UserInterface
     public function getPhone()
     {
         return $this->phone;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getParentPhones()
+    {
+        $phones = explode(',', $this->getPhoneParent());
+        $phones = array_map(function ($phone){
+            return trim($phone);
+        }, $phones);
+        return $phones;
     }
 
     /**

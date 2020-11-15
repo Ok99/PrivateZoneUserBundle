@@ -298,6 +298,10 @@
                 <source>Date Of Birth</source>
                 <target>Datum narození</target>
             </trans-unit>
+            <trans-unit id="Birthday">
+                <source>Birthday</source>
+                <target>Narozeniny</target>
+            </trans-unit>
             <trans-unit id="Firstname">
                 <source>Firstname</source>
                 <target>Jméno</target>
@@ -698,6 +702,10 @@
                 <source>Email Parent</source>
                 <target>E-mailová adresa rodiče</target>
             </trans-unit>
+            <trans-unit id="Email Parent Short">
+                <source>Email Parent Short</source>
+                <target>E-mail rodiče</target>
+            </trans-unit>
             <trans-unit id="Phone Parent">
                 <source>Phone Parent</source>
                 <target>Telefon rodiče</target>
@@ -769,6 +777,10 @@
             <trans-unit id="User.TrainingGroups">
                 <source>User.TrainingGroups</source>
                 <target>Tréninková skupina</target>
+            </trans-unit>
+            <trans-unit id="License">
+                <source>License</source>
+                <target>Licence</target>
             </trans-unit>
         </body>
     </file>
