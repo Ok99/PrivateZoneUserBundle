@@ -13,6 +13,7 @@ use FOS\UserBundle\Model\GroupInterface;
 use FOS\UserBundle\Model\UserInterface as FOSUserInterface;
 use FOS\UserBundle\Model\User as BaseUser;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Ok99\PrivateZoneBundle\Entity\ContactGroup;
 use Ok99\PrivateZoneBundle\Entity\Event;
 use Ok99\PrivateZoneBundle\Entity\EventCup;
 use Ok99\PrivateZoneBundle\Entity\EventDiscipline;
@@ -376,6 +377,14 @@ class User extends BaseUser implements UserInterface
     private $trainingGroupsNotSupported;
 
     /**
+     * @ORM\ManyToMany(targetEntity="Ok99\PrivateZoneBundle\Entity\ContactGroup", mappedBy="members")
+     * @ORM\JoinTable(name="contact_group_members",
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="contact_group_id", referencedColumnName="id", onDelete="CASCADE")})
+     */
+    private $contactGroups;
+
+    /**
      * @ORM\OneToMany(targetEntity="Ok99\PrivateZoneBundle\Entity\Wallet", mappedBy="user", cascade={"persist"}, orphanRemoval=true)
      */
     protected $wallet;
@@ -606,6 +615,7 @@ class User extends BaseUser implements UserInterface
         $this->performanceGroups = new ArrayCollection();
         $this->trainingGroupsSupported = new ArrayCollection();
         $this->trainingGroupsNotSupported = new ArrayCollection();
+        $this->contactGroups = new ArrayCollection();
 
         $this->messages = new ArrayCollection();
         $this->remoteControlRequests = new ArrayCollection();
@@ -2658,11 +2668,21 @@ class User extends BaseUser implements UserInterface
     /**
      * Get trainingGroupsNotSupported
      *
-     * @return TrainingGroup[]|ArrayCollection
+     * @return TrainingGroup[]
      */
     public function getTrainingGroupsNotSupported()
     {
-        return $this->trainingGroupsNotSupported;
+        return $this->trainingGroupsNotSupported->toArray();
+    }
+
+    /**
+     * Get contactGroups
+     *
+     * @return ContactGroup[]
+     */
+    public function getContactGroups()
+    {
+        return $this->contactGroups->toArray();
     }
 
     /**
