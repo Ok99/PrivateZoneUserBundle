@@ -115,6 +115,9 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
         /** @var ClubConfigurationPool $clubConfigurationPool */
         $clubConfigurationPool = $this->getConfigurationPool()->getContainer()->get('ok99.privatezone.club_configuration_pool');
 
+        /** @var User $user */
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
+
         $userGroupsQuery = $this->entityManager->getRepository('Ok99PrivateZoneUserBundle:Group')->getGroupsQuery();
 
         $eventSportChoices = [];
@@ -265,8 +268,18 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                     ->end();
                 }
 
-            $formMapper->end();
-        ;
+            $formMapper->with('DocumentsNotifications', array('class' => 'col-md-6'))
+                ->add('notifyDocuments', null, array('label' => 'Chci dostávat upozornění na nové dokumenty', 'required' => false))
+                ->add('notifyDocumentCategories', null, array(
+                    'label' => 'Chci dostávat upozornění u kategorií',
+                    'required' => false,
+                    'choices' => $this->entityManager->getRepository('Ok99PrivateZoneClassificationBundle:Category')->getNotifiableDocumentsCategories($user),
+                ), array(
+                    'admin_code' => 'ok99.privatezone.documents_category',
+                ))
+            ->end();
+
+        $formMapper->end();
 
         /*if ($this->isGranted('ROLE_SUPER_ADMIN')) {
             $formMapper->with('Roles')
@@ -485,7 +498,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
 
         if ($context == 'list') {
             if (!$this->isAdmin()) {
-                $user = $this->container->get('security.context')->getToken()->getUser();
+                $user = $this->container->get('security.token_storage')->getToken()->getUser();
                 $query->andWhere($query->getRootAlias() . '.id = :userId');
                 $query->setParameter('userId', $user->getId());
 

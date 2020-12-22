@@ -3,7 +3,6 @@
 namespace Ok99\PrivateZoneCore\UserBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\DNSCheckValidation;
@@ -27,6 +26,7 @@ use Ok99\PrivateZoneBundle\Entity\TrainingGroup;
 use Ok99\PrivateZoneBundle\Entity\UserPrivacyPolicy;
 use Ok99\PrivateZoneBundle\Entity\Wallet;
 use Ok99\PrivateZoneBundle\Entity\WalletFinancialStatementBalance;
+use Ok99\PrivateZoneCore\ClassificationBundle\Entity\Category;
 use Sonata\UserBundle\Model\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -559,6 +559,21 @@ class User extends BaseUser implements UserInterface
     private $notifyEventEntryDates = true;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="notify_documents", type="boolean")
+     */
+    private $notifyDocuments = true;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Ok99\PrivateZoneCore\ClassificationBundle\Entity\Category")
+     * @ORM\JoinTable(name="user_notify_document_categories",
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="document_category_id", referencedColumnName="id")})
+     */
+    private $notifyDocumentCategories;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="amount_of_days_before_event_entry_date_to_notify", type="integer", nullable=true)
@@ -626,6 +641,8 @@ class User extends BaseUser implements UserInterface
         $this->notifyEventLevels = new ArrayCollection();
         $this->notifyEventDisciplines = new ArrayCollection();
         $this->notifyEventCups = new ArrayCollection();
+
+        $this->notifyDocumentCategories = new ArrayCollection();
 
         $this->financialStatementBalances = new ArrayCollection();
     }
@@ -2717,6 +2734,29 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
+     * Set notifyDocuments
+     *
+     * @param boolean $notifyDocuments
+     * @return User
+     */
+    public function setNotifyDocuments($notifyDocuments)
+    {
+        $this->notifyDocuments = $notifyDocuments;
+
+        return $this;
+    }
+
+    /**
+     * Get notifyDocuments
+     *
+     * @return boolean
+     */
+    public function getNotifyDocuments()
+    {
+        return $this->notifyDocuments;
+    }
+
+    /**
      * Set amountOfDaysBeforeEventEntryDateToNotify
      *
      * @param integer $amountOfDaysBeforeEventEntryDateToNotify
@@ -2877,5 +2917,38 @@ class User extends BaseUser implements UserInterface
     public function getFinancialStatementBalances()
     {
         return $this->financialStatementBalances;
+    }
+
+    /**
+     * Add notifyDocumentCategory
+     *
+     * @param Category $notifyDocumentCategory
+     * @return User
+     */
+    public function addNotifyDocumentCategories(Category $notifyDocumentCategory)
+    {
+        $this->notifyDocumentCategories[] = $notifyDocumentCategory;
+
+        return $this;
+    }
+
+    /**
+     * Remove notifyDocumentCategory
+     *
+     * @param Category $notifyDocumentCategory
+     */
+    public function removeNotifyDocumentCategories(Category $notifyDocumentCategory)
+    {
+        $this->notifyDocumentCategories->removeElement($notifyDocumentCategory);
+    }
+
+    /**
+     * Get notifyDocumentCategories
+     *
+     * @return Category[]|ArrayCollection
+     */
+    public function getNotifyDocumentCategories()
+    {
+        return $this->notifyDocumentCategories;
     }
 }

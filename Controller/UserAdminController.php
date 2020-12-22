@@ -358,7 +358,8 @@ class UserAdminController extends SecuredCRUDController
             'menuSidebarExpandOnHover',
             'controlSidebarLightSkin',
             'suggestEventClasses',
-            'notifyEventEntryDates'
+            'notifyEventEntryDates',
+            'notifyDocuments',
         ])) {
             $response->addError('Access denied');
         }

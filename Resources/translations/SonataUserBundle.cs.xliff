@@ -694,6 +694,10 @@
                 <source>User.EntryDatesNotifications</source>
                 <target>Notifikace termínů přihlášek</target>
             </trans-unit>
+            <trans-unit id="User.DocumentsNotifications">
+                <source>User.DocumentsNotifications</source>
+                <target>Notifikace nových dokumentů</target>
+            </trans-unit>
             <trans-unit id="Training Groups">
                 <source>Training Groups</source>
                 <target>Patřím do tréninkové skupiny</target>
