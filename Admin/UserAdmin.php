@@ -271,7 +271,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
             $formMapper->with('DocumentsNotifications', array('class' => 'col-md-6'))
                 ->add('notifyDocuments', null, array('label' => 'Chci dostávat upozornění na nové dokumenty', 'required' => false))
                 ->add('notifyDocumentCategories', null, array(
-                    'label' => 'Chci dostávat upozornění u kategorií',
+                    'label' => 'Kategorie',
                     'required' => false,
                     'choices' => $this->entityManager->getRepository('Ok99PrivateZoneClassificationBundle:Category')->getNotifiableDocumentsCategories($user),
                 ), array(
