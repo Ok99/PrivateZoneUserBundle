@@ -2951,4 +2951,18 @@ class User extends BaseUser implements UserInterface
     {
         return $this->notifyDocumentCategories;
     }
+
+    /**
+     * @param Category $category
+     * @return bool
+     */
+    public function hasDocumentCategoryNotificationEnabled(Category $category)
+    {
+        foreach($this->getNotifyDocumentCategories() as $_category) {
+            if ($category == $_category) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

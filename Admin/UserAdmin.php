@@ -132,152 +132,153 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
         }
         ksort($eventSportidentTypeChoices);
 
-        $formMapper
-            ->tab('User')
-                ->with('Basic', array('class' => 'col-md-6'));
+        $formMapper->tab('User')
+            ->with('Basic', array('class' => 'col-md-6'));
 
-                    if ($this->getSubject()->getPerformanceGroups()) {
-                        $formMapper->add('performanceGroups', 'user_performance_groups', array(
-                            'label' => 'User.PerformanceGroups',
-                            'required' => false
-                        ));
-                    }
-                    if ($this->getSubject()->getTrainingGroups()) {
-                        $formMapper->add('trainingGroups', 'user_training_groups', array(
-                            'label' => 'User.TrainingGroups',
-                            'required' => false
-                        ));
-                    }
-
-                    $formMapper
-                    ->add('regnum', null, array('required' => false, 'disabled' => $this->id($this->getSubject()), 'attr' => array('onkeyup' => '$("input[name=\""+$(this).attr("name").substr(0, $(this).attr("name").indexOf("["))+"[username]\"]").val($(this).val())')))
-                    ->add('firstname', null, array('required' => true))
-                    ->add('lastname', null, array('required' => true))
-                    ->add('nickname', null, array('required' => false))
-                    ->add('dateOfBirth', 'sonata_type_date_picker', array(
-                        'years' => range(1900, $now->format('Y')),
-                        'dp_pick_time' => false,
-                        'dp_min_date' => '1/1/1900',
-                        'dp_max_date' => $now->format('j/n/Y'),
-                        //'dp_default_date' => '1/1/'.($now->format('Y')-25),
-                        'required' => true
-                    ))
-                    ->add('suggestEventClasses', null, array('required' => false))
-                    /*->add('gender', 'sonata_user_gender', array(
-                        'required' => true,
-                        'translation_domain' => $this->getTranslationDomain()
-                    ))*/
-                ->end();
-
-                $formMapper->with('SportIdent', array('class' => 'col-md-6'))
-                    ->add('sportidentSport', null, array(
-                        'choices' => $eventSportChoices,
-                        'placeholder' => $this->translator->trans('sportident_sport_placeholder', [], 'SonataUserBundle'),
-                    ))
-                    ->add('sportidentType', null, array(
-                        'choices' => $eventSportidentTypeChoices,
-                        'placeholder' => $this->translator->trans('sportident_type_placeholder', [], 'SonataUserBundle'),
-                    ))
-                    ->add('sportident', null, array('required' => false))
-
-                    ->add('sportident2Sport', null, array(
-                        'label' => 'Sportident Sport',
-                        'choices' => $eventSportChoices,
-                        'placeholder' => $this->translator->trans('sportident_sport_placeholder', [], 'SonataUserBundle'),
-                    ))
-                    ->add('sportident2Type', null, array(
-                        'label' => 'Sportident Type',
-                        'choices' => $eventSportidentTypeChoices,
-                        'placeholder' => $this->translator->trans('sportident_type_placeholder', [], 'SonataUserBundle'),
-                    ))
-                    ->add('sportident2', null, array('required' => false, 'label' => 'Sportident'))
-
-                    ->add('sportident3Sport', null, array(
-                        'label' => 'Sportident Sport',
-                        'choices' => $eventSportChoices,
-                        'placeholder' => $this->translator->trans('sportident_sport_placeholder', [], 'SonataUserBundle'),
-                    ))
-                    ->add('sportident3Type', null, array(
-                        'label' => 'Sportident Type',
-                        'choices' => $eventSportidentTypeChoices,
-                        'placeholder' => $this->translator->trans('sportident_type_placeholder', [], 'SonataUserBundle'),
-                    ))
-                    ->add('sportident3', null, array('required' => false, 'label' => 'Sportident'))
-                ->end();
-
-                $formMapper->with('Contact', array('class' => 'col-md-6'))
-                    ->add('email')
-                    ->add('phone', null, array('required' => false))
-                    ->add('street', null, array('required' => false))
-                    ->add('city', null, array('required' => false))
-                    ->add('zip', null, array('required' => false))
-                ->end();
-
-                if ($this->getSubject()->getAge() < $this->clubConfigurationPool->getSettings()->getAgeToParentalSupervision()) {
-                    $formMapper->with('Parent', array('class' => 'col-md-6'))
-                        ->add('emailParent', null, array('label' => 'Parent Emails'))
-                        ->add('phoneParent', null, array('required' => false, 'label' => 'Phone'))
-                    ->end();
+                if ($this->getSubject()->getPerformanceGroups()) {
+                    $formMapper->add('performanceGroups', 'user_performance_groups', array(
+                        'label' => 'User.PerformanceGroups',
+                        'required' => false
+                    ));
+                }
+                if ($this->getSubject()->getTrainingGroups()) {
+                    $formMapper->add('trainingGroups', 'user_training_groups', array(
+                        'label' => 'User.TrainingGroups',
+                        'required' => false
+                    ));
                 }
 
-                $formMapper->with('User', array('class' => 'col-md-6'));
-                    if ($this->isAdmin()) {
-                        $formMapper
-                            ->add('enabled', null, array('required' => false))
-                            ->add('sponsor', null, array('required' => false));
-                    }
-                    $formMapper
-                        ->add('username', null, array('required' => false, 'read_only' => true))
-                        ->add('plainPassword', 'text', array(
-                            'required' => (!$this->getSubject() || is_null($this->getSubject()->getId()))
-                        ));
-                    if ($this->isAdmin()) {
-                        $formMapper
-                            ->add('groups', 'sonata_type_model', array(
-                                'required' => false,
-                                'expanded' => true,
-                                'multiple' => true,
-                                'btn_add' => false,
-                                'query'    => $userGroupsQuery
-                            ));
-                    }
-                $formMapper->end();
-
-                $formMapper->with('Photo', array('class' => 'col-md-6'))
-                    ->add('avatar', $this->id($this->getSubject()) ? 'user_avatar' : 'hidden', array('label' => 'User.Avatar', 'required' => false))
-                    ->add('photo', $this->id($this->getSubject()) ? 'user_photo' : 'hidden', array('label' => 'User.Photo.Addressbook', 'required' => false))
-                ->end();
-
-
-                if ($clubConfigurationPool->useEventEntryDateNotifications() && $clubConfigurationPool->getSettings()->getNotifyEventEntryDates()) {
-                    if (!$this->subject->getAmountOfDaysBeforeEventEntryDateToNotify()) {
-                        $this->subject->setAmountOfDaysBeforeEventEntryDateToNotify($clubConfigurationPool->getSettings()->getAmountOfDaysBeforeEventEntryDateToNotify());
-                    }
-
-                    $formMapper->with('EntryDatesNotifications', array('class' => 'col-md-6'))
-                        ->add('notifyEventEntryDates', null, array('label' => 'Chci dostávat upozornění na blížící se termíny přihlášek', 'required' => false))
-                        ->add('amountOfDaysBeforeEventEntryDateToNotify', null, array('label' => 'Oznamuj mi termíny přihlášek počet dní před jejich vypršením', 'required' => false))
-                        ->add('notifyEventSports', null, array('label' => 'Chci dostávat upozornění u sekcí', 'required' => false))
-                        ->add('notifyEventLevels', null, array('label' => 'Chci dostávat upozornění pouze u soutěží', 'required' => false))
-                        ->add('notifyEventDisciplines', null, array('label' => 'Chci dostávat upozornění pouze u disciplín', 'required' => false))
-                        ->add('notifyEventCups', null, array(
-                            'label' => 'Chci dostávat upozornění pouze u žebříčků',
-                            'required' => false,
-                            'choices' => $clubConfigurationPool->getEventCups(true),
-                        ))
-                    ->end();
-                }
-
-            $formMapper->with('DocumentsNotifications', array('class' => 'col-md-6'))
-                ->add('notifyDocuments', null, array('label' => 'Chci dostávat upozornění na nové dokumenty', 'required' => false))
-                ->add('notifyDocumentCategories', null, array(
-                    'label' => 'Kategorie',
-                    'required' => false,
-                    'choices' => $this->entityManager->getRepository('Ok99PrivateZoneClassificationBundle:Category')->getNotifiableDocumentsCategories($user),
-                ), array(
-                    'admin_code' => 'ok99.privatezone.documents_category',
+                $formMapper
+                ->add('regnum', null, array('required' => false, 'disabled' => $this->id($this->getSubject()), 'attr' => array('onkeyup' => '$("input[name=\""+$(this).attr("name").substr(0, $(this).attr("name").indexOf("["))+"[username]\"]").val($(this).val())')))
+                ->add('firstname', null, array('required' => true))
+                ->add('lastname', null, array('required' => true))
+                ->add('nickname', null, array('required' => false))
+                ->add('dateOfBirth', 'sonata_type_date_picker', array(
+                    'years' => range(1900, $now->format('Y')),
+                    'dp_pick_time' => false,
+                    'dp_min_date' => '1/1/1900',
+                    'dp_max_date' => $now->format('j/n/Y'),
+                    //'dp_default_date' => '1/1/'.($now->format('Y')-25),
+                    'required' => true
                 ))
+                ->add('suggestEventClasses', null, array('required' => false))
+                /*->add('gender', 'sonata_user_gender', array(
+                    'required' => true,
+                    'translation_domain' => $this->getTranslationDomain()
+                ))*/
             ->end();
+
+            $formMapper->with('SportIdent', array('class' => 'col-md-6'))
+                ->add('sportidentSport', null, array(
+                    'choices' => $eventSportChoices,
+                    'placeholder' => $this->translator->trans('sportident_sport_placeholder', [], 'SonataUserBundle'),
+                ))
+                ->add('sportidentType', null, array(
+                    'choices' => $eventSportidentTypeChoices,
+                    'placeholder' => $this->translator->trans('sportident_type_placeholder', [], 'SonataUserBundle'),
+                ))
+                ->add('sportident', null, array('required' => false))
+
+                ->add('sportident2Sport', null, array(
+                    'label' => 'Sportident Sport',
+                    'choices' => $eventSportChoices,
+                    'placeholder' => $this->translator->trans('sportident_sport_placeholder', [], 'SonataUserBundle'),
+                ))
+                ->add('sportident2Type', null, array(
+                    'label' => 'Sportident Type',
+                    'choices' => $eventSportidentTypeChoices,
+                    'placeholder' => $this->translator->trans('sportident_type_placeholder', [], 'SonataUserBundle'),
+                ))
+                ->add('sportident2', null, array('required' => false, 'label' => 'Sportident'))
+
+                ->add('sportident3Sport', null, array(
+                    'label' => 'Sportident Sport',
+                    'choices' => $eventSportChoices,
+                    'placeholder' => $this->translator->trans('sportident_sport_placeholder', [], 'SonataUserBundle'),
+                ))
+                ->add('sportident3Type', null, array(
+                    'label' => 'Sportident Type',
+                    'choices' => $eventSportidentTypeChoices,
+                    'placeholder' => $this->translator->trans('sportident_type_placeholder', [], 'SonataUserBundle'),
+                ))
+                ->add('sportident3', null, array('required' => false, 'label' => 'Sportident'))
+            ->end();
+
+            $formMapper->with('Contact', array('class' => 'col-md-6'))
+                ->add('email')
+                ->add('phone', null, array('required' => false))
+                ->add('street', null, array('required' => false))
+                ->add('city', null, array('required' => false))
+                ->add('zip', null, array('required' => false))
+            ->end();
+
+            if ($this->getSubject()->getAge() < $this->clubConfigurationPool->getSettings()->getAgeToParentalSupervision()) {
+                $formMapper->with('Parent', array('class' => 'col-md-6'))
+                    ->add('emailParent', null, array('label' => 'Parent Emails'))
+                    ->add('phoneParent', null, array('required' => false, 'label' => 'Phone'))
+                ->end();
+            }
+
+            $formMapper->with('User', array('class' => 'col-md-6'));
+                if ($this->isAdmin()) {
+                    $formMapper
+                        ->add('enabled', null, array('required' => false))
+                        ->add('sponsor', null, array('required' => false));
+                }
+                $formMapper
+                    ->add('username', null, array('required' => false, 'read_only' => true))
+                    ->add('plainPassword', 'text', array(
+                        'required' => (!$this->getSubject() || is_null($this->getSubject()->getId()))
+                    ));
+                if ($this->isAdmin()) {
+                    $formMapper
+                        ->add('groups', 'sonata_type_model', array(
+                            'required' => false,
+                            'expanded' => true,
+                            'multiple' => true,
+                            'btn_add' => false,
+                            'query'    => $userGroupsQuery
+                        ));
+                }
+            $formMapper->end();
+
+            $formMapper->with('Photo', array('class' => 'col-md-6'))
+                ->add('avatar', $this->id($this->getSubject()) ? 'user_avatar' : 'hidden', array('label' => 'User.Avatar', 'required' => false))
+                ->add('photo', $this->id($this->getSubject()) ? 'user_photo' : 'hidden', array('label' => 'User.Photo.Addressbook', 'required' => false))
+            ->end();
+
+
+            if ($clubConfigurationPool->useEventEntryDateNotifications() && $clubConfigurationPool->getSettings()->getNotifyEventEntryDates()) {
+                if (!$this->subject->getAmountOfDaysBeforeEventEntryDateToNotify()) {
+                    $this->subject->setAmountOfDaysBeforeEventEntryDateToNotify($clubConfigurationPool->getSettings()->getAmountOfDaysBeforeEventEntryDateToNotify());
+                }
+
+                $formMapper->with('EntryDatesNotifications', array('class' => 'col-md-6'))
+                    ->add('notifyEventEntryDates', null, array('label' => 'Chci dostávat upozornění na blížící se termíny přihlášek', 'required' => false))
+                    ->add('amountOfDaysBeforeEventEntryDateToNotify', null, array('label' => 'Oznamuj mi termíny přihlášek počet dní před jejich vypršením', 'required' => false))
+                    ->add('notifyEventSports', null, array('label' => 'Chci dostávat upozornění u sekcí', 'required' => false))
+                    ->add('notifyEventLevels', null, array('label' => 'Chci dostávat upozornění pouze u soutěží', 'required' => false))
+                    ->add('notifyEventDisciplines', null, array('label' => 'Chci dostávat upozornění pouze u disciplín', 'required' => false))
+                    ->add('notifyEventCups', null, array(
+                        'label' => 'Chci dostávat upozornění pouze u žebříčků',
+                        'required' => false,
+                        'choices' => $clubConfigurationPool->getEventCups(true),
+                    ))
+                ->end();
+            }
+
+            if ($clubConfigurationPool->getSettings()->getEnableDocumentNotifications()) {
+                $formMapper->with('DocumentsNotifications', array('class' => 'col-md-6'))
+                    ->add('notifyDocuments', null, array('label' => 'Chci dostávat upozornění na nové dokumenty', 'required' => false))
+                    ->add('notifyDocumentCategories', null, array(
+                        'label' => 'Kategorie',
+                        'required' => false,
+                        'choices' => $this->entityManager->getRepository('Ok99PrivateZoneClassificationBundle:Category')->getNotifiableDocumentsCategories($user),
+                    ), array(
+                        'admin_code' => 'ok99.privatezone.documents_category',
+                    ))
+                ->end();
+            }
 
         $formMapper->end();
 
