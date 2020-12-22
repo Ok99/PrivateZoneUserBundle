@@ -566,7 +566,7 @@ class User extends BaseUser implements UserInterface
     private $notifyDocuments = true;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Ok99\PrivateZoneCore\ClassificationBundle\Entity\Category")
+     * @ORM\ManyToMany(targetEntity="Ok99\PrivateZoneCore\ClassificationBundle\Entity\Category", mappedBy="notifyRecipients")
      * @ORM\JoinTable(name="user_notify_document_categories",
      *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="document_category_id", referencedColumnName="id")})
