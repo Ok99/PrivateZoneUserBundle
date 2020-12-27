@@ -266,6 +266,6 @@
 
 {% block user_training_groups_widget %}
 	{% for group in value %}
-		<strong>{{ group.name }}</strong> - {{ 'training_group.owner_label'|trans({}, 'Ok99PrivateZoneBundle')|lower }} <a href="mailto:{{ group.owner.email }}">{{ group.owner }}</a>{{ not loop.last ? '<br/>' : '' }}
+		<strong>{{ group.name }}</strong> - {{ 'training_group.owner_label'|trans({}, 'Ok99PrivateZoneBundle')|lower }} <a href="{{ path('admin_privatezonecore_user_address_book_show', {'id': group.owner.id}) }}">{{ group.owner.firstname ~ ' ' ~ group.owner.lastname }}</a>{{ not loop.last ? '<br/>' : '' }}
 	{% endfor %}
 {% endblock %}
