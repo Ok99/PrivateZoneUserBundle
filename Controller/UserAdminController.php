@@ -375,8 +375,26 @@ class UserAdminController extends SecuredCRUDController
             if ($response->isSuccess() && $user->{'get'.ucfirst($propertyName)}() != $propertyValue) {
                 $user->{'set'.ucfirst($propertyName)}($propertyValue);
 
+                switch($propertyName) {
+                    case 'notifyDocuments':
+                        // add all notifiable categories if empty
+                        if (((bool)$propertyValue) && $user->getNotifyDocumentCategories()->count() == 0) {
+                            $notifiableCategories = $this->getDoctrine()
+                                ->getRepository('Ok99PrivateZoneClassificationBundle:Category')
+                                ->getNotifiableDocumentsCategories($user);
+
+                            if ($notifiableCategories) {
+                                foreach($notifiableCategories as $notifiableCategory) {
+                                    $user->addNotifyDocumentCategories($notifiableCategory);
+                                    $notifiableCategory->addNotifyRecipients($user);
+                                }
+                            }
+                        }
+                        break;
+                }
+
                 try {
-                    $this->getDoctrine()->getManager()->flush($user);
+                    $this->getDoctrine()->getManager()->flush();
                 } catch(\Exception $e) {
                     $response->addError('Storing failed');
                 }

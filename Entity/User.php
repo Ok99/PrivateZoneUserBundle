@@ -2667,8 +2667,8 @@ class User extends BaseUser implements UserInterface
     public function getTrainingGroups()
     {
         return array_merge(
-            $this->trainingGroupsSupported->toArray(),
-            $this->trainingGroupsNotSupported->toArray()
+            $this->getTrainingGroupsSupported(),
+            $this->getTrainingGroupsNotSupported()
         );
     }
 
