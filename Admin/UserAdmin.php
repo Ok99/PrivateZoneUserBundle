@@ -7,6 +7,7 @@ use Doctrine\ORM\QueryBuilder;
 use Knp\Menu\ItemInterface as MenuItemInterface;
 use Ok99\PrivateZoneBundle\AdminInterface\ExportAdminInterface;
 use Ok99\PrivateZoneBundle\Service\ClubConfigurationPool;
+use Ok99\PrivateZoneCore\ClassificationBundle\Entity\Category;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
@@ -394,6 +395,49 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
         }
     }
 
+    /**
+     * @param User $object
+     * @return void
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function postPersist($object)
+    {
+        if ($this->clubConfigurationPool->getSettings()->getEnableDocumentNotifications()) {
+            $categories = $this->entityManager->getRepository('Ok99PrivateZoneClassificationBundle:Category')->getNotifiableDocumentsCategories($object);
+
+            /** @var Category $category */
+            foreach ($categories as $category) {
+                // added category
+                 if (
+                     $object->hasDocumentCategoryNotificationEnabled($category) &&
+                     !$category->hasNotifyRecipient($object)
+                 ) {
+                     $category->addNotifyRecipients($object);
+                     $this->entityManager->flush();
+                 }
+
+                 // removed category
+                 if (
+                     !$object->hasDocumentCategoryNotificationEnabled($category) &&
+                     $category->hasNotifyRecipient($object)
+                 ) {
+                     $category->removeNotifyRecipients($object);
+                     $this->entityManager->flush();
+                 }
+            }
+        }
+    }
+
+    /**
+     * @param User $object
+     * @return void
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function postUpdate($object)
+    {
+        $this->postPersist($object);
+    }
+
     public function isAdmin($object = null)
     {
         return $this->isGranted(self::$ROLE_ADMIN) || ($object ? $this->isGranted('ADMIN', $object) : $this->isGranted('ADMIN'));
@@ -541,7 +585,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
      * @param string                       $action
      * @param \Knp\Menu\ItemInterface|null $menu
      *
-     * @return array
+     * @return array|\Knp\Menu\ItemInterface
      */
     public function buildBreadcrumbs($action, MenuItemInterface $menu = null)
     {
