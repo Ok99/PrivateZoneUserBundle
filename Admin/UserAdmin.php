@@ -136,6 +136,11 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
         $formMapper->tab('User')
             ->with('Basic', array('class' => 'col-md-6'));
 
+                $formMapper->add('sportLicencesSorted', 'user_sport_licences', array(
+                    'label' => 'User.Sports',
+                    'required' => false
+                ));
+
                 if ($this->getSubject()->getPerformanceGroups()) {
                     $formMapper->add('performanceGroups', 'user_performance_groups', array(
                         'label' => 'User.PerformanceGroups',
@@ -311,7 +316,17 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
             ->add('firstname')
             ->add('lastname')
             ->add('regnum')
-            ->add('licence')
+            ->add('licence', 'doctrine_orm_callback', [
+                'callback' => function(ProxyQueryInterface $queryBuilder, $alias, $field, $value) {
+                    if ($value == null || $value['value'] == null) {
+                        return;
+                    }
+
+                    $queryBuilder->leftJoin($alias . '.sportLicences', 'usl');
+                    $queryBuilder->andWhere('usl.licence = :licence')->setParameter('licence', $value['value']);;
+                },
+                'operator_type' => 'sonata_type_equal',
+            ])
             ->add('groups');
 
         if ($privacyPolicy) {
@@ -721,7 +736,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
             'Jméno' => 'firstname',
             'Příjmení' => 'lastname',
             'Reg. číslo' => 'regnum',
-            'Licence' => 'licence',
+            'Licence' => 'sportLicencesDecorated',
             'SportIdent 1' => 'sportident',
             'SportIdent 2' => 'sportident2',
             'SportIdent 3' => 'sportident3',

@@ -87,7 +87,17 @@ class UserAddressBookAdmin extends BaseUserAdmin
             ->add('lastname')
             ->add('regnum')
             ->add('nickname')
-            ->add('licence')
+            ->add('licence', 'doctrine_orm_callback', [
+                'callback' => function(ProxyQueryInterface $queryBuilder, $alias, $field, $value) {
+                    if ($value == null || $value['value'] == null) {
+                        return;
+                    }
+
+                    $queryBuilder->leftJoin($alias . '.sportLicences', 'usl');
+                    $queryBuilder->andWhere('usl.licence = :licence')->setParameter('licence', $value['value']);;
+                },
+                'operator_type' => 'sonata_type_equal',
+            ])
             ->add('sportident', 'doctrine_orm_callback', [
                 'callback' => function(ProxyQueryInterface $queryBuilder, $alias, $field, $value) {
                     if ($value == null || $value['value'] == null) {

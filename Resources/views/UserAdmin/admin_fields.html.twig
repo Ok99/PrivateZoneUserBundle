@@ -269,3 +269,17 @@
 		<strong>{{ group.name }}</strong> - {{ 'training_group.owner_label'|trans({}, 'Ok99PrivateZoneBundle')|lower }} <a href="{{ path('admin_privatezonecore_user_address_book_show', {'id': group.owner.id}) }}">{{ group.owner.firstname ~ ' ' ~ group.owner.lastname }}</a>{{ not loop.last ? '<br/>' : '' }}
 	{% endfor %}
 {% endblock %}
+
+{% block user_sport_licences_widget %}
+	{% if value | length %}
+		{% for sportLicence in value %}
+			<strong>{{ sportLicence.eventSport.name }}</strong>
+			{% if sportLicence.licence %}
+				- Lic. <strong>{{ sportLicence.licence }}</strong>
+			{% endif %}
+			{{ not loop.last ? '<br/>' : '' }}
+		{% endfor %}
+	{% else %}
+		{{ 'No Licence'|trans({}, 'SonataUserBundle') }}
+	{%  endif %}
+{% endblock %}

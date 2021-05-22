@@ -106,13 +106,6 @@ class User extends BaseUser implements UserInterface
     protected $clubShortcut;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="licence", type="string", length=1, nullable=true)
-     */
-    protected $licence;
-
-    /**
      * @var integer
      *
      * @ORM\ManyToOne(targetEntity="Ok99\PrivateZoneBundle\Entity\EventSport")
@@ -129,7 +122,7 @@ class User extends BaseUser implements UserInterface
     private $sportidentType;
 
     /**
-     * @var integer
+     * @var string
      *
      * @ORM\Column(name="sportident", type="string", length=16, nullable=true)
      */
@@ -152,7 +145,7 @@ class User extends BaseUser implements UserInterface
     private $sportident2Type;
 
     /**
-     * @var integer
+     * @var string
      *
      * @ORM\Column(name="sportident2", type="string", length=16, nullable=true)
      */
@@ -175,7 +168,7 @@ class User extends BaseUser implements UserInterface
     private $sportident3Type;
 
     /**
-     * @var integer
+     * @var string
      *
      * @ORM\Column(name="sportident3", type="string", length=16, nullable=true)
      */
@@ -388,6 +381,11 @@ class User extends BaseUser implements UserInterface
      * @ORM\OneToMany(targetEntity="Ok99\PrivateZoneBundle\Entity\Wallet", mappedBy="user", cascade={"persist"}, orphanRemoval=true)
      */
     protected $wallet;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Ok99\PrivateZoneCore\UserBundle\Entity\UserSportLicence", mappedBy="user", cascade={"persist"}, orphanRemoval=true)
+     */
+    protected $sportLicences;
 
     /**
      * @var array
@@ -625,6 +623,7 @@ class User extends BaseUser implements UserInterface
         $this->salt = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
 
         $this->roles = [];
+        $this->sportLicences = new ArrayCollection();
         $this->groups = new ArrayCollection();
 
         $this->performanceGroups = new ArrayCollection();
@@ -845,25 +844,6 @@ class User extends BaseUser implements UserInterface
     public function getClubShortcut()
     {
         return $this->clubShortcut;
-    }
-
-    /**
-     * @param $licence
-     * @return $this
-     */
-    public function setLicence($licence)
-    {
-        $this->licence = strtoupper($licence);
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLicence()
-    {
-        return $this->licence;
     }
 
     public function getSalt()
@@ -2964,5 +2944,134 @@ class User extends BaseUser implements UserInterface
             }
         }
         return false;
+    }
+
+    /**
+     * Add sport
+     *
+     * @param EventSport $eventSport
+     * @param string|null $licence
+     * @return User
+     */
+    public function addSportLicence(EventSport $eventSport, $licence)
+    {
+        $this->sportLicences[] = new UserSportLicence(
+            $this,
+            $eventSport,
+            $licence ?? null
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param EventSport $eventSport
+     * @param string|null $licence
+     * @return bool
+     */
+    public function isSportLicenceUpdatable(EventSport $eventSport, $newLicence)
+    {
+        $sportLicence = $this->getSportLicence($eventSport);
+        if (!$sportLicence) {
+            return false;
+        }
+
+        return $sportLicence->getLicence() != $newLicence;
+    }
+
+    /**
+     * @param EventSport $eventSport
+     * @param string|null $licence
+     */
+    public function updateSportLicence(EventSport $eventSport, $licence)
+    {
+        $sportLicence = $this->getSportLicence($eventSport);
+        if (!$sportLicence) {
+            return;
+        }
+
+        $sportLicence->setLicence($licence);
+    }
+
+    /**
+     * Remove sport
+     *
+     * @param EventSport $eventSport
+     */
+    public function removeSportLicence(EventSport $eventSport)
+    {
+        $sportLicence = $this->getSportLicence($eventSport);
+        if (!$sportLicence) {
+            return;
+        }
+
+        $this->sportLicences->removeElement($sportLicence);
+    }
+
+    /**
+     * @param EventSport $eventSport
+     * @return bool
+     */
+    public function hasSportLicence(EventSport $eventSport)
+    {
+        return $this->getSportLicence($eventSport) !== null;
+    }
+
+    /**
+     * Get sports
+     *
+     * @return UserSportLicence[]
+     */
+    public function getSportLicences()
+    {
+        return $this->sportLicences->toArray();
+    }
+
+    /**
+     * Get sports sorted
+     *
+     * @return UserSportLicence[]
+     */
+    public function getSportLicencesSorted()
+    {
+        $sportLicences = $this->getSportLicences();
+
+        usort($sportLicences, function (UserSportLicence $sportLicence1, UserSportLicence $sportLicence2) {
+            return $sportLicence1->getEventSport()->getOrisId() - $sportLicence2->getEventSport()->getOrisId();
+        });
+
+        return $sportLicences;
+    }
+
+    public function setSportLicencesSorted($data)
+    {
+        // do nothing
+    }
+
+    /**
+     * Get sport names
+     *
+     * @return string
+     */
+    public function getSportLicencesDecorated()
+    {
+        return implode(', ', array_map(function(UserSportLicence $sportLicence) {
+            return (string) $sportLicence;
+        }, $this->getSportLicencesSorted()));
+    }
+
+    /**
+     * @param EventSport $eventSport
+     * @return UserSportLicence|null
+     */
+    public function getSportLicence(EventSport $eventSport)
+    {
+        /** @var UserSportLicence $sportLicence */
+        foreach($this->getSportLicences() as $sportLicence) {
+            if ($sportLicence->getEventSport() == $eventSport) {
+                return $sportLicence;
+            }
+        }
+        return null;
     }
 }

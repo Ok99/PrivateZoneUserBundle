@@ -26,7 +26,7 @@
                                 <b><i class="fa fa-birthday-cake margin-r-5"></i> {{ 'Birthday'|trans({}, 'SonataUserBundle') }}</b> <a class="pull-right">{{ object.dateOfBirth|date('j. n.') }}</a>
                             </li>
                             <li class="list-group-item">
-                                <b><i class="fa fa-list-alt margin-r-5"></i> {{ 'License'|trans({}, 'SonataUserBundle') }}</b> <a class="pull-right">{{ object.licence|upper ?: 'C' }}</a>
+                                <b><i class="fa fa-list-alt margin-r-5"></i> {{ 'License'|trans({}, 'SonataUserBundle') }}</b> <a class="pull-right">{{ object.sportLicencesDecorated ?: '-' }}</a>
                             </li>
                             {% if object.sportidents|length %}
                                 <li class="list-group-item">

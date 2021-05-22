@@ -527,7 +527,11 @@ class UserAdminController extends SecuredCRUDController
             $this->get('simplethings_entityaudit.config')
         );
 
-        $intersectFields = array_map(function(){ return ''; }, array_flip(array_values($this->admin->getExportFields())));
+        $exportFields = $this->admin->getExportFields();
+        unset($exportFields['Licence']);
+
+        $intersectFields = array_map(function(){ return ''; }, array_flip(array_values($exportFields)));
+
         $usersData = [];
         $usersDataRevisionsDiff = [];
 
@@ -565,7 +569,7 @@ class UserAdminController extends SecuredCRUDController
         }
 
         /*** STORE DATA ***/
-        $writer = new XlsxWriter($this->admin, $this->container->get('phpexcel'), 'php://output', true, $this->admin->getExportFields());
+        $writer = new XlsxWriter($this->admin, $this->container->get('phpexcel'), 'php://output', true, $exportFields);
 
         return new StreamedResponse(function() use ($writer, $usersData, $usersDataRevisionsDiff) {
             $writer->open();

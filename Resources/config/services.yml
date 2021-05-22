@@ -18,3 +18,8 @@ services:
         class: Ok99\PrivateZoneCore\UserBundle\Form\UserTrainingGroupsType
         tags:
             - { name: form.type, alias: user_training_groups }
+
+    ok99.privatezone.user.form.type.user_sport_licences:
+        class: Ok99\PrivateZoneCore\UserBundle\Form\UserSportLicencesType
+        tags:
+            - { name: form.type, alias: user_sport_licences }

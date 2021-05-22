@@ -782,9 +782,17 @@
                 <source>User.TrainingGroups</source>
                 <target>Tréninková skupina</target>
             </trans-unit>
+            <trans-unit id="User.Sports">
+                <source>User.Sports</source>
+                <target>Registrace</target>
+            </trans-unit>
             <trans-unit id="License">
                 <source>License</source>
                 <target>Licence</target>
+            </trans-unit>
+            <trans-unit id="No Licence">
+                <source>No Licence</source>
+                <target>Bez registrace</target>
             </trans-unit>
         </body>
     </file>
