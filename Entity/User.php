@@ -480,6 +480,13 @@ class User extends BaseUser implements UserInterface
     /**
      * @var boolean
      *
+     * @ORM\Column(name="deactivated", type="boolean")
+     */
+    protected $deactivated = false;
+
+    /**
+     * @var boolean
+     *
      * @ORM\Column(name="locked", type="boolean")
      */
     protected $locked = false;
@@ -1645,6 +1652,25 @@ class User extends BaseUser implements UserInterface
     public function isEnabled()
     {
         return $this->enabled;
+    }
+
+    /**
+     * @param bool $boolean
+     * @return $this
+     */
+    public function setDeactivated($boolean)
+    {
+        $this->deactivated = (Boolean) $boolean;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDeactivated()
+    {
+        return $this->deactivated;
     }
 
     /**
