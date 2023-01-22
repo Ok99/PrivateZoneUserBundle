@@ -298,6 +298,14 @@
                 <source>Date Of Birth</source>
                 <target>Datum narození</target>
             </trans-unit>
+            <trans-unit id="Description">
+                <source>Description</source>
+                <target>Popis pozice v oddílu</target>
+            </trans-unit>
+            <trans-unit id="Description Help">
+                <source>Description Help</source>
+                <target>Krátký popis autora článku na webu (max 250 znaků)</target>
+            </trans-unit>
             <trans-unit id="Birthday">
                 <source>Birthday</source>
                 <target>Narozeniny</target>

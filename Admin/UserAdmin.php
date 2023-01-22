@@ -166,7 +166,24 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                     'dp_max_date' => $now->format('j/n/Y'),
                     //'dp_default_date' => '1/1/'.($now->format('Y')-25),
                     'required' => true
-                ))
+                ));
+
+            if (
+                $clubConfigurationPool->getClubShortcutLower() === 'phk' &&
+                (
+                    $this->getSubject()->hasRole('ROLE_SUPER_ADMIN') ||
+                    $this->getSubject()->hasRole('ROLE_OK99_PRIVATEZONE_NEWS_ADMIN_POST_ADMIN') ||
+                    $this->getSubject()->hasRole('ROLE_OK99_PRIVATEZONE_NEWS_ADMIN_POST_EDITOR')
+                )
+            ) {
+                $formMapper
+                    ->add('description', null, array(
+                        'help' => 'Description Help',
+                        'required' => false,
+                    ));
+            }
+
+            $formMapper
                 ->add('suggestEventClasses', null, array('required' => false))
                 /*->add('gender', 'sonata_user_gender', array(
                     'required' => true,
@@ -242,7 +259,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                             'required' => false,
                             'expanded' => true,
                             'multiple' => true,
-                            'btn_add' => false,
+                            'btn_add'  => false,
                             'query'    => $userGroupsQuery
                         ));
                 }

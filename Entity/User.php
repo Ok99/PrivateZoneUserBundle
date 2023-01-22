@@ -203,6 +203,13 @@ class User extends BaseUser implements UserInterface
      protected $nickname;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+     protected $description;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="gender", type="string", length=1, nullable=true)
@@ -3099,5 +3106,17 @@ class User extends BaseUser implements UserInterface
             }
         }
         return null;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
     }
 }
