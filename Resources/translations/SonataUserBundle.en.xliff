@@ -580,7 +580,7 @@
 			</trans-unit>
 			<trans-unit id="link_deactivate">
 				<source>link_deactivate</source>
-				<target>Deactivate</target>
+				<target>Deactivate and clear personal data</target>
 			</trans-unit>
             <trans-unit id="title_deactivate">
                 <source>title_deactivate</source>

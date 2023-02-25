@@ -245,7 +245,10 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
             $formMapper->with('User', array('class' => 'col-md-6'));
                 if ($this->isAdmin()) {
                     $formMapper
-                        ->add('enabled', null, array('required' => false))
+                        ->add('enabled', null, array(
+                            'required' => false,
+                            'help' => 'Deaktivace způsobí pouze to, že se člen nemůže do privátní zóny přihlásit',
+                        ))
                         ->add('sponsor', null, array('required' => false));
                 }
                 $formMapper

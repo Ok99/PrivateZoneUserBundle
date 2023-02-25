@@ -752,7 +752,7 @@
             </trans-unit>
 			<trans-unit id="link_deactivate">
 				<source>link_deactivate</source>
-				<target>Deaktivovat</target>
+				<target>Deaktivovat a vymazat osobní údaje</target>
 			</trans-unit>
 			<trans-unit id="title_deactivation">
 				<source>title_deactivation</source>
