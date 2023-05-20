@@ -281,6 +281,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
 
                 $formMapper->with('EntryDatesNotifications', array('class' => 'col-md-6'))
                     ->add('notifyEventEntryDates', null, array('label' => 'Chci dostávat upozornění na blížící se termíny přihlášek', 'required' => false))
+                    ->add('notifyFirstEventEntryDateOnly', null, array('label' => 'Dostávat upozornění pouze na první termín přihlášek', 'required' => false))
                     ->add('amountOfDaysBeforeEventEntryDateToNotify', null, array('label' => 'Oznamuj mi termíny přihlášek počet dní před jejich vypršením', 'required' => false))
                     ->add('notifyEventSports', null, array('label' => 'Chci dostávat upozornění pouze u sekcí', 'required' => false))
                     ->add('notifyEventLevels', null, array('label' => 'Chci dostávat upozornění pouze u soutěží', 'required' => false))

@@ -573,6 +573,13 @@ class User extends BaseUser implements UserInterface
     /**
      * @var boolean
      *
+     * @ORM\Column(name="notify_first_event_entry_date_only", type="boolean")
+     */
+    private $notifyFirstEventEntryDateOnly = false;
+
+    /**
+     * @var boolean
+     *
      * @ORM\Column(name="notify_documents", type="boolean")
      */
     private $notifyDocuments = true;
@@ -2744,6 +2751,25 @@ class User extends BaseUser implements UserInterface
     public function getNotifyEventEntryDates()
     {
         return $this->notifyEventEntryDates;
+    }
+
+    /**
+     * @param boolean $notifyFirstEventEntryDateOnly
+     * @return User
+     */
+    public function setNotifyFirstEventEntryDateOnly($notifyFirstEventEntryDateOnly)
+    {
+        $this->notifyFirstEventEntryDateOnly = $notifyFirstEventEntryDateOnly;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getNotifyFirstEventEntryDateOnly()
+    {
+        return $this->notifyFirstEventEntryDateOnly;
     }
 
     /**
