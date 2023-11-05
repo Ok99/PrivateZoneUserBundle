@@ -247,7 +247,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                     $formMapper
                         ->add('enabled', null, array(
                             'required' => false,
-                            'help' => 'Deaktivace způsobí pouze to, že se člen nemůže do privátní zóny přihlásit',
+                            'help' => '<i class="fa fa-warning text-yellow"></i> Deaktivace touto cestou zabrání pouze tomu, aby se člen mohl do systému přihlásit.<br/>Pro úplnou deaktivaci použijte tlačítko "Deaktivovat a vymazat osobní údaje".',
                         ))
                         ->add('sponsor', null, array('required' => false));
                 }
