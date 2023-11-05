@@ -608,9 +608,24 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
         $object->setClubShortcut($this->clubConfigurationPool->getClubShortcut());
     }
 
+    /**
+     * @param User $object
+     * @return mixed|void
+     */
     public function preUpdate($object)
     {
         parent::preUpdate($object);
+
+        $em = $this->getModelManager()->getEntityManager($this->getClass());
+        $original = $em->getUnitOfWork()->getOriginalEntityData($object);
+
+        if (!$object->isEnabled() && $original['enabled'] === true) {
+            $object->setDeenabledManually(true);
+        }
+        
+        if ($object->isEnabled() && $object->isDeenabledManually()) {
+            $object->setDeenabledManually(false);
+        }
     }
 
     /**

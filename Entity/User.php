@@ -487,6 +487,13 @@ class User extends BaseUser implements UserInterface
     /**
      * @var boolean
      *
+     * @ORM\Column(name="deenabled_manually", type="boolean")
+     */
+    protected $deenabledManually = false;
+
+    /**
+     * @var boolean
+     *
      * @ORM\Column(name="deactivated", type="boolean")
      */
     protected $deactivated = false;
@@ -1666,6 +1673,25 @@ class User extends BaseUser implements UserInterface
     public function isEnabled()
     {
         return $this->enabled;
+    }
+
+    /**
+     * @param bool $boolean
+     * @return $this
+     */
+    public function setDeenabledManually($boolean)
+    {
+        $this->deenabledManually = (Boolean) $boolean;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDeenabledManually()
+    {
+        return $this->deenabledManually;
     }
 
     /**
