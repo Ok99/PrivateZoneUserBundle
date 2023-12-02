@@ -2634,7 +2634,7 @@ class User extends BaseUser implements UserInterface
                 (
                     !$this->{$alias.'Sport'}
                     ||
-                    $this->{$alias.'Sport'} == $event->getEventSport()
+                    $this->{$alias.'Sport'}->getId() == $event->getEventSport()->getId()
                 )
                 &&
                 (
@@ -2642,13 +2642,7 @@ class User extends BaseUser implements UserInterface
                     ||
                     !$event->getEventSportidentType()
                     ||
-                    $this->{$alias.'Type'} == $event->getEventSportidentType()
-                    ||
-                    (
-                        $event->getEventSportidentType()->getOrisId() > EventSportidentType::CONTACT_ORIS_ID
-                        &&
-                        $this->{$alias.'Type'}->getOrisId() == EventSportidentType::CONTACT_ORIS_ID
-                    )
+                    $this->{$alias.'Type'}->getOrisId() <= $event->getEventSportidentType()->getOrisId()
                 )
             ) {
                 $typeOrisId = $this->{$alias.'Type'} ? $this->{$alias.'Type'}->getOrisId() : 0;
