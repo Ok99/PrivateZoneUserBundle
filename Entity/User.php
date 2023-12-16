@@ -184,6 +184,20 @@ class User extends BaseUser implements UserInterface
     /**
      * @var string
      *
+     * @ORM\Column(name="birth_registration_number", type="string", length=64, nullable=true)
+     */
+    protected $birthRegistrationNumber;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="identity_card_number", type="string", length=64, nullable=true)
+     */
+    protected $identityCardNumber;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="firstname", type="string", length=64)
      */
     protected $firstname;
@@ -1087,6 +1101,38 @@ class User extends BaseUser implements UserInterface
     public function getDateOfBirth()
     {
         return $this->dateOfBirth;
+    }
+
+    /**
+     * @param string|null $birthRegistrationNumber
+     */
+    public function setBirthRegistrationNumber($birthRegistrationNumber)
+    {
+        $this->birthRegistrationNumber = $birthRegistrationNumber;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getBirthRegistrationNumber()
+    {
+        return $this->birthRegistrationNumber;
+    }
+
+    /**
+     * @param string|null $identityCardNumber
+     */
+    public function setIdentityCardNumber($identityCardNumber)
+    {
+        $this->identityCardNumber = $identityCardNumber;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getIdentityCardNumber()
+    {
+        return $this->identityCardNumber;
     }
 
     /**

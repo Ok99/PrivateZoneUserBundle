@@ -158,6 +158,8 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                 ->add('regnum', null, array('required' => false, 'disabled' => $this->id($this->getSubject()), 'attr' => array('onkeyup' => '$("input[name=\""+$(this).attr("name").substr(0, $(this).attr("name").indexOf("["))+"[username]\"]").val($(this).val())')))
                 ->add('firstname', null, array('required' => true))
                 ->add('lastname', null, array('required' => true))
+                ->add('birthRegistrationNumber', null, array('required' => false))
+                ->add('identityCardNumber', null, array('required' => false))
                 ->add('nickname', null, array('required' => false))
                 ->add('dateOfBirth', 'sonata_type_date_picker', array(
                     'years' => range(1900, $now->format('Y')),
@@ -214,11 +216,6 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                 ->end();
             }
 
-            $formMapper->with('Photo', array('class' => 'col-md-6'))
-                ->add('avatar', $this->id($this->getSubject()) ? 'user_avatar' : 'hidden', array('label' => 'User.Avatar', 'required' => false))
-                ->add('photo', $this->id($this->getSubject()) ? 'user_photo' : 'hidden', array('label' => 'User.Photo.Addressbook', 'required' => false))
-            ->end();
-
             $formMapper->with('SportIdent', array('class' => 'col-md-6'))
                 ->add('sportidentSport', null, array(
                     'choices' => $eventSportChoices,
@@ -255,31 +252,10 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                 ->add('sportident3', null, array('required' => false, 'label' => 'Sportident'))
             ->end();
 
-            $formMapper->with('User', array('class' => 'col-md-6'));
-                if ($this->isAdmin()) {
-                    $formMapper
-                        ->add('enabled', null, array(
-                            'required' => false,
-                            'help' => '<i class="fa fa-warning text-yellow"></i> Deaktivace touto cestou zabrání pouze tomu, aby se člen mohl do systému přihlásit.<br/>Pro úplnou deaktivaci použijte tlačítko "Deaktivovat a vymazat osobní údaje".',
-                        ))
-                        ->add('sponsor', null, array('required' => false));
-                }
-                $formMapper
-                    ->add('username', null, array('required' => false, 'read_only' => true))
-                    ->add('plainPassword', 'text', array(
-                        'required' => (!$this->getSubject() || is_null($this->getSubject()->getId()))
-                    ));
-                if ($this->isAdmin()) {
-                    $formMapper
-                        ->add('groups', 'sonata_type_model', array(
-                            'required' => false,
-                            'expanded' => true,
-                            'multiple' => true,
-                            'btn_add'  => false,
-                            'query'    => $userGroupsQuery
-                        ));
-                }
-            $formMapper->end();
+            $formMapper->with('Photo', array('class' => 'col-md-6'))
+                ->add('avatar', $this->id($this->getSubject()) ? 'user_avatar' : 'hidden', array('label' => 'User.Avatar', 'required' => false))
+                ->add('photo', $this->id($this->getSubject()) ? 'user_photo' : 'hidden', array('label' => 'User.Photo.Addressbook', 'required' => false))
+            ->end();
 
             if ($clubConfigurationPool->useEventEntryDateNotifications() && $clubConfigurationPool->getSettings()->getNotifyEventEntryDates()) {
                 if (!$this->subject->getAmountOfDaysBeforeEventEntryDateToNotify()) {
@@ -314,6 +290,32 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                 ->end();
             }
 
+            $formMapper->with('User', array('class' => 'col-md-6'));
+                if ($this->isAdmin()) {
+                    $formMapper
+                        ->add('enabled', null, array(
+                            'required' => false,
+                            'help' => '<i class="fa fa-warning text-yellow"></i> Deaktivace touto cestou zabrání pouze tomu, aby se člen mohl do systému přihlásit.<br/>Pro úplnou deaktivaci použijte tlačítko "Deaktivovat a vymazat osobní údaje".',
+                        ))
+                        ->add('sponsor', null, array('required' => false));
+                }
+                $formMapper
+                    ->add('username', null, array('required' => false, 'read_only' => true))
+                    ->add('plainPassword', 'text', array(
+                        'required' => (!$this->getSubject() || is_null($this->getSubject()->getId()))
+                    ));
+                if ($this->isAdmin()) {
+                    $formMapper
+                        ->add('groups', 'sonata_type_model', array(
+                            'required' => false,
+                            'expanded' => true,
+                            'multiple' => true,
+                            'btn_add'  => false,
+                            'query'    => $userGroupsQuery
+                        ));
+                }
+            $formMapper->end();
+
         $formMapper->end();
 
         /*if ($this->isGranted('ROLE_SUPER_ADMIN')) {
@@ -344,6 +346,8 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
             ->add('firstname')
             ->add('lastname')
             ->add('regnum')
+            ->add('birthRegistrationNumber')
+            ->add('identityCardNumber')
             ->add('licence', 'doctrine_orm_callback', [
                 'callback' => function(ProxyQueryInterface $queryBuilder, $alias, $field, $value) {
                     if ($value == null || $value['value'] == null) {
@@ -784,6 +788,8 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
             'SportIdent 2' => 'sportident2',
             'SportIdent 3' => 'sportident3',
             'Datum narození' => 'date_of_birth',
+            'Rodné číslo' => 'birthRegistrationNumber',
+            'Číslo OP' => 'identityCardNumber',
             'Email' => 'email',
             'Email rodiče' => 'email_parent',
             'Telefon 1 - název' => 'phoneName',

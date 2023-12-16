@@ -93,6 +93,14 @@
                                     {% endfor %}
                                 </li>
                             {% endif %}
+                            {% if admin.isGranted('ROLE_SUPER_ADMIN') or admin.isGranted('ROLE_OK99_PRIVATEZONE_USER_ADMIN_USER_ADMIN') %}
+                                <li class="list-group-item">
+                                    <b><i class="fa fa-user margin-r-5"></i> {{ 'Birth Registration Number'|trans({}, 'SonataUserBundle') }}</b> <a class="pull-right">{{ object.birthRegistrationNumber }}</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <b><i class="fa fa-user margin-r-5"></i> {{ 'Identity Card Number'|trans({}, 'SonataUserBundle') }}</b> <a class="pull-right">{{ object.identityCardNumber }}</a>
+                                </li>
+                            {% endif %}
                             {% if object.address %}
                                 <li class="list-group-item list-item--last">
                                     <b><i class="fa fa-map-marker margin-r-5"></i> {{ 'Address'|trans({}, 'SonataUserBundle') }}</b> <a class="pull-right">{{ object.address|replace({', ': '<br/>'})|raw }}</a>

@@ -302,6 +302,14 @@
                 <source>Groups</source>
                 <target>Uživ. skupiny</target>
             </trans-unit>
+            <trans-unit id="Birth Registration Number">
+                <source>Birth Registration Number</source>
+                <target>Rodné číslo</target>
+            </trans-unit>
+            <trans-unit id="Identity Card Number">
+                <source>Identity Card Number</source>
+                <target>Číslo OP</target>
+            </trans-unit>
             <trans-unit id="Date Of Birth">
                 <source>Date Of Birth</source>
                 <target>Datum narození</target>
