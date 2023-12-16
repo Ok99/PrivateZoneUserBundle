@@ -126,6 +126,10 @@
                 <source>Parent Emails</source>
                 <target>E-mailové adresy (oddělené čárkou)</target>
             </trans-unit>
+            <trans-unit id="Parent Phones">
+                <source>Parent Phones</source>
+                <target>Telefonní čísla</target>
+            </trans-unit>
             <trans-unit id="Plain Password">
                 <source>Plain Password</source>
                 <target>Heslo</target>
@@ -249,6 +253,10 @@
             <trans-unit id="form.label_phone">
                 <source>form.label_phone</source>
                 <target>Telefon</target>
+            </trans-unit>
+            <trans-unit id="form.label_phoneName">
+                <source>form.label_phoneName</source>
+                <target>Název</target>
             </trans-unit>
             <trans-unit id="form.label_facebook_uid">
                 <source>form.label_facebook_uid</source>
@@ -512,7 +520,7 @@
             </trans-unit>
             <trans-unit id="sonata_change_password_link">
                 <source>sonata_change_password_link</source>
-                <target>Změnit heslok</target>
+                <target>Změnit heslo</target>
             </trans-unit>
             <trans-unit id="link_register">
                 <source>link_register</source>
@@ -610,6 +618,10 @@
                 <source>User.Contact</source>
                 <target>Kontakt</target>
             </trans-unit>
+            <trans-unit id="User.PhoneNumbers">
+                <source>User.PhoneNumbers</source>
+                <target>Telefonní čísla</target>
+            </trans-unit>
             <trans-unit id="User.User">
                 <source>User.User</source>
                 <target>Uživatel</target>
@@ -694,9 +706,9 @@
 				<source>User.SportIdent</source>
 				<target>SportIdent čipy</target>
 			</trans-unit>
-            <trans-unit id="User.Parent">
-                <source>User.Parent</source>
-                <target>Rodič</target>
+            <trans-unit id="User.Parents">
+                <source>User.Parents</source>
+                <target>Rodiče</target>
             </trans-unit>
             <trans-unit id="User.EntryDatesNotifications">
                 <source>User.EntryDatesNotifications</source>

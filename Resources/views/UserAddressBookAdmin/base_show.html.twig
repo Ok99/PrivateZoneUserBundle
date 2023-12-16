@@ -34,14 +34,40 @@
                                         {% for sportident in object.sportidents %}
                                             {% set sport = attribute(object, 'sportident' ~ (loop.index0 ? loop.index : '') ~ 'Sport') %}
                                             {% set type = attribute(object, 'sportident' ~ (loop.index0 ? loop.index : '') ~ 'Type') %}
-                                            {{ sportident }} ({{ type ? type.name(app.request.locale) : 'Sportident General'|trans({}, 'Ok99PrivateZoneBundle') }}{{ sport ? ', ' ~ sport.name(app.request.locale) : '' }})</br>
+                                            {{ type ? type.name(app.request.locale) : 'Sportident General'|trans({}, 'Ok99PrivateZoneBundle') }}{{ sport ? ', ' ~ sport.name(app.request.locale) : '' }}:&nbsp;
+                                            {{ sportident }}
+                                            </br>
                                         {% endfor %}
                                     {% endspaceless %}</a>
                                 </li>
                             {% endif %}
-                            {% if object.phone %}
+                            {% if object.phone or object.phone2 or object.phone3 %}
                                 <li class="list-group-item">
-                                    <b><i class="fa fa-phone margin-r-5"></i> {{ 'Phone'|trans({}, 'SonataUserBundle') }}</b> <a href="tel:{{ object.phone|replace({' ': ''}) }}" class="pull-right">{{ object.phone }}</a>
+                                    <b><i class="fa fa-phone margin-r-5"></i> {{ 'Phone'|trans({}, 'SonataUserBundle') }}</b>
+
+                                    {% if object.phone %}
+                                        <a href="tel:{{ object.phone|replace({' ': ''}) }}" class="pull-right">{{ object.phone }}</a>
+                                        {% if object.phoneName %}
+                                            <a class="pull-right">{{ object.phoneName }}:&nbsp;</a>
+                                        {% endif %}
+                                        <br/>
+                                    {% endif %}
+
+                                    {% if object.phone2 %}
+                                        <a href="tel:{{ object.phone2|replace({' ': ''}) }}" class="pull-right">{{ object.phone2 }}</a>
+                                        {% if object.phone2Name %}
+                                            <a class="pull-right">{{ object.phone2Name }}:&nbsp;</a>
+                                        {% endif %}
+                                        <br/>
+                                    {% endif %}
+
+                                    {% if object.phone3 %}
+                                        <a href="tel:{{ object.phone3|replace({' ': ''}) }}" class="pull-right">{{ object.phone3 }}</a>
+                                        {% if object.phone3Name %}
+                                            <a class="pull-right">{{ object.phone3Name }}:&nbsp;</a>
+                                        {% endif %}
+                                        <br/>
+                                    {% endif %}
                                 </li>
                             {% endif %}
                             {% if object.phoneParent and object.age < pz_club_configuration_pool.settings.ageToParentalSupervision %}

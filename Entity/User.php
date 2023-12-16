@@ -253,6 +253,41 @@ class User extends BaseUser implements UserInterface
     /**
      * @var string
      *
+     * @ORM\Column(name="phone_name", type="string", length=128, nullable=true)
+     */
+    protected $phoneName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="phone2", type="string", length=64, nullable=true)
+     */
+    protected $phone2;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="phone2_name", type="string", length=128, nullable=true)
+     */
+    protected $phone2Name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="phone3", type="string", length=64, nullable=true)
+     */
+    protected $phone3;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="phone3_name", type="string", length=128, nullable=true)
+     */
+    protected $phone3Name;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="phone_parent", type="string", length=64, nullable=true)
      */
     protected $phoneParent;
@@ -1119,7 +1154,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * @param string $phone
+     * @param string|null $phone
      */
     public function setPhone($phone)
     {
@@ -1127,11 +1162,107 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getPhone()
     {
         return $this->phone;
+    }
+
+    /**
+     * @param string|null $phoneName
+     */
+    public function setPhoneName($phoneName)
+    {
+        $this->phoneName = $phoneName;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPhoneName()
+    {
+        return $this->phoneName;
+    }
+
+    /**
+     * @param string|null $phone2
+     */
+    public function setPhone2($phone2)
+    {
+        $this->phone2 = $phone2;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPhone2()
+    {
+        return $this->phone2;
+    }
+
+    /**
+     * @param string|null $phone2Name
+     */
+    public function setPhone2Name($phone2Name)
+    {
+        $this->phone2Name = $phone2Name;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPhone2Name()
+    {
+        return $this->phone2Name;
+    }
+
+    /**
+     * @param string|null $phone3
+     */
+    public function setPhone3($phone3)
+    {
+        $this->phone3 = $phone3;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPhone3()
+    {
+        return $this->phone3;
+    }
+
+    /**
+     * @param string|null $phone3Name
+     */
+    public function setPhone3Name($phone3Name)
+    {
+        $this->phone3Name = $phone3Name;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPhone3Name()
+    {
+        return $this->phone3Name;
+    }
+
+    /**
+     * @param string $phoneParent
+     */
+    public function setPhoneParent($phoneParent)
+    {
+        $this->phoneParent = $phoneParent;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPhoneParent()
+    {
+        return $this->phoneParent;
     }
 
     /**
@@ -1144,22 +1275,6 @@ class User extends BaseUser implements UserInterface
             return trim($phone);
         }, $phones);
         return $phones;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPhoneParent()
-    {
-        return $this->phoneParent;
-    }
-
-    /**
-     * @param string $phoneParent
-     */
-    public function setPhoneParent($phoneParent)
-    {
-        $this->phoneParent = $phoneParent;
     }
 
     /**

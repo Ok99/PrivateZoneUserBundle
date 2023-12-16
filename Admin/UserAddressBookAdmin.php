@@ -111,8 +111,36 @@ class UserAddressBookAdmin extends BaseUserAdmin
             ])
             ->add('street')
             ->add('city')
-            ->add('email')
-            ->add('phone')
+            ->add('email', 'doctrine_orm_callback', [
+                'callback' => function(ProxyQueryInterface $queryBuilder, $alias, $field, $value) {
+                    if ($value == null || $value['value'] == null) {
+                        return;
+                    }
+
+                    $queryBuilder->andWhere(sprintf(
+                        '%s.email = :email OR %s.emailParent LIKE :emailLike',
+                        $alias, $alias
+                    ))
+                    ->setParameter('email', $value['value'])
+                    ->setParameter('emailLike', '%'.$value['value'].'%');
+                },
+                'operator_type' => 'sonata_type_equal',
+            ])
+            ->add('phone', 'doctrine_orm_callback', [
+                'callback' => function(ProxyQueryInterface $queryBuilder, $alias, $field, $value) {
+                    if ($value == null || $value['value'] == null) {
+                        return;
+                    }
+
+                    $queryBuilder->andWhere(sprintf(
+                        '%s.phone = :phone OR %s.phone2 = :phone OR %s.phone3 = :phone OR %s.phoneParent LIKE :phoneLike',
+                        $alias, $alias, $alias, $alias
+                    ))
+                    ->setParameter('phone', $value['value'])
+                    ->setParameter('phoneLike', '%'.$value['value'].'%');
+                },
+                'operator_type' => 'sonata_type_equal',
+            ])
         ;
     }
 

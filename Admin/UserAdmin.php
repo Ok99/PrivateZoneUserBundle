@@ -134,7 +134,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
         ksort($eventSportidentTypeChoices);
 
         $formMapper->tab('User')
-            ->with('Basic', array('class' => 'col-md-6'));
+            ->with('Basic', array('class' => 'col-md-4'));
 
                 $formMapper->add('sportLicencesSorted', 'user_sport_licences', array(
                     'label' => 'User.Sports',
@@ -191,6 +191,34 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                 ))*/
             ->end();
 
+            $formMapper->with('Contact', array('class' => 'col-md-4'))
+                ->add('email')
+                ->add('street', null, array('required' => false))
+                ->add('city', null, array('required' => false))
+                ->add('zip', null, array('required' => false))
+            ->end();
+
+            $formMapper->with('PhoneNumbers', array('class' => 'col-md-4'))
+                ->add('phoneName', null, array('required' => false, 'label' => 'form.label_phoneName'))
+                ->add('phone', null, array('required' => false, 'label' => 'form.label_phone'))
+                ->add('phone2Name', null, array('required' => false, 'label' => 'form.label_phoneName'))
+                ->add('phone2', null, array('required' => false, 'label' => 'form.label_phone'))
+                ->add('phone3Name', null, array('required' => false, 'label' => 'form.label_phoneName'))
+                ->add('phone3', null, array('required' => false, 'label' => 'form.label_phone'))
+            ->end();
+
+            if ($this->getSubject()->getAge() < $this->clubConfigurationPool->getSettings()->getAgeToParentalSupervision()) {
+                $formMapper->with('Parents', array('class' => 'col-md-4'))
+                    ->add('emailParent', null, array('label' => 'Parent Emails'))
+                    ->add('phoneParent', null, array('required' => false, 'label' => 'Parent Phones'))
+                ->end();
+            }
+
+            $formMapper->with('Photo', array('class' => 'col-md-6'))
+                ->add('avatar', $this->id($this->getSubject()) ? 'user_avatar' : 'hidden', array('label' => 'User.Avatar', 'required' => false))
+                ->add('photo', $this->id($this->getSubject()) ? 'user_photo' : 'hidden', array('label' => 'User.Photo.Addressbook', 'required' => false))
+            ->end();
+
             $formMapper->with('SportIdent', array('class' => 'col-md-6'))
                 ->add('sportidentSport', null, array(
                     'choices' => $eventSportChoices,
@@ -227,21 +255,6 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                 ->add('sportident3', null, array('required' => false, 'label' => 'Sportident'))
             ->end();
 
-            $formMapper->with('Contact', array('class' => 'col-md-6'))
-                ->add('email')
-                ->add('phone', null, array('required' => false))
-                ->add('street', null, array('required' => false))
-                ->add('city', null, array('required' => false))
-                ->add('zip', null, array('required' => false))
-            ->end();
-
-            if ($this->getSubject()->getAge() < $this->clubConfigurationPool->getSettings()->getAgeToParentalSupervision()) {
-                $formMapper->with('Parent', array('class' => 'col-md-6'))
-                    ->add('emailParent', null, array('label' => 'Parent Emails'))
-                    ->add('phoneParent', null, array('required' => false, 'label' => 'Phone'))
-                ->end();
-            }
-
             $formMapper->with('User', array('class' => 'col-md-6'));
                 if ($this->isAdmin()) {
                     $formMapper
@@ -267,12 +280,6 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                         ));
                 }
             $formMapper->end();
-
-            $formMapper->with('Photo', array('class' => 'col-md-6'))
-                ->add('avatar', $this->id($this->getSubject()) ? 'user_avatar' : 'hidden', array('label' => 'User.Avatar', 'required' => false))
-                ->add('photo', $this->id($this->getSubject()) ? 'user_photo' : 'hidden', array('label' => 'User.Photo.Addressbook', 'required' => false))
-            ->end();
-
 
             if ($clubConfigurationPool->useEventEntryDateNotifications() && $clubConfigurationPool->getSettings()->getNotifyEventEntryDates()) {
                 if (!$this->subject->getAmountOfDaysBeforeEventEntryDateToNotify()) {
@@ -779,7 +786,12 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
             'Datum narození' => 'date_of_birth',
             'Email' => 'email',
             'Email rodiče' => 'email_parent',
-            'Telefon' => 'phone',
+            'Telefon 1 - název' => 'phoneName',
+            'Telefon 1' => 'phone',
+            'Telefon 2 - název' => 'phone2Name',
+            'Telefon 2' => 'phone2',
+            'Telefon 3 - název' => 'phone3Name',
+            'Telefon 3' => 'phone3',
             'Telefon rodiče' => 'phone_parent',
             'Ulice a č.p.' => 'street',
             'Město' => 'city',
