@@ -1361,12 +1361,11 @@ class User extends BaseUser implements UserInterface
                 return sprintf($pathnameFormat, 'admin');
             } else {
                 switch($this->getGender()) {
-                    case self::GENDER_MALE:
-                        return sprintf($pathnameFormat, 'male');
-                        break;
                     case self::GENDER_FEMALE:
                         return sprintf($pathnameFormat, 'female');
                         break;
+                    default:
+                        return sprintf($pathnameFormat, 'male');
                 }
             }
         }
