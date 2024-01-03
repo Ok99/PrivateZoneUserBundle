@@ -90,7 +90,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
      */
     protected function configureRoutes(RouteCollection $collection)
     {
-        $collection->clearExcept(array('list', 'edit', 'export'));
+        $collection->clearExcept(array('list', 'edit', 'export', 'delete'));
         $collection->add('store_cropped_avatar', 'store-cropped-avatar/{userId}');
         $collection->add('store_property', 'store-property');
         $collection->add('year_diff', 'export-zmen-osobnich-udaju/{year}');
