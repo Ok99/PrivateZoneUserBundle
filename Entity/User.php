@@ -2778,6 +2778,47 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
+     * @param string $generalLabel
+     * @param string|null $locale
+     * @return array
+     */
+    public function getAllSportidents($generalLabel, $locale = null)
+    {
+        $sportidents = $_sportidents = [];
+
+        foreach (self::$sportidentAliases as $alias) {
+            if ($this->{$alias}) {
+                $typeOrisId = $this->{$alias.'Type'} ? $this->{$alias.'Type'}->getOrisId() : 0;
+
+                if (!isset($_sportidents[$typeOrisId])) {
+                    $_sportidents[$typeOrisId] = [];
+                }
+
+                $_sportidents[$typeOrisId][] = [
+                    'key' => $this->{$alias},
+                    'label' => sprintf(
+                        '%s (%s)',
+                        $this->{$alias.'Type'} ? $this->{$alias.'Type'}->getName($locale) : $generalLabel,
+                        $this->{$alias}
+                    )
+                ];
+            }
+        }
+
+        if ($_sportidents) {
+            krsort($_sportidents);
+
+            foreach($_sportidents as $typeSportidents) {
+                foreach($typeSportidents as $sportident) {
+                    $sportidents[] = $sportident;
+                }
+            }
+        }
+
+        return $sportidents;
+    }
+
+    /**
      * @param Event $event
      * @param string $generalLabel
      * @param string|null $locale
