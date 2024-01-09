@@ -8,6 +8,7 @@ use Knp\Menu\ItemInterface as MenuItemInterface;
 use Ok99\PrivateZoneBundle\AdminInterface\ExportAdminInterface;
 use Ok99\PrivateZoneBundle\Service\ClubConfigurationPool;
 use Ok99\PrivateZoneCore\ClassificationBundle\Entity\Category;
+use Ok99\PrivateZoneCore\UserBundle\Entity\Group;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
@@ -636,6 +637,22 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
         
         if ($object->isEnabled() && $object->isDeenabledManually()) {
             $object->setDeenabledManually(false);
+        }
+
+        // if someone removes the default user groups from the active user
+        if (
+            !$object->isDeactivated() &&
+            count(array_filter($object->getGroups()->toArray(), function (Group $group) {
+                return $group->isIsDefault();
+            })) === 0
+        ) {
+            $defaultGroups = $this->entityManager->getRepository('Ok99PrivateZoneUserBundle:Group')->findBy([
+                'isDefault' => true,
+            ]);
+
+            foreach ($defaultGroups as $defaultGroup) {
+                $object->addGroup($defaultGroup);
+            }
         }
     }
 
