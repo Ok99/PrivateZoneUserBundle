@@ -629,6 +629,13 @@ class User extends BaseUser implements UserInterface
     /**
      * @var boolean
      *
+     * @ORM\Column(name="notify_club_event_entry_dates", type="boolean")
+     */
+    private $notifyClubEventEntryDates = true;
+
+    /**
+     * @var boolean
+     *
      * @ORM\Column(name="notify_first_event_entry_date_only", type="boolean")
      */
     private $notifyFirstEventEntryDateOnly = false;
@@ -2972,6 +2979,29 @@ class User extends BaseUser implements UserInterface
     public function getNotifyEventEntryDates()
     {
         return $this->notifyEventEntryDates;
+    }
+
+    /**
+     * Set notifyClubEventEntryDates
+     *
+     * @param boolean $notifyClubEventEntryDates
+     * @return User
+     */
+    public function setNotifyClubEventEntryDates($notifyClubEventEntryDates)
+    {
+        $this->notifyClubEventEntryDates = $notifyClubEventEntryDates;
+
+        return $this;
+    }
+
+    /**
+     * Get notifyClubEventEntryDates
+     *
+     * @return boolean
+     */
+    public function getNotifyClubEventEntryDates()
+    {
+        return $this->notifyClubEventEntryDates;
     }
 
     /**

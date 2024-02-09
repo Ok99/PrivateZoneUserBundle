@@ -258,39 +258,6 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                 ->add('photo', $this->id($this->getSubject()) ? 'user_photo' : 'hidden', array('label' => 'User.Photo.Addressbook', 'required' => false))
             ->end();
 
-            if ($clubConfigurationPool->useEventEntryDateNotifications() && $clubConfigurationPool->getSettings()->getNotifyEventEntryDates()) {
-                if (!$this->subject->getAmountOfDaysBeforeEventEntryDateToNotify()) {
-                    $this->subject->setAmountOfDaysBeforeEventEntryDateToNotify($clubConfigurationPool->getSettings()->getAmountOfDaysBeforeEventEntryDateToNotify());
-                }
-
-                $formMapper->with('EntryDatesNotifications', array('class' => 'col-md-6'))
-                    ->add('notifyEventEntryDates', null, array('label' => 'Chci dostávat upozornění na blížící se termíny přihlášek', 'required' => false))
-                    ->add('notifyFirstEventEntryDateOnly', null, array('label' => 'Dostávat upozornění pouze na první termín přihlášek', 'required' => false))
-                    ->add('amountOfDaysBeforeEventEntryDateToNotify', null, array('label' => 'Oznamuj mi termíny přihlášek počet dní před jejich vypršením', 'required' => false))
-                    ->add('notifyEventSports', null, array('label' => 'Chci dostávat upozornění pouze u sekcí', 'required' => false))
-                    ->add('notifyEventLevels', null, array('label' => 'Chci dostávat upozornění pouze u soutěží', 'required' => false))
-                    ->add('notifyEventDisciplines', null, array('label' => 'Chci dostávat upozornění pouze u disciplín', 'required' => false))
-                    ->add('notifyEventCups', null, array(
-                        'label' => 'Chci dostávat upozornění pouze u žebříčků',
-                        'required' => false,
-                        'choices' => $clubConfigurationPool->getEventCups(true),
-                    ))
-                ->end();
-            }
-
-            if ($clubConfigurationPool->getSettings()->getEnableDocumentNotifications()) {
-                $formMapper->with('DocumentsNotifications', array('class' => 'col-md-6'))
-                    ->add('notifyDocuments', null, array('label' => 'Chci dostávat upozornění na nové dokumenty', 'required' => false))
-                    ->add('notifyDocumentCategories', null, array(
-                        'label' => 'Kategorie',
-                        'required' => false,
-                        'choices' => $this->entityManager->getRepository('Ok99PrivateZoneClassificationBundle:Category')->getNotifiableDocumentsCategories($user),
-                    ), array(
-                        'admin_code' => 'ok99.privatezone.documents_category',
-                    ))
-                ->end();
-            }
-
             $formMapper->with('User', array('class' => 'col-md-6'));
                 if ($this->isAdmin()) {
                     $formMapper
@@ -316,6 +283,40 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                         ));
                 }
             $formMapper->end();
+
+            if ($clubConfigurationPool->getSettings()->getEnableDocumentNotifications()) {
+                $formMapper->with('DocumentsNotifications', array('class' => 'col-md-6'))
+                    ->add('notifyDocuments', null, array('label' => 'Chci dostávat upozornění na nové dokumenty', 'required' => false))
+                    ->add('notifyDocumentCategories', null, array(
+                        'label' => 'Kategorie',
+                        'required' => false,
+                        'choices' => $this->entityManager->getRepository('Ok99PrivateZoneClassificationBundle:Category')->getNotifiableDocumentsCategories($user),
+                    ), array(
+                        'admin_code' => 'ok99.privatezone.documents_category',
+                    ))
+                ->end();
+            }
+
+            if ($clubConfigurationPool->useEventEntryDateNotifications() && $clubConfigurationPool->getSettings()->getNotifyEventEntryDates()) {
+                if (!$this->subject->getAmountOfDaysBeforeEventEntryDateToNotify()) {
+                    $this->subject->setAmountOfDaysBeforeEventEntryDateToNotify($clubConfigurationPool->getSettings()->getAmountOfDaysBeforeEventEntryDateToNotify());
+                }
+
+                $formMapper->with('EntryDatesNotifications', array('class' => 'col-md-6'))
+                    ->add('notifyEventEntryDates', null, array('label' => 'Chci dostávat upozornění na blížící se termíny přihlášek', 'required' => false))
+                    ->add('notifyFirstEventEntryDateOnly', null, array('label' => 'Dostávat upozornění pouze na první termín přihlášek', 'required' => false))
+                    ->add('amountOfDaysBeforeEventEntryDateToNotify', null, array('label' => 'Oznamuj mi termíny přihlášek počet dní před jejich vypršením', 'required' => false))
+                    ->add('notifyEventSports', null, array('label' => 'Chci dostávat upozornění pouze u sekcí', 'required' => false))
+                    ->add('notifyEventLevels', null, array('label' => 'Chci dostávat upozornění pouze u soutěží', 'required' => false))
+                    ->add('notifyEventDisciplines', null, array('label' => 'Chci dostávat upozornění pouze u disciplín', 'required' => false))
+                    ->add('notifyEventCups', null, array(
+                        'label' => 'Chci dostávat upozornění pouze u žebříčků',
+                        'required' => false,
+                        'choices' => $clubConfigurationPool->getEventCups(true),
+                    ))
+                    ->add('notifyClubEventEntryDates', null, array('label' => 'Chci dostávat upozornění u klubových akcí', 'required' => false))
+                ->end();
+            }
 
         $formMapper->end();
 
