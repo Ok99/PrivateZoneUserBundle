@@ -159,8 +159,6 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                 ->add('regnum', null, array('required' => false, 'disabled' => $this->id($this->getSubject()), 'attr' => array('onkeyup' => '$("input[name=\""+$(this).attr("name").substr(0, $(this).attr("name").indexOf("["))+"[username]\"]").val($(this).val())')))
                 ->add('firstname', null, array('required' => true))
                 ->add('lastname', null, array('required' => true))
-                ->add('birthRegistrationNumber', null, array('required' => false))
-                ->add('identityCardNumber', null, array('required' => false))
                 ->add('nickname', null, array('required' => false))
                 ->add('dateOfBirth', 'sonata_type_date_picker', array(
                     'years' => range(1900, $now->format('Y')),
@@ -169,7 +167,9 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                     'dp_max_date' => $now->format('j/n/Y'),
                     //'dp_default_date' => '1/1/'.($now->format('Y')-25),
                     'required' => true
-                ));
+                ))
+                ->add('birthRegistrationNumber', null, array('required' => false))
+                ->add('identityCardNumber', null, array('required' => false));
 
             if (
                 $clubConfigurationPool->getClubShortcutLower() === 'phk' &&
