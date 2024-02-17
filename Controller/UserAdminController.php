@@ -20,6 +20,166 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 class UserAdminController extends SecuredCRUDController
 {
     /**
+     * Create action.
+     *
+     * @param Request $request
+     *
+     * @return Response
+     *
+     * @throws \Exception
+     * @throws \Twig_Error_Runtime
+     * @throws AccessDeniedException If access is not granted
+     */
+    public function createAction(Request $request = null)
+    {
+        if (!$this->admin->isAdmin()) {
+            return $this->redirect($this->generateUrl('admin_privatezonecore_user_user_list'));
+        }
+
+        $request = $this->resolveRequest($request);
+        // the key used to lookup the template
+        $templateKey = 'edit';
+
+        if (false === $this->admin->isGranted('CREATE')) {
+            throw new AccessDeniedException();
+        }
+
+        $clubConfigurationPool = $this->container->get('ok99.privatezone.club_configuration_pool');
+
+        $class = new \ReflectionClass($this->admin->hasActiveSubClass() ? $this->admin->getActiveSubClass() : $this->admin->getClass());
+
+        if ($class->isAbstract()) {
+            return $this->render(
+                'SonataAdminBundle:CRUD:select_subclass.html.twig',
+                array(
+                    'base_template' => $this->getBaseTemplate(),
+                    'admin'         => $this->admin,
+                    'action'        => 'create',
+                ),
+                null,
+                $request
+            );
+        }
+
+        $object = $this->admin->getNewInstance();
+
+        $preResponse = $this->preCreate($request, $object);
+        if ($preResponse !== null) {
+            return $preResponse;
+        }
+
+        $this->admin->setSubject($object);
+
+        /** @var $form \Symfony\Component\Form\Form */
+        $form = $this->admin->getForm();
+        $form->setData($object);
+        $form->handleRequest($request);
+
+        // u dema neni vytvoreni uzivatele mozne
+        if ($clubConfigurationPool->isDemo()) {
+            $this->addFlash(
+                'sonata_flash_error',
+                $this->admin->trans(
+                    'Vytvoření uživatele není v demo verzi možné',
+                    [],
+                    'Ok99PrivateZoneBundle'
+                )
+            );
+        }
+
+        if ($form->isSubmitted()) {
+            $isFormValid = $form->isValid();
+
+            // u dema neni vytvoreni uzivatele mozne
+            if ($clubConfigurationPool->isDemo()) {
+                $isFormValid = false;
+            }
+
+            // persist if the form was valid and if in preview mode the preview was approved
+            if ($isFormValid && (!$this->isInPreviewMode($request) || $this->isPreviewApproved($request))) {
+                if (false === $this->admin->isGranted('CREATE', $object)) {
+                    throw new AccessDeniedException();
+                }
+
+                try {
+                    $object = $this->admin->create($object);
+
+                    $postResponse = $this->postCreate($request, $form, $object);
+                    if ($postResponse !== null) {
+                        return $postResponse;
+                    }
+
+                    $this->getDoctrine()->getManager()->flush($object);
+
+                    if ($this->isXmlHttpRequest($request)) {
+                        return $this->renderJson(array(
+                            'result'   => 'ok',
+                            'objectId' => $this->admin->getNormalizedIdentifier($object),
+                            'editUrl' => $this->admin->generateObjectUrl('edit', $object),
+
+                        ), 200, array(), $request);
+                    }
+
+                    $this->addFlash(
+                        'sonata_flash_success',
+                        $this->admin->trans(
+                            'flash_create_success',
+                            array('%name%' => $this->escapeHtml($this->admin->toString($object))),
+                            'SonataAdminBundle'
+                        )
+                    );
+
+                    // redirect to edit mode
+                    return $this->redirectTo($object, $request);
+                } catch (ModelManagerException $e) {
+                    $this->handleModelManagerException($e);
+
+                    $isFormValid = false;
+                }
+            }
+
+            // show an error message if the form failed validation
+            if (!$isFormValid) {
+                $postResponse = $this->postInvalidCreate($request, $form, $object);
+                if ($postResponse !== null) {
+                    return $postResponse;
+                }
+
+                if (!$this->isXmlHttpRequest($request)) {
+                    $this->addFlash(
+                        'sonata_flash_error',
+                        $this->admin->trans(
+                            'flash_create_error',
+                            array('%name%' => $this->escapeHtml($this->admin->toString($object))),
+                            'SonataAdminBundle'
+                        )
+                    );
+                } else {
+                    return $this->renderJson(array(
+                        'result'   => 'error',
+                        'errors' => $this->getErrorMessages($form),
+                    ), 200, array(), $request);
+                }
+            } elseif ($this->isPreviewRequested($request)) {
+                // pick the preview template if the form was valid and preview was requested
+                $templateKey = 'preview';
+                $this->admin->getShow();
+            }
+        }
+
+        $view = $form->createView();
+
+        // set the theme for the current Admin Form
+        $this->get('twig')->getExtension('form')->renderer->setTheme($view, $this->admin->getFormTheme());
+
+        return $this->render($this->admin->getTemplate($templateKey), array(
+            'action' => 'create',
+            'form'   => $view,
+            'object' => $object,
+        ), null, $request);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function showAction($id = null, Request $request = null)

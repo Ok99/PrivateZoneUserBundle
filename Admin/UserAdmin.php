@@ -91,7 +91,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
      */
     protected function configureRoutes(RouteCollection $collection)
     {
-        $collection->clearExcept(array('list', 'edit', 'export', 'delete'));
+        $collection->clearExcept(array('list', 'create', 'edit', 'export', 'delete'));
         $collection->add('store_cropped_avatar', 'store-cropped-avatar/{userId}');
         $collection->add('store_property', 'store-property');
         $collection->add('year_diff', 'export-zmen-osobnich-udaju/{year}');
@@ -538,12 +538,12 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
      */
     public function showCreateButton()
     {
-        return false;
+        return $this->isAdmin();
     }
 
     public function showAddBtnInDashboard()
     {
-        return false;
+        return $this->isAdmin();
     }
 
     public function showListBtnInDashboard()
@@ -553,7 +553,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
 
     public function showInAddBlock()
     {
-        return false;
+        return true;
     }
 
     /**
