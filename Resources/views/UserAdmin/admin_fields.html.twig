@@ -283,3 +283,10 @@
 		{{ 'No Licence'|trans({}, 'SonataUserBundle') }}
 	{%  endif %}
 {% endblock %}
+
+{% block user_regnum_widget %}
+	<div class="input-group">
+		<span class="input-group-addon user-profile--regnum-club-shortcut">{{ pz_club_shortcut | upper }}</span>
+		{{ block('form_widget_simple') }}
+	</div>
+{% endblock %}

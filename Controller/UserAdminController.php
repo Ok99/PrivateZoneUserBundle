@@ -11,6 +11,7 @@ use Ok99\PrivateZoneBundle\HttpFoundation\AjaxResponse;
 use Ok99\PrivateZoneCore\UserBundle\Admin\UserAdmin;
 use Ok99\PrivateZoneCore\UserBundle\Entity\User;
 use Sonata\AdminBundle\Exception\ModelManagerException;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -205,6 +206,46 @@ class UserAdminController extends SecuredCRUDController
         }
 
         return parent::historyAction($id, $request);
+    }
+
+    /**
+     * @param User $object
+     */
+    protected function postEditRequestHandle(Request $request, FormInterface $form, $object)
+    {
+        $formPostData = $_POST[$form->getName()] ?? null;
+
+        if ($formPostData === null) {
+            return;
+        }
+
+        // check try of regnum change
+        $regnum = $formPostData['regnum'] ?? null;
+
+        if ($regnum !== null) {
+            $this->addFlash(
+                'sonata_flash_error',
+                'Registration number change is not possible.'
+            );
+
+            return $this->redirect($this->generateUrl('admin_privatezonecore_user_user_edit', [
+                'id' => $object->getId(),
+            ]));
+        }
+
+        // check try of username change
+        $username = $formPostData['username'] ?? null;
+
+        if ($username !== null) {
+            $this->addFlash(
+                'sonata_flash_error',
+                'Username change is not possible.'
+            );
+
+            return $this->redirect($this->generateUrl('admin_privatezonecore_user_user_edit', [
+                'id' => $object->getId(),
+            ]));
+        }
     }
 
     /**

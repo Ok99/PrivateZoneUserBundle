@@ -63,14 +63,14 @@ class User extends BaseUser implements UserInterface
     protected $id;
 
     /**
-     * @var integer
+     * @var integer|null
      *
      * @ORM\Column(name="oris_id", type="integer", nullable=true)
      */
     protected $orisId;
 
     /**
-     * @var integer
+     * @var integer|null
      *
      * @ORM\Column(name="oris_clubuser_id", type="integer", nullable=true)
      */
@@ -94,7 +94,9 @@ class User extends BaseUser implements UserInterface
      * @var string
      *
      * @ORM\Column(name="regnum", type="string", length=5, unique=true)
-     * @Assert\NotBlank(message="Registrační číslo musí být zadáno.")
+     * @Assert\Callback(
+     *      callback={"Ok99\PrivateZoneCore\UserBundle\Entity\User","validateRegnum"},
+     *  )
      */
     protected $regnum;
 
@@ -645,7 +647,7 @@ class User extends BaseUser implements UserInterface
      *
      * @ORM\Column(name="notify_documents", type="boolean")
      */
-    private $notifyDocuments = true;
+    private $notifyDocuments = false;
 
     /**
      * @ORM\ManyToMany(targetEntity="Ok99\PrivateZoneCore\ClassificationBundle\Entity\Category", mappedBy="notifyRecipients")
@@ -769,6 +771,19 @@ class User extends BaseUser implements UserInterface
      * @param string $value
      * @param ExecutionContextInterface $context
      */
+    public static function validateRegnum($value, ExecutionContextInterface $context)
+    {
+        if ($value && !is_numeric($value)) {
+            $context->buildViolation('fos_user.regnum.non-numeric')
+                ->atPath('regnum')
+                ->addViolation();
+        }
+    }
+
+    /**
+     * @param string $value
+     * @param ExecutionContextInterface $context
+     */
     public static function validateEmail($value, ExecutionContextInterface $context)
     {
         if ($value) {
@@ -826,7 +841,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getOrisId()
     {
@@ -842,7 +857,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getOrisClubuserId()
     {
@@ -855,6 +870,13 @@ class User extends BaseUser implements UserInterface
     public function setOrisClubuserId($orisClubuserId)
     {
         $this->orisClubuserId = $orisClubuserId;
+    }
+
+    public function isOrisAcceptable(): bool
+    {
+        return
+            $this->getOrisId() !== null &&
+            $this->getOrisClubuserId() !== null;
     }
 
     /**

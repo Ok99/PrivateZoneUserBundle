@@ -23,3 +23,8 @@ services:
         class: Ok99\PrivateZoneCore\UserBundle\Form\UserSportLicencesType
         tags:
             - { name: form.type, alias: user_sport_licences }
+
+    ok99.privatezone.user.form.type.user_regnum:
+        class: Ok99\PrivateZoneCore\UserBundle\Form\UserRegnumType
+        tags:
+            - { name: form.type, alias: user_regnum }

@@ -17,6 +17,8 @@ use Sonata\UserBundle\Admin\Entity\UserAdmin as BaseUserAdmin;
 use Sonata\AdminBundle\Form\FormMapper;
 use Ok99\PrivateZoneCore\UserBundle\Entity\User;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
 {
@@ -45,6 +47,20 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
 
     /** @var string */
     protected $exportName;
+
+    /**
+     * @param string $code
+     * * @param string $class
+     * * @param string $baseControllerName
+     */
+    public function __construct($code, $class, $baseControllerName)
+    {
+        parent::__construct($code, $class, $baseControllerName);
+
+        $this->formOptions['constraints'] = [
+            new Assert\Callback(array($this, 'validateRegnum')),
+        ];
+    }
 
     /**
      * @param ContainerInterface $container
@@ -117,9 +133,6 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
         /** @var ClubConfigurationPool $clubConfigurationPool */
         $clubConfigurationPool = $this->getConfigurationPool()->getContainer()->get('ok99.privatezone.club_configuration_pool');
 
-        /** @var User $user */
-        $user = $this->container->get('security.token_storage')->getToken()->getUser();
-
         $userGroupsQuery = $this->entityManager->getRepository('Ok99PrivateZoneUserBundle:Group')->getGroupsQuery();
 
         $eventSportChoices = [];
@@ -134,29 +147,46 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
         }
         ksort($eventSportidentTypeChoices);
 
+        if ($this->isNew()) {
+            $defaultGroups = $this->entityManager->getRepository('Ok99PrivateZoneUserBundle:Group')->findBy([
+                'isDefault' => true,
+            ]);
+            foreach ($defaultGroups as $defaultGroup) {
+                $this->getSubject()->addGroup($defaultGroup);
+            }
+        }
+
         $formMapper->tab('User')
             ->with('Basic', array('class' => 'col-md-4'));
 
-                $formMapper->add('sportLicencesSorted', 'user_sport_licences', array(
-                    'label' => 'User.Sports',
-                    'required' => false
-                ));
+                if (!$this->isNew()) {
+                    $formMapper->add('sportLicencesSorted', 'user_sport_licences', array(
+                        'label' => 'User.Sports',
+                        'required' => false
+                    ));
 
-                if ($this->getSubject()->getPerformanceGroups()) {
-                    $formMapper->add('performanceGroups', 'user_performance_groups', array(
-                        'label' => 'User.PerformanceGroups',
-                        'required' => false
-                    ));
-                }
-                if ($this->getSubject()->getTrainingGroups()) {
-                    $formMapper->add('trainingGroups', 'user_training_groups', array(
-                        'label' => 'User.TrainingGroups',
-                        'required' => false
-                    ));
+                    if ($this->getSubject()->getPerformanceGroups()) {
+                        $formMapper->add('performanceGroups', 'user_performance_groups', array(
+                            'label' => 'User.PerformanceGroups',
+                            'required' => false
+                        ));
+                    }
+                    if ($this->getSubject()->getTrainingGroups()) {
+                        $formMapper->add('trainingGroups', 'user_training_groups', array(
+                            'label' => 'User.TrainingGroups',
+                            'required' => false
+                        ));
+                    }
                 }
 
                 $formMapper
-                ->add('regnum', null, array('required' => false, 'disabled' => $this->id($this->getSubject()), 'attr' => array('onkeyup' => '$("input[name=\""+$(this).attr("name").substr(0, $(this).attr("name").indexOf("["))+"[username]\"]").val($(this).val())')))
+                ->add('regnum', 'user_regnum', array(
+                    'required' => true,
+                    'disabled' => !$this->isNew(),
+                    'attr' => [
+                        'onkeyup' => '$("input[name=\""+$(this).attr("name").substr(0, $(this).attr("name").indexOf("["))+"[username]\"]").val($(this).val())',
+                    ],
+                ))
                 ->add('firstname', null, array('required' => true))
                 ->add('lastname', null, array('required' => true))
                 ->add('nickname', null, array('required' => false))
@@ -186,12 +216,15 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                     ));
             }
 
+//            if ($this->isNew()) {
+//                $formMapper->add('gender', 'sonata_user_gender', array(
+//                    'required' => true,
+//                    'translation_domain' => $this->getTranslationDomain()
+//                ));
+//            }
+
             $formMapper
                 ->add('suggestEventClasses', null, array('required' => false))
-                /*->add('gender', 'sonata_user_gender', array(
-                    'required' => true,
-                    'translation_domain' => $this->getTranslationDomain()
-                ))*/
             ->end();
 
             $formMapper->with('Contact', array('class' => 'col-md-4'))
@@ -210,7 +243,10 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                 ->add('phone3', null, array('required' => false, 'label' => 'form.label_phone'))
             ->end();
 
-            if ($this->getSubject()->getAge() < $this->clubConfigurationPool->getSettings()->getAgeToParentalSupervision()) {
+            if (
+                $this->isNew() ||
+                $this->getSubject()->getAge() < $this->clubConfigurationPool->getSettings()->getAgeToParentalSupervision()
+            ) {
                 $formMapper->with('Parents', array('class' => 'col-md-4'))
                     ->add('emailParent', null, array('label' => 'Parent Emails'))
                     ->add('phoneParent', null, array('required' => false, 'label' => 'Parent Phones'))
@@ -253,10 +289,12 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                 ->add('sportident3', null, array('required' => false, 'label' => 'Sportident'))
             ->end();
 
-            $formMapper->with('Photo', array('class' => 'col-md-6'))
-                ->add('avatar', $this->id($this->getSubject()) ? 'user_avatar' : 'hidden', array('label' => 'User.Avatar', 'required' => false))
-                ->add('photo', $this->id($this->getSubject()) ? 'user_photo' : 'hidden', array('label' => 'User.Photo.Addressbook', 'required' => false))
-            ->end();
+            if (!$this->isNew()) {
+                $formMapper->with('Photo', array('class' => 'col-md-6'))
+                    ->add('avatar', $this->id($this->getSubject()) ? 'user_avatar' : 'hidden', array('label' => 'User.Avatar', 'required' => false))
+                    ->add('photo', $this->id($this->getSubject()) ? 'user_photo' : 'hidden', array('label' => 'User.Photo.Addressbook', 'required' => false))
+                ->end();
+            }
 
             $formMapper->with('User', array('class' => 'col-md-6'));
                 if ($this->isAdmin()) {
@@ -264,11 +302,18 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                         ->add('enabled', null, array(
                             'required' => false,
                             'help' => '<i class="fa fa-warning text-yellow"></i> Deaktivace touto cestou zabrání pouze tomu, aby se člen mohl do systému přihlásit.<br/>Pro úplnou deaktivaci použijte tlačítko "Deaktivovat a vymazat osobní údaje".',
-                        ))
-                        ->add('sponsor', null, array('required' => false));
+                        ));
+
+                    if ($clubConfigurationPool->getClubShortcutLower() === 'phk') {
+                        $formMapper->add('sponsor', null, array('required' => false));
+                    }
                 }
                 $formMapper
-                    ->add('username', null, array('required' => false, 'read_only' => true))
+                    ->add('username', null, array(
+                        'required' => false,
+                        'read_only' => $this->isNew(),
+                        'disabled' => !$this->isNew(),
+                    ))
                     ->add('plainPassword', 'text', array(
                         'required' => (!$this->getSubject() || is_null($this->getSubject()->getId()))
                     ));
@@ -279,7 +324,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                             'expanded' => true,
                             'multiple' => true,
                             'btn_add'  => false,
-                            'query'    => $userGroupsQuery
+                            'query'    => $userGroupsQuery,
                         ));
                 }
             $formMapper->end();
@@ -290,7 +335,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                     ->add('notifyDocumentCategories', null, array(
                         'label' => 'Kategorie',
                         'required' => false,
-                        'choices' => $this->entityManager->getRepository('Ok99PrivateZoneClassificationBundle:Category')->getNotifiableDocumentsCategories($user),
+                        'choices' => $this->entityManager->getRepository('Ok99PrivateZoneClassificationBundle:Category')->getNotifiableDocumentsCategories($this->getUser()),
                     ), array(
                         'admin_code' => 'ok99.privatezone.documents_category',
                     ))
@@ -331,7 +376,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
             ->end();
         }*/
 
-        if ($this->id($this->getSubject())) {
+        if (!$this->isNew()) {
             $this->getRequest()->getSession()->set(User::ID_HANDLER, $this->id($this->getSubject()));
         }
     }
@@ -444,6 +489,19 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
         }
     }
 
+    public function validateRegnum(User $object, ExecutionContextInterface $context)
+    {
+        $user = $this->entityManager->getRepository('Ok99PrivateZoneUserBundle:User')->findOneBy([
+            'regnum' => $object->getRegnum(),
+        ]);
+
+        if ($user !== null) {
+            $context->buildViolation('fos_user.regnum.used')
+                ->atPath('regnum')
+                ->addViolation();
+        }
+    }
+
     /**
      * @param User $object
      * @return void
@@ -524,7 +582,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                 }
                 break;
             case 'EDIT':
-                if ($object && $this->container->get('security.token_storage')->getToken()->getUser()->getId() == $object->getId()) {
+                if ($object && $this->getUser()->getId() == $object->getId()) {
                     return true;
                 }
                 break;
@@ -553,7 +611,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
 
     public function showInAddBlock()
     {
-        return true;
+        return $this->isAdmin();
     }
 
     /**
@@ -592,9 +650,8 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
 
         if ($context == 'list') {
             if (!$this->isAdmin()) {
-                $user = $this->container->get('security.token_storage')->getToken()->getUser();
                 $query->andWhere($query->getRootAlias() . '.id = :userId');
-                $query->setParameter('userId', $user->getId());
+                $query->setParameter('userId', $this->getUser()->getId());
 
                 $object = $query->getQuery()->getSingleResult();
                 $url = $this->generateUrl('edit', array('id' => $object->getId()));
@@ -619,6 +676,15 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
     {
         $object->setUsername($object->getRegnum());
         $object->setClubShortcut($this->clubConfigurationPool->getClubShortcut());
+
+        $regnum = $object->getRegnum();
+        $serialNumber = (int) substr($regnum, 2, 2);
+
+        if ($serialNumber >= 50) {
+            $object->setGender(User::GENDER_FEMALE);
+        } else {
+            $object->setGender(User::GENDER_MALE);
+        }
     }
 
     /**
@@ -865,5 +931,27 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
         ;
 
         return $query;
+    }
+
+    private function getUser(): User
+    {
+        $tokenStorage = $this->container->get('security.token_storage')->getToken();
+
+        if ($tokenStorage === null) {
+            throw new \Exception('Token storage is empty');
+        }
+
+        $user = $tokenStorage->getUser();
+
+        if (!$user instanceof User) {
+            throw new \Exception('User object corrupted');
+        }
+
+        return $user;
+    }
+
+    private function isNew()
+    {
+        return !$this->id($this->getSubject());
     }
 }

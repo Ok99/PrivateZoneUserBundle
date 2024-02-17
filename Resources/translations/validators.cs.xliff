@@ -30,9 +30,13 @@
                 <source>fos_user.regnum.blank</source>
                 <target>Vyplň registrační číslo</target>
             </trans-unit>
+            <trans-unit id="fos_user.regnum.non-numeric">
+                <source>fos_user.regnum.non-numeric</source>
+                <target>Registrační číslo může být pouze číselné</target>
+            </trans-unit>
             <trans-unit id="fos_user.regnum.used">
                 <source>fos_user.regnum.used</source>
-                <target>Toto registrační číslo je již zaregistrované</target>
+                <target>Toto registrační číslo je již obsazené</target>
             </trans-unit>
             <trans-unit id="fos_user.password.mismatch">
                 <source>fos_user.password.mismatch</source>
