@@ -491,14 +491,16 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
 
     public function validateRegnum(User $object, ExecutionContextInterface $context)
     {
-        $user = $this->entityManager->getRepository('Ok99PrivateZoneUserBundle:User')->findOneBy([
-            'regnum' => $object->getRegnum(),
-        ]);
+        if (!$object->getId()) {
+            $user = $this->entityManager->getRepository('Ok99PrivateZoneUserBundle:User')->findOneBy([
+                'regnum' => $object->getRegnum(),
+            ]);
 
-        if ($user !== null) {
-            $context->buildViolation('fos_user.regnum.used')
-                ->atPath('regnum')
-                ->addViolation();
+            if ($user !== null) {
+                $context->buildViolation('fos_user.regnum.used')
+                    ->atPath('regnum')
+                    ->addViolation();
+            }
         }
     }
 
