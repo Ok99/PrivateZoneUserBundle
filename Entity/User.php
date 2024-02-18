@@ -127,6 +127,7 @@ class User extends BaseUser implements UserInterface
      * @var string
      *
      * @ORM\Column(name="sportident", type="string", length=16, nullable=true)
+     * @Assert\Regex(pattern="/^\d*$/", message="fos_user.sportident.wrong")
      */
     protected $sportident;
 
@@ -150,6 +151,7 @@ class User extends BaseUser implements UserInterface
      * @var string
      *
      * @ORM\Column(name="sportident2", type="string", length=16, nullable=true)
+     * @Assert\Regex(pattern="/^\d*$/", message="fos_user.sportident.wrong")
      */
     protected $sportident2;
 
@@ -173,6 +175,7 @@ class User extends BaseUser implements UserInterface
      * @var string
      *
      * @ORM\Column(name="sportident3", type="string", length=16, nullable=true)
+     * @Assert\Regex(pattern="/^\d*$/", message="fos_user.sportident.wrong")
      */
     protected $sportident3;
 

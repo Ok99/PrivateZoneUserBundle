@@ -44,7 +44,7 @@
             </trans-unit>
             <trans-unit id="fos_user.sportident.wrong">
                 <source>fos_user.sportident.wrong</source>
-                <target>SportIdent musí být pouze číslo</target>
+                <target>SportIdent může být pouze číslo</target>
             </trans-unit>
             <trans-unit id="fos_user.email.wrong">
                 <source>fos_user.email.wrong</source>
