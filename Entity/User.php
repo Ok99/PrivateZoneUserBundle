@@ -1228,7 +1228,24 @@ class User extends BaseUser implements UserInterface
      */
     public function getGender()
     {
-        return $this->gender;
+        if (
+            $this->gender !== null &&
+            in_array($this->gender, [
+                self::GENDER_FEMALE,
+                self::GENDER_MALE,
+            ])
+        ) {
+            return $this->gender;
+        }
+
+        $regnum = $this->getRegnum();
+        $serialNumber = (int) substr($regnum, 2, 2);
+
+        if ($serialNumber >= 50) {
+            return self::GENDER_FEMALE;
+        } else {
+            return self::GENDER_MALE;
+        }
     }
 
     /**
