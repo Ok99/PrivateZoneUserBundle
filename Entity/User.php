@@ -47,6 +47,12 @@ class User extends BaseUser implements UserInterface
 {
     const ID_HANDLER = 'User/id';
 
+    public static $phoneAliases = [
+        'phone',
+        'phone2',
+        'phone3',
+    ];
+
     public static $sportidentAliases = [
         'sportident',
         'sportident2',

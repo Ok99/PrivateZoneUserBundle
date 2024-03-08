@@ -20,7 +20,7 @@
             </trans-unit>
             <trans-unit id="fos_user.firstname.blank">
                 <source>fos_user.firstname.blank</source>
-                <target>Vyplň jméno</target>
+                <target>Vyplň křestní jméno</target>
             </trans-unit>
             <trans-unit id="fos_user.lastname.blank">
                 <source>fos_user.lastname.blank</source>

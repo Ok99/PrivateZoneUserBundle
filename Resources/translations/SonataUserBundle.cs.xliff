@@ -328,7 +328,7 @@
             </trans-unit>
             <trans-unit id="Firstname">
                 <source>Firstname</source>
-                <target>Jméno</target>
+                <target>Křestní jméno</target>
             </trans-unit>
             <trans-unit id="Lastname">
                 <source>Lastname</source>
