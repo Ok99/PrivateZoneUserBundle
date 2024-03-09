@@ -301,7 +301,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                     $formMapper
                         ->add('enabled', null, array(
                             'required' => false,
-                            'help' => '<i class="fa fa-warning text-yellow"></i> Deaktivace touto cestou zabrání pouze tomu, aby se člen mohl do systému přihlásit.<br/>Pro úplnou deaktivaci použijte tlačítko "Deaktivovat a vymazat osobní údaje".',
+                            'help' => '<i class="fa fa-warning text-yellow"></i> Deaktivace touto cestou zabrání pouze tomu, aby se člen mohl do systému přihlásit.<br/>Pro úplnou deaktivaci v souladu s GDPR použij tlačítko "Deaktivovat a vymazat osobní údaje".',
                         ));
 
                     if ($clubConfigurationPool->getClubShortcutLower() === 'phk') {
@@ -333,7 +333,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                 $formMapper->with('DocumentsNotifications', array('class' => 'col-md-6'))
                     ->add('notifyDocuments', null, array('label' => 'Chci dostávat upozornění na nové dokumenty', 'required' => false))
                     ->add('notifyDocumentCategories', null, array(
-                        'label' => 'Kategorie',
+                        'label' => 'Mám zájem o kategorie',
                         'required' => false,
                         'choices' => $this->entityManager->getRepository('Ok99PrivateZoneClassificationBundle:Category')->getNotifiableDocumentsCategories($this->getUser()),
                     ), array(
