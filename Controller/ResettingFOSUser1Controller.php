@@ -94,7 +94,7 @@ class ResettingFOSUser1Controller extends \Sonata\UserBundle\Controller\Resettin
             try {
                 $clubConfigurationPool->getMailer()->send(
                     'Ok99PrivateZoneUserBundle:Resetting:email',
-                    array('no-reply@' . $clubConfigurationPool->getMailerHostName() => $clubConfigurationPool->getAppName()),
+                    array($clubConfigurationPool->getMailFromAddress() => $clubConfigurationPool->getAppName()),
                     $recipients,
                     $this->container->get('translator')->trans('resetting.email.subject', array(), 'FOSUserBundle'),
                     array(
