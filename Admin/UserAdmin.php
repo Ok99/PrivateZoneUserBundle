@@ -187,6 +187,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                         'onkeyup' => '$("input[name=\""+$(this).attr("name").substr(0, $(this).attr("name").indexOf("["))+"[username]\"]").val($(this).val())',
                     ],
                 ))
+                ->add('iofId', null, array('required' => false))
                 ->add('firstname', null, array('required' => true))
                 ->add('lastname', null, array('required' => true))
                 ->add('nickname', null, array('required' => false))
@@ -393,8 +394,6 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
             ->add('firstname')
             ->add('lastname')
             ->add('regnum')
-            ->add('birthRegistrationNumber')
-            ->add('identityCardNumber')
             ->add('licence', 'doctrine_orm_callback', [
                 'callback' => function(ProxyQueryInterface $queryBuilder, $alias, $field, $value) {
                     if ($value == null || $value['value'] == null) {
@@ -406,6 +405,9 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                 },
                 'operator_type' => 'sonata_type_equal',
             ])
+            ->add('iofId')
+            ->add('birthRegistrationNumber')
+            ->add('identityCardNumber')
             ->add('groups');
 
         if ($privacyPolicy) {

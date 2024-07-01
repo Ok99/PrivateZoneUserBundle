@@ -207,6 +207,13 @@ class User extends BaseUser implements UserInterface
     protected $identityCardNumber;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="iof_id", type="string", length=64, nullable=true)
+     */
+    protected $iofId;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="firstname", type="string", length=64)
@@ -242,7 +249,7 @@ class User extends BaseUser implements UserInterface
     protected $gender = UserInterface::GENDER_UNKNOWN;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="email", type="string", length=255, nullable=true, unique=false)
      * @Assert\Callback(
@@ -252,7 +259,7 @@ class User extends BaseUser implements UserInterface
     protected $email;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="email_canonical", type="string", length=255, nullable=true, unique=false)
      */
@@ -966,26 +973,26 @@ class User extends BaseUser implements UserInterface
         return $this->salt;
     }
 
-    public function setEmail($email)
+    public function setEmail($email): self
     {
         $this->email = $email;
 
         return $this;
     }
 
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    public function setEmailCanonical($emailCanonical)
+    public function setEmailCanonical($emailCanonical): self
     {
         $this->emailCanonical = $emailCanonical;
 
         return $this;
     }
 
-    public function getEmailCanonical()
+    public function getEmailCanonical(): ?string
     {
         return $this->emailCanonical;
     }
@@ -1171,6 +1178,18 @@ class User extends BaseUser implements UserInterface
     public function getIdentityCardNumber()
     {
         return $this->identityCardNumber;
+    }
+
+    public function setIofId(?string $iofId): self
+    {
+        $this->iofId = $iofId;
+
+        return $this;
+    }
+
+    public function getIofId(): ?string
+    {
+        return $this->iofId;
     }
 
     /**

@@ -98,6 +98,7 @@ class UserAddressBookAdmin extends BaseUserAdmin
                 },
                 'operator_type' => 'sonata_type_equal',
             ])
+            ->add('iofId')
             ->add('sportident', 'doctrine_orm_callback', [
                 'callback' => function(ProxyQueryInterface $queryBuilder, $alias, $field, $value) {
                     if ($value == null || $value['value'] == null) {

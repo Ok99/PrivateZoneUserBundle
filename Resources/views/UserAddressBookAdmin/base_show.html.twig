@@ -93,6 +93,11 @@
                                     {% endfor %}
                                 </li>
                             {% endif %}
+                            {% if object.iofId %}
+                                <li class="list-group-item">
+                                    <b><i class="fa fa-user margin-r-5"></i> {{ 'Iof Id'|trans({}, 'SonataUserBundle') }}</b> <a class="pull-right">{{ object.iofId }}</a>
+                                </li>
+                            {% endif %}
                             {% if admin.isGranted('ROLE_SUPER_ADMIN') or admin.isGranted('ROLE_OK99_PRIVATEZONE_USER_ADMIN_USER_ADMIN') %}
                                 <li class="list-group-item">
                                     <b><i class="fa fa-user margin-r-5"></i> {{ 'Birth Registration Number'|trans({}, 'SonataUserBundle') }}</b> <a class="pull-right">{{ object.birthRegistrationNumber }}</a>

@@ -822,6 +822,10 @@
                 <source>No Licence</source>
                 <target>Bez registrace</target>
             </trans-unit>
+            <trans-unit id="Iof Id">
+                <source>Iof Id</source>
+                <target>IOF ID</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
