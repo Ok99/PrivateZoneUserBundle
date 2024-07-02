@@ -59,6 +59,249 @@ class User extends BaseUser implements UserInterface
         'sportident3',
     ];
 
+    const DEFAULT_COUNTRY = 'CZ';
+
+    public static $countries = [
+        'AF' => 'Afghánistán',
+        'AL' => 'Albánie',
+        'DZ' => 'Alžírsko',
+        'AS' => 'Americká Samoa',
+        'VI' => 'Americké Panenské ostrovy',
+        'AD' => 'Andorra',
+        'AO' => 'Angola',
+        'AI' => 'Anguilla',
+        'AQ' => 'Antarktika',
+        'AG' => 'Antigua a Barbuda',
+        'AR' => 'Argentina',
+        'AM' => 'Arménie',
+        'AW' => 'Aruba',
+        'AU' => 'Austrálie',
+        'AZ' => 'Ázerbajdžán',
+        'BS' => 'Bahamy',
+        'BH' => 'Bahrajn',
+        'BD' => 'Bangladéš',
+        'BB' => 'Barbados',
+        'MM' => 'Barma',
+        'BE' => 'Belgie',
+        'BZ' => 'Belize',
+        'BY' => 'Bělorusko',
+        'BJ' => 'Benin',
+        'BM' => 'Bermudy',
+        'BT' => 'Bhútán',
+        'BO' => 'Bolívie',
+        'BA' => 'Bosna a Hercegovina',
+        'BW' => 'Botswana',
+        'BV' => 'Bouvetův ostrov',
+        'BR' => 'Brazílie',
+        'IO' => 'Britské indickooceánské teritorium',
+        'VG' => 'Britské Panenské ostrovy',
+        'BN' => 'Brunej',
+        'BG' => 'Bulharsko',
+        'BF' => 'Burkina Faso',
+        'BI' => 'Burundi',
+        'CK' => 'Cookovy ostrovy',
+        'TD' => 'Čad',
+        'CZ' => 'Česká republika',
+        'CN' => 'Čína',
+        'DK' => 'Dánsko',
+        'DM' => 'Dominika',
+        'DO' => 'Dominikánská republika',
+        'DJ' => 'Džibuti',
+        'EG' => 'Egypt',
+        'EC' => 'Ekvádor',
+        'ER' => 'Eritrea',
+        'EE' => 'Estonsko',
+        'ET' => 'Etiopie',
+        'FO' => 'Faerské ostrovy',
+        'FK' => 'Falklandy',
+        'FJ' => 'Fidži',
+        'PH' => 'Filipíny',
+        'FI' => 'Finsko',
+        'FR' => 'Francie',
+        'GF' => 'Francouzská Guyana',
+        'PF' => 'Francouzská Polynézie',
+        'GA' => 'Gabun',
+        'GM' => 'Gambie',
+        'GH' => 'Ghana',
+        'GI' => 'Gibraltar',
+        'GD' => 'Grenada',
+        'GL' => 'Grónsko',
+        'GE' => 'Gruzie',
+        'GP' => 'Guadeloupe',
+        'TF' => 'Guam',
+        'GU' => 'Guam',
+        'GT' => 'Guatemala',
+        'GN' => 'Guinea',
+        'GW' => 'Guinea-Bissau',
+        'GY' => 'Guyana',
+        'HT' => 'Haiti',
+        'HM' => 'Heardův ostrov a McDonaldovy ostrovy',
+        'HN' => 'Honduras',
+        'HK' => 'Hongkong',
+        'CL' => 'Chile',
+        'HR' => 'Chorvatsko',
+        'IN' => 'Indie',
+        'ID' => 'Indonézie',
+        'IQ' => 'Irák',
+        'IR' => 'Írán',
+        'IE' => 'Irsko',
+        'IS' => 'Island',
+        'IT' => 'Itálie',
+        'IL' => 'Izrael',
+        'JM' => 'Jamajka',
+        'JP' => 'Japonsko',
+        'YE' => 'Jemen',
+        'ZA' => 'Jihoafrická republika',
+        'GS' => 'Jižní Georgie a Jižní Sandwichovy ostrovy',
+        'JO' => 'Jordánsko',
+        'KY' => 'Kajmanské ostrovy',
+        'KH' => 'Kambodža',
+        'CM' => 'Kamerun',
+        'CA' => 'Kanada',
+        'CV' => 'Kapverdy',
+        'QA' => 'Katar',
+        'KZ' => 'Kazachstán',
+        'KE' => 'Keňa',
+        'KI' => 'Kiribati',
+        'CC' => 'Kokosové ostrovy',
+        'CO' => 'Kolumbie',
+        'KM' => 'Komory',
+        'CG' => 'Kongo',
+        'CD' => 'Kongo (Demokratická republika Kongo)',
+        'KP' => 'Korea (Korejská lidově demokratická republika)',
+        'KR' => 'Korea (Korejská republika)',
+        'CR' => 'Kostarika',
+        'CU' => 'Kuba',
+        'KW' => 'Kuvajt',
+        'CY' => 'Kypr',
+        'KG' => 'Kyrgyzstán',
+        'LA' => 'Laos',
+        'LS' => 'Lesotho',
+        'LB' => 'Libanon',
+        'LR' => 'Libérie',
+        'LY' => 'Libye',
+        'LI' => 'Lichtenštejnsko',
+        'LT' => 'Litva',
+        'LV' => 'Lotyšsko',
+        'LU' => 'Lucembursko',
+        'MG' => 'Madagaskar',
+        'HU' => 'Maďarsko',
+        'MO' => 'Makao',
+        'MK' => 'Makedonie',
+        'MY' => 'Malajsie',
+        'MW' => 'Malawi',
+        'MV' => 'Maledivy',
+        'ML' => 'Mali',
+        'MT' => 'Malta',
+        'MA' => 'Maroko',
+        'MH' => 'Marshallovy ostrovy',
+        'MQ' => 'Martinik',
+        'MR' => 'Mauretánie',
+        'MU' => 'Mauricius',
+        'YT' => 'Mayotte',
+        'MX' => 'Mexiko',
+        'FM' => 'Mikronésie',
+        'MD' => 'Moldavsko',
+        'MC' => 'Monako',
+        'MN' => 'Mongolsko',
+        'MS' => 'Montserrat',
+        'MZ' => 'Mosambik',
+        'NA' => 'Namíbie',
+        'NR' => 'Nauru',
+        'DE' => 'Německo',
+        'NP' => 'Nepál',
+        'NE' => 'Niger',
+        'NG' => 'Nigérie',
+        'NI' => 'Nikaragua',
+        'NU' => 'Niue',
+        'NL' => 'Nizozemí',
+        'AN' => 'Nizozemské Antily',
+        'NF' => 'Norfolk',
+        'NO' => 'Norsko',
+        'NC' => 'Nová Kaledonie',
+        'NZ' => 'Nový Zéland',
+        'OM' => 'Omán',
+        'UM' => 'Ostrovy USA v Tichém oceánu',
+        'PK' => 'Pákistán',
+        'PW' => 'Palau',
+        'PS' => 'Palestina',
+        'PA' => 'Panama',
+        'PG' => 'Papua Nová Guinea',
+        'PY' => 'Paraguay',
+        'PE' => 'Peru',
+        'PN' => 'Pitcairnovy ostrovy',
+        'CI' => 'Pobřeží slonoviny',
+        'PL' => 'Polsko',
+        'PR' => 'Portoriko',
+        'PT' => 'Portugalsko',
+        'AT' => 'Rakousko',
+        'RE' => 'Réunion',
+        'GQ' => 'Rovníková Guinea',
+        'RO' => 'Rumunsko',
+        'RU' => 'Rusko',
+        'RW' => 'Rwanda',
+        'GR' => 'Řecko',
+        'SV' => 'Salvador',
+        'WS' => 'Samoa',
+        'SM' => 'San Marino',
+        'SA' => 'Saúdská Arábie',
+        'SN' => 'Senegal',
+        'MP' => 'Severní Mariany',
+        'SC' => 'Seychely',
+        'SL' => 'Sierra Leone',
+        'SG' => 'Singapur',
+        'SK' => 'Slovensko',
+        'SI' => 'Slovinsko',
+        'SO' => 'Somálsko',
+        'AE' => 'Spojené arabské emiráty',
+        'US' => 'Spojené státy americké',
+        'CS' => 'Srbsko a Černá hora',
+        'LK' => 'Srí Lanka',
+        'CF' => 'Středoafrická republika',
+        'SD' => 'Súdán',
+        'SR' => 'Surinam',
+        'SH' => 'Svatá Helena',
+        'LC' => 'Svatá Lucie',
+        'KN' => 'Svatý Kryštof a Nevis',
+        'PM' => 'Svatý Petr a Mikelon',
+        'ST' => 'Svatý Tomáš a Princův ostrov',
+        'VC' => 'Svatý Vincenc a Grenadiny',
+        'SZ' => 'Svazijsko',
+        'SY' => 'Sýrie',
+        'SB' => 'Šalomounovy ostrovy',
+        'ES' => 'Španělsko',
+        'SJ' => 'Špicberky a Jan Mayen',
+        'SE' => 'Švédsko',
+        'CH' => 'Švýcarsko',
+        'TJ' => 'Tádžikistán',
+        'TZ' => 'Tanzánie',
+        'TH' => 'Thajsko',
+        'TW' => 'Tchajwan',
+        'TG' => 'Togo',
+        'TK' => 'Tokelau',
+        'TO' => 'Tonga',
+        'TT' => 'Trinidad a Tobago',
+        'TN' => 'Tunisko',
+        'TR' => 'Turecko',
+        'TM' => 'Turkmenistán',
+        'TC' => 'Turks a Caicos',
+        'TV' => 'Tuvalu',
+        'UG' => 'Uganda',
+        'UA' => 'Ukrajina',
+        'UY' => 'Uruguay',
+        'UZ' => 'Uzbekistán',
+        'CX' => 'Vánoční ostrov (v Indickém oceánu)',
+        'VU' => 'Vanuatu',
+        'VA' => 'Vatikán',
+        'GB' => 'Velká Británie a Severní Irsko',
+        'VE' => 'Venezuela',
+        'VN' => 'Vietnam',
+        'WF' => 'Wallisovy ostrovy',
+        'ZM' => 'Zambie',
+        'EH' => 'Západní Sahara',
+        'ZW' => 'Zimbabwe',
+    ];
+
     /**
      * @var integer $id
      *
@@ -344,6 +587,13 @@ class User extends BaseUser implements UserInterface
      * @ORM\Column(name="zip", type="string", length=16, nullable=true)
      */
     protected $zip;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="country", type="string", length=16, nullable=true)
+     */
+    protected $country;
 
     /**
      * @var string
@@ -2115,10 +2365,22 @@ class User extends BaseUser implements UserInterface
         $this->zip = $zip;
     }
 
+    public function setCountry(?string $country): self
+    {
+        $this->country = $country;
+
+        return $this;
+    }
+
+    public function getCountry(): ?string
+    {
+        return $this->country;
+    }
+
     /**
      * @return string
      */
-    public function getAddress()
+    public function getAddress(bool $containsCountry = false)
     {
         $chunks = [];
         if ($this->getStreet()) {
@@ -2129,6 +2391,15 @@ class User extends BaseUser implements UserInterface
         }
         if ($this->getZip()) {
             $chunks[] = $this->getZip();
+        }
+        if (
+            $this->getCountry() !== null &&
+            (
+                $containsCountry ||
+                $this->getCountry() !== self::DEFAULT_COUNTRY
+            )
+        ) {
+            $chunks[] = self::$countries[$this->getCountry()];
         }
         return implode(', ', $chunks);
     }

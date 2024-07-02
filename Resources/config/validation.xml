@@ -71,5 +71,10 @@
                 <option name="message">fos_user.date_of_birth.wrong</option>
             </constraint>
         </property>
+        <property name="country">
+            <constraint name="NotBlank">
+                <option name="message">fos_user.country.blank</option>
+            </constraint>
+        </property>
     </class>
 </constraint-mapping>

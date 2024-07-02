@@ -154,6 +154,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
             foreach ($defaultGroups as $defaultGroup) {
                 $this->getSubject()->addGroup($defaultGroup);
             }
+            $this->getSubject()->setCountry(User::DEFAULT_COUNTRY);
         }
 
         $formMapper->tab('User')
@@ -233,6 +234,10 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                 ->add('street', null, array('required' => false))
                 ->add('city', null, array('required' => false))
                 ->add('zip', null, array('required' => false))
+                ->add('country', 'choice', [
+                    'required' => true,
+                    'choices' => User::$countries,
+                ])
             ->end();
 
             $formMapper->with('PhoneNumbers', array('class' => 'col-md-4'))
@@ -890,6 +895,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
             'Ulice a č.p.' => 'street',
             'Město' => 'city',
             'PSČ' => 'zip',
+            'Země' => 'country',
         ];
     }
 
@@ -919,6 +925,9 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                 break;
             case 'regnum':
                 return strtoupper($this->getConfigurationPool()->getContainer()->getParameter('ok99.privatezone.club_shortcut')) . $value;
+                break;
+            case 'country':
+                return User::$countries[$value] ?? null;
                 break;
         }
         return $value;

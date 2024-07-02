@@ -106,11 +106,14 @@
                                     <b><i class="fa fa-user margin-r-5"></i> {{ 'Identity Card Number'|trans({}, 'SonataUserBundle') }}</b> <a class="pull-right">{{ object.identityCardNumber }}</a>
                                 </li>
                             {% endif %}
-                            {% if object.address %}
+
+                            {% set address = object.getAddress(true) %}
+                            {% if address %}
                                 <li class="list-group-item list-item--last">
-                                    <b><i class="fa fa-map-marker margin-r-5"></i> {{ 'Address'|trans({}, 'SonataUserBundle') }}</b> <a class="pull-right">{{ object.address|replace({', ': '<br/>'})|raw }}</a>
+                                    <b><i class="fa fa-map-marker margin-r-5"></i> {{ 'Address'|trans({}, 'SonataUserBundle') }}</b> <a class="pull-right">{{ address|replace({', ': '<br/>'})|raw }}</a>
                                 </li>
                             {% endif %}
+
                             {% if object.photo %}
                                 <img src="{{ path('symbio_webtools_thumbnail_ratio', {'width': 400, 'height': 600, 'path': object.photo }) }}" class="user-profile--photo" style="margin-top: 20px" alt="" />
                             {% endif %}

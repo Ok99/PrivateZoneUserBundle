@@ -602,6 +602,10 @@
                 <source>Zip</source>
                 <target>PSČ</target>
             </trans-unit>
+            <trans-unit id="Country">
+                <source>Country</source>
+                <target>Země</target>
+            </trans-unit>
             <trans-unit id="Regnum">
                 <source>Regnum</source>
                 <target>Reg. číslo</target>
