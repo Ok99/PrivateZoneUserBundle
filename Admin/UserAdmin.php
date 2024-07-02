@@ -231,9 +231,9 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
 
             $formMapper->with('Contact', array('class' => 'col-md-4'))
                 ->add('email')
-                ->add('street', null, array('required' => false))
-                ->add('city', null, array('required' => false))
-                ->add('zip', null, array('required' => false))
+                ->add('street', null, ['required' => true])
+                ->add('city', null, ['required' => true])
+                ->add('zip', null, ['required' => true])
                 ->add('country', 'choice', [
                     'required' => true,
                     'choices' => User::$countries,

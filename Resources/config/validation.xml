@@ -71,6 +71,25 @@
                 <option name="message">fos_user.date_of_birth.wrong</option>
             </constraint>
         </property>
+
+        <property name="street">
+            <constraint name="NotBlank">
+                <option name="message">fos_user.street.blank</option>
+            </constraint>
+        </property>
+
+        <property name="city">
+            <constraint name="NotBlank">
+                <option name="message">fos_user.city.blank</option>
+            </constraint>
+        </property>
+
+        <property name="zip">
+            <constraint name="NotBlank">
+                <option name="message">fos_user.zip.blank</option>
+            </constraint>
+        </property>
+
         <property name="country">
             <constraint name="NotBlank">
                 <option name="message">fos_user.country.blank</option>

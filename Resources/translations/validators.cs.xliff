@@ -30,9 +30,21 @@
                 <source>fos_user.regnum.blank</source>
                 <target>Vyplň registrační číslo</target>
             </trans-unit>
+            <trans-unit id="fos_user.street.blank">
+                <source>fos_user.street.blank</source>
+                <target>Vyplň ulici</target>
+            </trans-unit>
+            <trans-unit id="fos_user.city.blank">
+                <source>fos_user.city.blank</source>
+                <target>Vyplň město</target>
+            </trans-unit>
             <trans-unit id="fos_user.country.blank">
                 <source>fos_user.country.blank</source>
                 <target>Vyber zemi</target>
+            </trans-unit>
+            <trans-unit id="fos_user.zip.blank">
+                <source>fos_user.zip.blank</source>
+                <target>Vyplň PSČ</target>
             </trans-unit>
             <trans-unit id="fos_user.regnum.non-numeric">
                 <source>fos_user.regnum.non-numeric</source>
