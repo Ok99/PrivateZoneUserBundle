@@ -830,6 +830,10 @@
                 <source>Iof Id</source>
                 <target>IOF ID</target>
             </trans-unit>
+            <trans-unit id="PersonalDataWillBeUpdatedInOris">
+                <source>PersonalDataWillBeUpdatedInOris</source>
+                <target><![CDATA[Změny v <a href="#" onclick="return false;" title="křestní jméno, příjmení, e-mail, telefon, adresa bydliště, IOF ID, SI čipy">osobních údajích</a> budou přeneseny do ORIS]]></target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

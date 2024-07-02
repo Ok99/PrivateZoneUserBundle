@@ -48,6 +48,9 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
     /** @var string */
     protected $exportName;
 
+    /** @var array<string, mixed>|null */
+    protected $original = null;
+
     /**
      * @param string $code
      * * @param string $class
@@ -552,6 +555,92 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
     public function postUpdate($object)
     {
         $this->postPersist($object);
+
+        if (
+            $this->clubConfigurationPool->getSettings()->isUpdatePersonalDataInOris() &&
+            $object->getOrisId() !== null &&
+            $this->original !== null &&
+            $this->personalDataChanged($this->original, $object)
+        ) {
+            $orisImport = $this->configurationPool->getContainer()->get('ok99.privatezone.oris_import');
+            $orisImport->updateClubMember($object);
+        }
+    }
+
+    private function personalDataChanged(
+        array $original,
+        User $object
+    ): bool
+    {
+        if (
+            $original['firstname'] !== $object->getFirstname() ||
+            $original['lastname'] !== $object->getLastname() ||
+            $original['email'] !== $object->getEmail() ||
+            $original['street'] !== $object->getStreet() ||
+            $original['city'] !== $object->getCity() ||
+            $original['zip'] !== $object->getZip() ||
+            $original['country'] !== $object->getCountry() ||
+            $original['phone'] !== $object->getPhone() ||
+            $original['iofId'] !== $object->getIofId()
+        ) {
+            return true;
+        }
+
+        if (
+            $original['sportident'] !== $object->getSportident() ||
+            ($original['sportidentSport'] === null && $object->getSportidentSport() !== null) ||
+            ($original['sportidentSport'] !== null && $object->getSportidentSport() === null) ||
+            (
+                $original['sportidentSport'] !== null && $object->getSportidentSport() !== null &&
+                $original['sportidentSport']->getId() !== $object->getSportidentSport()->getId()
+            ) ||
+            ($original['sportidentType'] === null && $object->getsportidentType() !== null) ||
+            ($original['sportidentType'] !== null && $object->getsportidentType() === null) ||
+            (
+                $original['sportidentType'] !== null && $object->getsportidentType() !== null &&
+                $original['sportidentType']->getId() !== $object->getsportidentType()->getId()
+            )
+        ) {
+            return true;
+        }
+
+        if (
+            $original['sportident2'] !== $object->getSportident2() ||
+            ($original['sportident2Sport'] === null && $object->getSportident2Sport() !== null) ||
+            ($original['sportident2Sport'] !== null && $object->getSportident2Sport() === null) ||
+            (
+                $original['sportident2Sport'] !== null && $object->getSportident2Sport() !== null &&
+                $original['sportident2Sport']->getId() !== $object->getSportident2Sport()->getId()
+            ) ||
+            ($original['sportident2Type'] === null && $object->getsportident2Type() !== null) ||
+            ($original['sportident2Type'] !== null && $object->getsportident2Type() === null) ||
+            (
+                $original['sportident2Type'] !== null && $object->getsportident2Type() !== null &&
+                $original['sportident2Type']->getId() !== $object->getsportident2Type()->getId()
+            )
+        ) {
+            return true;
+        }
+
+        if (
+            $original['sportident3'] !== $object->getSportident3() ||
+            ($original['sportident3Sport'] === null && $object->getSportident3Sport() !== null) ||
+            ($original['sportident3Sport'] !== null && $object->getSportident3Sport() === null) ||
+            (
+                $original['sportident3Sport'] !== null && $object->getSportident3Sport() !== null &&
+                $original['sportident3Sport']->getId() !== $object->getSportident3Sport()->getId()
+            ) ||
+            ($original['sportident3Type'] === null && $object->getsportident3Type() !== null) ||
+            ($original['sportident3Type'] !== null && $object->getsportident3Type() === null) ||
+            (
+                $original['sportident3Type'] !== null && $object->getsportident3Type() !== null &&
+                $original['sportident3Type']->getId() !== $object->getsportident3Type()->getId()
+            )
+        ) {
+            return true;
+        }
+
+        return false;
     }
 
     public function isAdmin($object = null)
@@ -705,9 +794,9 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
         parent::preUpdate($object);
 
         $em = $this->getModelManager()->getEntityManager($this->getClass());
-        $original = $em->getUnitOfWork()->getOriginalEntityData($object);
+        $this->original = $em->getUnitOfWork()->getOriginalEntityData($object);
 
-        if (!$object->isEnabled() && $original['enabled'] === true) {
+        if (!$object->isEnabled() && $this->original['enabled'] === true) {
             $object->setDeenabledManually(true);
         }
         
@@ -877,6 +966,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
             'Příjmení' => 'lastname',
             'Reg. číslo' => 'regnum',
             'Licence' => 'sportLicencesDecorated',
+            'IOF ID' => 'iofId',
             'SportIdent 1' => 'sportident',
             'SportIdent 2' => 'sportident2',
             'SportIdent 3' => 'sportident3',

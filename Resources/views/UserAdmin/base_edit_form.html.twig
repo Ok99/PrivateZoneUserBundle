@@ -70,6 +70,12 @@
 
             {% block formactions %}
                 <div class="well well-small form-actions">
+                    {% if pz_club_configuration_pool.settings.updatePersonalDataInOris and object.orisId is not null %}
+                        <p style="line-height: normal; margin-bottom: 10px; margin-top: -5px;">
+                            <i class="fa fa-warning text-yellow"></i>
+                            {{ 'PersonalDataWillBeUpdatedInOris' | trans({}, 'SonataUserBundle') | raw }}
+                        </p>
+                    {% endif %}
                     {% if app.request.isxmlhttprequest %}
                         {% if admin.id(object) is not null %}
                             <button type="submit" class="btn btn-success" name="btn_update"><i class="fa fa-save"></i> {{ 'btn_update'|trans({}, 'SonataAdminBundle') }}</button>
