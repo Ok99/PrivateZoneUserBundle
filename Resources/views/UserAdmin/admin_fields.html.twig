@@ -285,7 +285,24 @@
 {% endblock %}
 
 {% block user_regnum_widget %}
+	{% if form.vars.club_shortcut %}
+		{% set clubShortcut = form.vars.club_shortcut %}
+	{% elseif form.parent.vars.data.clubShortcut %}
+		{% set clubShortcut = form.parent.vars.data.clubShortcut %}
+	{% endif %}
+
 	<div class="input-group">
+		<input
+			type="text"
+			id="{{ form.vars.id | replace({'regnum': 'clubShortcut'}) }}"
+			name="{{ form.vars.full_name | replace({'regnum': 'clubShortcut'}) }}"
+			value="{{ clubShortcut is defined ? clubShortcut : '' }}"
+			class="form-control input-group-addon user-profile--regnum-club-shortcut"
+			placeholder="{{ pz_club_shortcut | upper }}"
+			data-default-club-shortcut="{{ pz_club_shortcut | upper }}"
+			maxlength="3"
+			{% if form.vars.disabled %}disabled="disabled"{% endif %}
+		>
 		<span class="input-group-addon user-profile--regnum-club-shortcut">{{ pz_club_shortcut | upper }}</span>
 		{{ block('form_widget_simple') }}
 	</div>

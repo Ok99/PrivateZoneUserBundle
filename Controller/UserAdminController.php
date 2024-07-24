@@ -76,6 +76,10 @@ class UserAdminController extends SecuredCRUDController
         $form->setData($object);
         $form->handleRequest($request);
 
+        if ($request->request->get($form->getName())['clubShortcut'] ?? null) {
+            $object->setClubShortcut($request->request->get($form->getName())['clubShortcut']);
+        }
+
         // u dema neni vytvoreni uzivatele mozne
         if ($clubConfigurationPool->isDemo()) {
             $this->addFlash(
@@ -265,6 +269,7 @@ class UserAdminController extends SecuredCRUDController
         }
 
         $documentRoot = $this->container->get('kernel')->getRootDir() . '/../web';
+        $clubConfigurationPool = $this->container->get('ok99.privatezone.club_configuration_pool');
 
         $crop = $request->request->get('crop');
 
@@ -330,11 +335,18 @@ class UserAdminController extends SecuredCRUDController
                     $user = $this->get('doctrine.orm.entity_manager')->getRepository('Ok99PrivateZoneUserBundle:User')->find($userId);
                 }
 
+                $regnum = $user->getRegnum();
+
+                // when user is a guest
+                if ($clubConfigurationPool->getClubShortcut() !== $user->getClubShortcut()) {
+                    $regnum = strtolower($user->getClubShortcut()) . $regnum;
+                }
+
                 // remove all old avatars
                 if ($user->getAvatar() && file_exists($documentRoot . $user->getAvatar())) {
                     @unlink($documentRoot . $user->getAvatar());
                 }
-                foreach (glob(dirname($pathname) . sprintf('/%s_*', $user->getRegnum())) as $file) {
+                foreach (glob(dirname($pathname) . sprintf('/%s_*', $regnum)) as $file) {
                     if (is_file($file) && strtolower(basename($file)) != strtolower($avatarFilename)) {
                         @unlink($file);
                     }
@@ -346,7 +358,7 @@ class UserAdminController extends SecuredCRUDController
                     $iterator = new \DirectoryIterator($baseDirPath);
                     foreach ($iterator as $node) {
                         if ($node->isDir() && !$node->isDot()) {
-                            $path = sprintf('%s%s/%s_*', $node->getPathname(), dirname($avatarRelativePathname), $user->getRegnum());
+                            $path = sprintf('%s%s/%s_*', $node->getPathname(), dirname($avatarRelativePathname), $regnum);
                             foreach (glob($path) as $file) {
                                 if (is_file($file) && strtolower(basename($file)) != strtolower($avatarFilename)) {
                                     @unlink($file);

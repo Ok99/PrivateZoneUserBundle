@@ -12,7 +12,7 @@
             <constraint name="Length">
                 <option name="min">4</option>
                 <option name="minMessage">fos_user.username.short</option>
-                <option name="max">4</option>
+                <option name="max">7</option>
                 <option name="maxMessage">fos_user.username.long</option>
             </constraint>
         </property>

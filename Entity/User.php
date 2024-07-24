@@ -342,7 +342,7 @@ class User extends BaseUser implements UserInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="regnum", type="string", length=5, unique=true)
+     * @ORM\Column(name="regnum", type="string", length=5)
      * @Assert\Callback(
      *      callback={"Ok99\PrivateZoneCore\UserBundle\Entity\User","validateRegnum"},
      *  )
@@ -804,6 +804,13 @@ class User extends BaseUser implements UserInterface
     /**
      * @var boolean
      *
+     * @ORM\Column(name="guest", type="boolean")
+     */
+    protected $guest = false;
+
+    /**
+     * @var boolean
+     *
      * @ORM\Column(name="deenabled_manually", type="boolean")
      */
     protected $deenabledManually = false;
@@ -1005,7 +1012,7 @@ class User extends BaseUser implements UserInterface
      */
     public function __toString()
     {
-        return sprintf('%s %s%s', $this->getName(), $this->getClubShortcut(), $this->getRegnum());
+        return sprintf('%s %s', $this->getName(), $this->getFullRegnum());
     }
 
     /**
@@ -1197,6 +1204,22 @@ class User extends BaseUser implements UserInterface
     public function getRegnum()
     {
         return $this->regnum;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullRegnum()
+    {
+        $fullRegnum = '';
+
+        if ($this->clubShortcut !== null) {
+            $fullRegnum .= strtoupper($this->clubShortcut);
+        }
+
+        $fullRegnum .= $this->regnum;
+
+        return $fullRegnum;
     }
 
     /**
@@ -2157,6 +2180,18 @@ class User extends BaseUser implements UserInterface
     public function isEnabled()
     {
         return $this->enabled;
+    }
+
+    public function setGuest($guest): self
+    {
+        $this->guest = (boolean) $guest;
+
+        return $this;
+    }
+
+    public function isGuest(): bool
+    {
+        return $this->guest;
     }
 
     /**

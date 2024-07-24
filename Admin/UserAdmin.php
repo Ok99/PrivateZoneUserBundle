@@ -187,9 +187,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                 ->add('regnum', 'user_regnum', array(
                     'required' => true,
                     'disabled' => !$this->isNew(),
-                    'attr' => [
-                        'onkeyup' => '$("input[name=\""+$(this).attr("name").substr(0, $(this).attr("name").indexOf("["))+"[username]\"]").val($(this).val())',
-                    ],
+                    'club_shortcut' => $this->getSubject()->getClubShortcut(),
                 ))
                 ->add('iofId', null, array('required' => false))
                 ->add('firstname', null, array('required' => true))
@@ -503,6 +501,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
     {
         if (!$object->getId()) {
             $user = $this->entityManager->getRepository('Ok99PrivateZoneUserBundle:User')->findOneBy([
+                'clubShortcut' => $object->getClubShortcut() ?? $this->clubConfigurationPool->getClubShortcut(),
                 'regnum' => $object->getRegnum(),
             ]);
 
@@ -721,6 +720,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
 
         $options = $this->formOptions;
         $options['validation_groups'] = 'Default';
+        $options['allow_extra_fields'] = true;
 
         $formBuilder = $this->getFormContractor()->getFormBuilder( $this->getUniqid(), $options);
 
@@ -772,8 +772,16 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
      */
     public function prePersist($object)
     {
-        $object->setUsername($object->getRegnum());
-        $object->setClubShortcut($this->clubConfigurationPool->getClubShortcut());
+        if (
+            $object->getClubShortcut() !== null &&
+            $object->getClubShortcut() !== $this->clubConfigurationPool->getClubShortcut()
+        ) {
+            $object->setUsername($object->getFullRegnum());
+            $object->setGuest(true);
+        } else {
+            $object->setUsername($object->getRegnum());
+            $object->setClubShortcut($this->clubConfigurationPool->getClubShortcut());
+        }
 
         $regnum = $object->getRegnum();
         $serialNumber = (int) substr($regnum, 2, 2);
