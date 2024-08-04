@@ -74,11 +74,12 @@ class UserAdminController extends SecuredCRUDController
         /** @var $form \Symfony\Component\Form\Form */
         $form = $this->admin->getForm();
         $form->setData($object);
-        $form->handleRequest($request);
 
         if ($request->request->get($form->getName())['clubShortcut'] ?? null) {
             $object->setClubShortcut($request->request->get($form->getName())['clubShortcut']);
         }
+
+        $form->handleRequest($request);
 
         // u dema neni vytvoreni uzivatele mozne
         if ($clubConfigurationPool->isDemo()) {
