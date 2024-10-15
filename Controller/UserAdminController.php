@@ -634,7 +634,7 @@ class UserAdminController extends SecuredCRUDController
                 $column = 0;
 
                 foreach($userData as $field => $value) {
-                    $writer->getObjPHPExcel()->getActiveSheet()->setCellValueByColumnAndRow($column, $row, $this->admin->exportFieldRender($field, $value));
+                    $writer->getObjPHPExcel()->getActiveSheet()->setCellValueByColumnAndRow($column, $row, $this->admin->exportFieldRender($field, $value, $userData));
                     $writer->getObjPHPExcel()->getActiveSheet()->getStyleByColumnAndRow($column, $row)->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
                     $writer->getObjPHPExcel()->getActiveSheet()->getStyleByColumnAndRow($column, $row)->getNumberFormat()->setFormatCode($this->admin->getExportXlsxFieldFormat($field));
 

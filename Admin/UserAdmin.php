@@ -1015,7 +1015,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
     /**
      * @inheritdoc
      */
-    public function exportFieldRender($field, $value)
+    public function exportFieldRender($field, $value, $rowData)
     {
         switch($field) {
             case 'date_of_birth':
