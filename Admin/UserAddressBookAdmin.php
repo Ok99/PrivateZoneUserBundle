@@ -67,9 +67,9 @@ class UserAddressBookAdmin extends BaseUserAdmin
                 'admin_code' => 'ok99.privatezone.user.admin.user'
             ))
             ->add('regnum', null, array('template' => 'Ok99PrivateZoneUserBundle:UserAdmin:list_regnum.html.twig'))
-            ->add('address')
-            ->add('email')
-            ->add('phone')
+            ->add('address', null, array('template' => 'Ok99PrivateZoneUserBundle:UserAddressBookAdmin:list_address.html.twig'))
+            ->add('email', null, array('template' => 'Ok99PrivateZoneUserBundle:UserAddressBookAdmin:list_email.html.twig'))
+            ->add('phone', null, array('template' => 'Ok99PrivateZoneUserBundle:UserAddressBookAdmin:list_phone.html.twig'))
             ->add('_action', 'actions', array(
                 'actions' => array(
                     'show' => array('template' => 'Ok99PrivateZoneUserBundle:UserAddressBookAdmin:list__action_show.html.twig'),

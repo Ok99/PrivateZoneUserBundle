@@ -666,6 +666,14 @@
                 <source>Suggest Event Classes</source>
                 <target>V přihlášce nabízej pouze kategorie odpovídající věku</target>
             </trans-unit>
+            <trans-unit id="Dont Display Personal Data">
+                <source>Dont Display Personal Data</source>
+                <target>V adresáři veřejně nezobrazovat osobní údaje</target>
+            </trans-unit>
+            <trans-unit id="Dont Display Personal Data Help">
+                <source>Dont Display Personal Data Help</source>
+                <target>Adresa, e-mail a telefon se zobrazí pouze správci.</target>
+            </trans-unit>
             <trans-unit id="group.is_default">
                 <source>group.is_default</source>
                 <target>Základní</target>

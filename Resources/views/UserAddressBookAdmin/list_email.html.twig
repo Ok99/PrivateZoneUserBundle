@@ -1,0 +1,7 @@
+{% extends 'SonataAdminBundle:CRUD:list_string.html.twig' %}
+
+{% block field %}{% spaceless %}
+    {% if not object.dontDisplayPersonalData %}
+        {{ object.email }}
+    {% endif %}
+{% endspaceless %}{% endblock %}

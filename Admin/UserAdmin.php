@@ -239,6 +239,10 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                     'required' => true,
                     'choices' => User::$countries,
                 ])
+                ->add('dontDisplayPersonalData', null, array(
+                    'required' => false,
+                    'help' => 'Dont Display Personal Data Help',
+                ))
             ->end();
 
             $formMapper->with('PhoneNumbers', array('class' => 'col-md-4'))

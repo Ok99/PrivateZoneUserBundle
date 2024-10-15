@@ -645,6 +645,13 @@ class User extends BaseUser implements UserInterface
     protected $suggestEventClasses = true;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="dont_display_personal_data", type="boolean")
+     */
+    protected $dontDisplayPersonalData = false;
+
+    /**
      * @ORM\OneToMany(targetEntity="\Ok99\PrivateZoneBundle\Entity\Message", mappedBy="recipient", cascade={"persist"}, orphanRemoval=true)
      */
     private $messages;
@@ -2458,9 +2465,28 @@ class User extends BaseUser implements UserInterface
     /**
      * @param boolean $suggestEventClasses
      */
-    public function setSuggestEventClasses($suggestEventClasses)
+    public function setSuggestEventClasses($suggestEventClasses): self
     {
         $this->suggestEventClasses = $suggestEventClasses;
+
+        return $this;
+    }
+
+    public function isDontDisplayPersonalData(): bool
+    {
+        return $this->dontDisplayPersonalData;
+    }
+
+    public function getDontDisplayPersonalData(): bool
+    {
+        return $this->dontDisplayPersonalData;
+    }
+
+    public function setDontDisplayPersonalData(bool $dontDisplayPersonalData): self
+    {
+        $this->dontDisplayPersonalData = $dontDisplayPersonalData;
+
+        return $this;
     }
 
     /**

@@ -412,6 +412,7 @@ class UserAdminController extends SecuredCRUDController
             'menuSidebarExpandOnHover',
             'controlSidebarLightSkin',
             'suggestEventClasses',
+            'dontDisplayPersonalData',
             'notifyEventEntryDates',
             'notifyDocuments',
         ])) {
