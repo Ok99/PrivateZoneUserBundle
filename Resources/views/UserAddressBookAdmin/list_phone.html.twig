@@ -1,7 +1,9 @@
 {% extends 'SonataAdminBundle:CRUD:list_string.html.twig' %}
 
 {% block field %}{% spaceless %}
-    {% if not object.dontDisplayPersonalData %}
+    {% set isAdmin = admin.isGranted('ROLE_SUPER_ADMIN') or admin.isGranted('ROLE_OK99_PRIVATEZONE_USER_ADMIN_USER_ADMIN') %}
+
+    {% if not object.dontDisplayPersonalData or isAdmin %}
         {{ object.phone }}
     {% endif %}
 {% endspaceless %}{% endblock %}
