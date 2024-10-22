@@ -1036,6 +1036,14 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
     }
 
     /**
+     * @return list<string>
+     */
+    public function getExportHiddenFields(): array
+    {
+        return [];
+    }
+
+    /**
      * @inheritdoc
      */
     public function exportQueryModify(ProxyQueryInterface $query)
