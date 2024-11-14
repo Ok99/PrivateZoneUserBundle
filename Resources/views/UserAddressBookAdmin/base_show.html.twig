@@ -2,8 +2,12 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="https://api.mapy.cz/loader.js"></script>
-    <script>Loader.load()</script>
+    <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js" integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg=" crossorigin=""></script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 {% endblock %}
 
 {% block navbar_title %}
@@ -125,39 +129,54 @@
             </div>
 
             {% if object.address and (not object.dontDisplayPersonalData or isAdmin) %}
+                {% set mapDriver = getMapDriver() %}
+
                 <div class="col-md-8">
                     <div class=" box box-primary">
                         <div class="box-body">
                             <div id="address--map" style="width: 100%;"></div>
                             <script>
-                                new SMap.Geocoder('{{ object.street ~ (object.city ? ' ' ~ object.city|trim('0123456789 ') : '') }}', function(geocoder){
-                                    if (geocoder.getResults()[0].results.length) {
-                                        var coords = geocoder.getResults()[0].results[0].coords,
-                                            position = SMap.Coords.fromWGS84(coords.x, coords.y),
-                                            map = new SMap(JAK.gel("address--map"), position, 16),
-                                            layer = new SMap.Layer.Marker();
+                                const $map = $('#address--map'),
+                                    boxWrapper = $map.parents('.box'),
+                                    boxFormHeight = $map.offset().top - boxWrapper.offset().top,
+                                    mapWrapperHeight = $(window).height() - boxFormHeight - boxWrapper.offset().top - 30;
 
-                                        map.addControl(new SMap.Control.Sync());
-                                        map.addDefaultLayer(SMap.DEF_BASE).enable();
-                                        map.addDefaultControls();
-                                        map.addControl(new SMap.Control.Sync({bottomSpace:30}));
-                                        map.addLayer(layer);
+                                $map.height(mapWrapperHeight);
 
-                                        // remove compass
-                                        map.getControls().forEach(function (control) {
-                                            if (
-                                                typeof control._dom !== 'undefined'
-                                                && typeof control._dom.container !== 'undefined'
-                                                && control._dom.container.className.indexOf('compass') > -1
-                                            ) {
-                                                map.removeControl(control);
-                                            }
-                                        })
+                                const map = L.map('address--map', {
+                                    center: [{{ object.addressLatitude }}, {{ object.addressLongitude }}],
+                                }).setView([{{ object.addressLatitude }}, {{ object.addressLongitude }}], 15);
 
-                                        layer.enable();
-                                        layer.addMarker(new SMap.Marker(position, "{{ object.name }}", []));
-                                    }
-                                });
+                                L.tileLayer('{{ mapDriver.url | replace({'%mapy_cz.api_key%' : mapy_cz_api_key}) }}', {
+                                    attribution: '{{ mapDriver.attribution | raw }}',
+                                }).addTo(map);
+
+                                L.control.scale({
+                                    imperial: false,
+                                }).addTo(map);
+
+                                L.marker([{{ object.addressLatitude }}, {{ object.addressLongitude }}]).addTo(map);
+
+                                {% if mapDriver.showMapyCzLogo %}
+                                    const LogoControl = L.Control.extend({
+                                        options: {
+                                            position: 'bottomleft',
+                                        },
+
+                                        onAdd: function (map) {
+                                            const container = L.DomUtil.create('div');
+                                            const link = L.DomUtil.create('a', '', container);
+
+                                            link.setAttribute('href', 'http://mapy.cz/');
+                                            link.setAttribute('target', '_blank');
+                                            link.innerHTML = '<img src="https://api.mapy.cz/img/api/logo.svg" />';
+                                            L.DomEvent.disableClickPropagation(link);
+
+                                            return container;
+                                        },
+                                    });
+                                    new LogoControl().addTo(map);
+                                {% endif %}
                             </script>
                         </div>
                     </div>
