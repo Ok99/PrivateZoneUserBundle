@@ -596,6 +596,27 @@ class User extends BaseUser implements UserInterface
     protected $country;
 
     /**
+     * @var float|null
+     *
+     * @ORM\Column(name="address_latitude", type="float", nullable=true)
+     */
+    private $addressLatitude;
+
+    /**
+     * @var float|null
+     *
+     * @ORM\Column(name="address_longitude", type="float", nullable=true)
+     */
+    private $addressLongitude;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="address_checksum", type="string", nullable=true)
+     */
+    private $addressChecksum;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="avatar", type="string", length=64, nullable=true)
@@ -2444,6 +2465,36 @@ class User extends BaseUser implements UserInterface
             $chunks[] = self::$countries[$this->getCountry()];
         }
         return implode(', ', $chunks);
+    }
+
+    public function getAddressLatitude(): ?float
+    {
+        return $this->addressLatitude;
+    }
+
+    public function setAddressLatitude(?float $addressLatitude): void
+    {
+        $this->addressLatitude = $addressLatitude;
+    }
+
+    public function getAddressLongitude(): ?float
+    {
+        return $this->addressLongitude;
+    }
+
+    public function setAddressLongitude(?float $addressLongitude): void
+    {
+        $this->addressLongitude = $addressLongitude;
+    }
+
+    public function getAddressChecksum(): ?string
+    {
+        return $this->addressChecksum;
+    }
+
+    public function setAddressChecksum(?string $addressChecksum): void
+    {
+        $this->addressChecksum = $addressChecksum;
     }
 
     /**

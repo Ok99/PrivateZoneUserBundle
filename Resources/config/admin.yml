@@ -32,7 +32,7 @@ services:
         class: Ok99\PrivateZoneCore\UserBundle\Admin\UserAddressBookAdmin
         tags:
             - { name: sonata.admin, manager_type: orm, group: Administration, label: Address Book }
-        arguments: [null, Ok99\PrivateZoneCore\UserBundle\Entity\User, null, @ok99.privatezone.club_configuration_pool]
+        arguments: [null, Ok99\PrivateZoneCore\UserBundle\Entity\User, Ok99PrivateZoneUserBundle:UserAddressBookAdmin, @ok99.privatezone.club_configuration_pool]
         calls:
             - [setTranslationDomain, [SonataUserBundle]]
             - [setTemplate, [show, Ok99PrivateZoneUserBundle:UserAddressBookAdmin:show.html.twig]]
