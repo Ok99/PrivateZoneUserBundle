@@ -998,6 +998,7 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
             'Město' => 'city',
             'PSČ' => 'zip',
             'Země' => 'country',
+            'Aktivní' => 'enabled',
         ];
     }
 
@@ -1030,6 +1031,9 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
                 break;
             case 'country':
                 return User::$countries[$value] ?? null;
+                break;
+            case 'enabled':
+                return $value ? 'Ano' : 'Ne';
                 break;
         }
         return $value;
