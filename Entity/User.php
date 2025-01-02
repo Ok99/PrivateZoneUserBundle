@@ -1175,9 +1175,20 @@ class User extends BaseUser implements UserInterface
 
     public function isOrisAcceptable(): bool
     {
+        $currentDate = new \DateTime();
+
+        $unregisteredPeriodStart = new \DateTime($currentDate->format('Y') . '-01-01 00:00:00');
+        $unregisteredPeriodEnd = (new \DateTime($currentDate->format('Y') . '-03-01 00:00:00'))->modify('-1 second');
+
         return
-            $this->getOrisId() !== null &&
-            $this->getOrisClubuserId() !== null;
+            (
+                $currentDate >= $unregisteredPeriodStart &&
+                $currentDate <= $unregisteredPeriodEnd
+            ) ||
+            (
+                $this->getOrisId() !== null &&
+                $this->getOrisClubuserId() !== null
+            );
     }
 
     /**
