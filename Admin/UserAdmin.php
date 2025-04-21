@@ -816,6 +816,10 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
             $object->setDeenabledManually(false);
         }
 
+        if ($object->isEnabled() && $object->isDeactivated()) {
+            $object->setDeactivated(false);
+        }
+
         // if someone removes the default user groups from the active user
         if (
             !$object->isDeactivated() &&
