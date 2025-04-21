@@ -82,6 +82,8 @@ class UserAddressBookAdmin extends BaseUserAdmin
     // Fields to be shown on filter forms
     protected function configureDatagridFilters(\Sonata\AdminBundle\Datagrid\DatagridMapper $datagridMapper)
     {
+        $entityManager = $this->getConfigurationPool()->getContainer()->get('doctrine.orm.default_entity_manager');
+
         $datagridMapper
             ->add('firstname')
             ->add('lastname')
@@ -143,6 +145,51 @@ class UserAddressBookAdmin extends BaseUserAdmin
                 'operator_type' => 'sonata_type_equal',
             ])
         ;
+
+        $trainingGroupChoices = $entityManager->getRepository('Ok99PrivateZoneBundle:TrainingGroup')->fetchActiveTrainingGroupsForFilter();
+        $datagridMapper->add('trainingGroup', 'doctrine_orm_callback',
+            [
+                'label' => 'Tréninková skupina',
+                'field_type' => 'choice',
+                'callback' => function(ProxyQueryInterface $queryBuilder, $alias, $field, $value) {
+                    if ($value == null || $value['value'] == null) {
+                        return;
+                    }
+
+                    $queryBuilder->leftJoin($queryBuilder->getRootAlias() . '.trainingGroupsSupported', 'trainingGroupsSupported');
+                    $queryBuilder->leftJoin($queryBuilder->getRootAlias() . '.trainingGroupsNotSupported', 'trainingGroupsNotSupported');
+
+                    $queryBuilder->andWhere($queryBuilder->expr()->orX(
+                        $queryBuilder->expr()->in('trainingGroupsSupported.id', [$value['value']]),
+                        $queryBuilder->expr()->in('trainingGroupsNotSupported.id', [$value['value']])
+                    ));
+                },
+                'field_options' => [
+                    'choices' => $trainingGroupChoices,
+                ],
+                'operator_type' => 'sonata_type_equal',
+            ],
+        );
+
+        $performanceGroupChoices = $entityManager->getRepository('Ok99PrivateZoneBundle:PerformanceGroup')->fetchActivePerformanceGroupsForFilter();
+        $datagridMapper->add('performanceGroup', 'doctrine_orm_callback',
+            [
+                'label' => 'Výkonnostní skupina',
+                'field_type' => 'choice',
+                'callback' => function(ProxyQueryInterface $queryBuilder, $alias, $field, $value) {
+                    if ($value == null || $value['value'] == null) {
+                        return;
+                    }
+
+                    $queryBuilder->leftJoin($queryBuilder->getRootAlias() . '.performanceGroups', 'performanceGroups');
+                    $queryBuilder->andWhere($queryBuilder->expr()->in('performanceGroups.id', [$value['value']]));
+                },
+                'field_options' => [
+                    'choices' => $performanceGroupChoices,
+                ],
+                'operator_type' => 'sonata_type_equal',
+            ],
+        );
     }
 
     // Fields to be shown on revisions
