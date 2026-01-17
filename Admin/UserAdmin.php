@@ -403,7 +403,25 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
         $filterMapper
             ->add('firstname')
             ->add('lastname')
-            ->add('regnum')
+            ->add('regnum', 'doctrine_orm_callback', [
+                'callback' => function(ProxyQueryInterface $queryBuilder, $alias, $field, $value) {
+                    if ($value == null || $value['value'] == null) {
+                        return;
+                    }
+
+                    if (strlen($value['value']) === 7) {
+                        $clubShortcut = substr($value['value'], 0, 3);
+                        $regnum = substr($value['value'], 3);
+                    } else {
+                        $clubShortcut = $this->clubConfigurationPool->getClubShortcut();
+                        $regnum = $value['value'];
+                    }
+
+                    $queryBuilder->andWhere($alias . '.clubShortcut = :clubShortcut')->setParameter('clubShortcut', $clubShortcut);
+                    $queryBuilder->andWhere($alias . '.regnum LIKE :regnum')->setParameter('regnum', '%' . $regnum. '%');
+                },
+                'operator_type' => 'sonata_type_equal',
+            ])
             ->add('licence', 'doctrine_orm_callback', [
                 'callback' => function(ProxyQueryInterface $queryBuilder, $alias, $field, $value) {
                     if ($value == null || $value['value'] == null) {
