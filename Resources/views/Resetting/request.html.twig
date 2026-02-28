@@ -29,12 +29,13 @@ file that was distributed with this source code.
 				<div class="alert alert-danger alert-error">{{ 'resetting.request.invalid_email'|trans({'%email%': invalid_email}, 'FOSUserBundle')|raw }}</div>
 			{% else %}
 				<p class="login-box-msg">{{ 'title_user_resetting'|trans({}, 'SonataUserBundle') }}</p>
+				<p>{{ 'hint_user_resetting'|trans({}, 'SonataUserBundle')|hardSpaces|raw }}</p>
 			{% endif %}
 
 			<form action="{{ path('admin_privatezonecore_user_resetting_send_email') }}" method="POST" class="fos_user_resetting_request">
 				<input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
 				<div class="form-group has-feedback">
-					<input type="text" name="username" required="required" class="form-control"{{ invalid_username is defined or invalid_email is defined ? (' value="' ~ (invalid_username is defined ? invalid_username : invalid_email) ~ '"')|raw : '' }} placeholder="{{ 'resetting.request.username'|trans({}, 'FOSUserBundle') }}">
+					<input type="text" name="username" value="{{ last_username }}" required="required" class="form-control"{{ invalid_username is defined or invalid_email is defined ? (' value="' ~ (invalid_username is defined ? invalid_username : invalid_email) ~ '"')|raw : '' }} placeholder="{{ 'User Regnum Long'|trans({}, 'Ok99PrivateZoneBundle') }}">
 					<span class="glyphicon glyphicon-user form-control-feedback"></span>
 				</div>
 				<div class="row">

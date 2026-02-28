@@ -32,7 +32,7 @@ file that was distributed with this source code.
             <form action="{{ path("sonata_user_admin_security_check") }}" class="login-form" method="post">
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
                 <div class="form-group has-feedback manual"{{ pz_club_configuration_pool.isDemo() ? ' style="display:none"' : '' }}>
-                    <input type="text" name="_username" value="" required="required" class="form-control" placeholder="{{ 'security.login.username'|trans({}, 'SonataUserBundle') }}">
+                    <input type="text" name="_username" value="" required="required" class="form-control" placeholder="{{ 'User Regnum Long'|trans({}, 'Ok99PrivateZoneBundle') }}">
                     <span class="glyphicon glyphicon-user form-control-feedback"></span>
                 </div>
                 <div class="form-group has-feedback manual"{{ pz_club_configuration_pool.isDemo() ? ' style="display:none"' : '' }}>
@@ -68,7 +68,7 @@ file that was distributed with this source code.
             </form>
 
             {% if not pz_club_configuration_pool.isDemo() %}
-                <a href="{{ path('admin_privatezonecore_user_resetting_request') }}">{{ 'forgotten_password'|trans({}, 'SonataUserBundle') }}</a><br>
+                <a href="{{ path('admin_privatezonecore_user_resetting_request') }}">{{ 'forgotten_password'|trans({}, 'Ok99PrivateZoneBundle') }}</a><br>
             {% endif %}
         </div><!-- /.login-box-body -->
     </div><!-- /.login-box -->

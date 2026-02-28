@@ -18,6 +18,10 @@
 				<source>title_user_resetting</source>
 				<target>Obnova hesla</target>
 			</trans-unit>
+			<trans-unit id="hint_user_resetting">
+				<source>hint_user_resetting</source>
+				<target>Zadejte registrační číslo a na e-mailové adresy účtu pošleme odkaz pro nastavení nového hesla.</target>
+			</trans-unit>
             <trans-unit id="user_account.dashboard.title">
                 <source>user_account.dashboard.title</source>
                 <target>Profil uživatele</target>

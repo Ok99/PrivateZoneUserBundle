@@ -21,7 +21,7 @@ file that was distributed with this source code.
 			Privátní zóna <em>.</em>
 		</div><!-- /.login-logo -->
 		<div class="login-box-body">
-			<p>{{ 'resetting.check_email'|trans({'%email%': email}, 'FOSUserBundle') }}</p>
+			<p>{{ 'resetting.check_email'|trans({'%email%': email}, 'FOSUserBundle')|hardSpaces|raw }}</p>
 		</div><!-- /.login-box-body -->
 	</div><!-- /.login-box -->
 {% endblock sonata_wrapper %}

@@ -16,6 +16,7 @@ use Ok99\PrivateZoneCore\UserBundle\Entity\User;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\SecurityContext;
 
 /**
  * Class ResettingFOSUser1Controller
@@ -34,10 +35,16 @@ class ResettingFOSUser1Controller extends \Sonata\UserBundle\Controller\Resettin
      */
     public function requestAction()
     {
+        $clubConfigurationPool = $this->container->get('ok99.privatezone.club_configuration_pool');
+        if ($clubConfigurationPool->isDemo()) {
+            return new RedirectResponse($this->container->get('router')->generate('sonata_user_admin_security_login'));
+        }
+
         return $this->container->get('templating')->renderResponse('FOSUserBundle:Resetting:request.html.'.$this->getEngine(), array(
             'csrf_token' => $this->container->get('form.csrf_provider')->generateCsrfToken('authenticate'),
             'base_template' => 'Ok99PrivateZoneAdminBundle::standard_layout.html.twig',
             'admin_pool' => $this->container->get('sonata.admin.pool'),
+            'last_username' => $this->container->get('session')->get(SecurityContext::LAST_USERNAME),
         ));
     }
 
@@ -50,27 +57,38 @@ class ResettingFOSUser1Controller extends \Sonata\UserBundle\Controller\Resettin
     public function sendEmailAction()
     {
         $usernameOrEmail = $this->container->get('request')->request->get('username');
+
+        if (strlen($usernameOrEmail) === 7) {
+            $usernameOrEmail = substr($usernameOrEmail, 3);
+        }
+
         $userManager = $this->container->get('fos_user.user_manager');
 
-        // email
-        if (filter_var($usernameOrEmail, FILTER_VALIDATE_EMAIL)) {
-            $users = $userManager->findUsersBy(['email' => $usernameOrEmail]);
-        }
-        // username
-        else {
-            $users = $userManager->findUsersBy(['username' => $usernameOrEmail]);
-        }
+//        // email
+//        if (filter_var($usernameOrEmail, FILTER_VALIDATE_EMAIL)) {
+//            $users = $userManager->findUsersBy(['email' => $usernameOrEmail]);
+//        }
+//        // username
+//        else {
+//            $users = $userManager->findUsersBy(['username' => $usernameOrEmail]);
+//        }
+
+        $users = $userManager->findUsersBy(['username' => $usernameOrEmail]);
 
         if (!$users) {
             return $this->container->get('templating')->renderResponse('FOSUserBundle:Resetting:request.html.'.$this->getEngine(), array(
-                filter_var($usernameOrEmail, FILTER_VALIDATE_EMAIL) ? 'invalid_email' : 'invalid_username' => $usernameOrEmail,
+//                filter_var($usernameOrEmail, FILTER_VALIDATE_EMAIL) ? 'invalid_email' : 'invalid_username' => $usernameOrEmail,
+                'invalid_username' => $usernameOrEmail,
                 'csrf_token' => $this->container->get('form.csrf_provider')->generateCsrfToken('authenticate'),
                 'base_template' => 'Ok99PrivateZoneAdminBundle::standard_layout.html.twig',
                 'admin_pool' => $this->container->get('sonata.admin.pool'),
+                'last_username' => $this->container->get('session')->get(SecurityContext::LAST_USERNAME),
             ));
         }
 
         $this->container->get('session')->set(static::SESSION_EMAIL, $usernameOrEmail);
+
+        $clubConfigurationPool = $this->container->get('ok99.privatezone.club_configuration_pool');
 
         /** @var $user User */
         foreach($users as $user) {
@@ -80,16 +98,7 @@ class ResettingFOSUser1Controller extends \Sonata\UserBundle\Controller\Resettin
                 $user->setConfirmationToken($tokenGenerator->generateToken());
             }
 
-            $clubConfigurationPool = $this->container->get('ok99.privatezone.club_configuration_pool');
-
-            $recipients = [];
-            if ($user->getEmail()) {
-                $recipients[] = $user->getEmail();
-            }
-            if ($user->getEmailParent() && $user->getAge() < $clubConfigurationPool->getSettings()->getAgeToParentalSupervision()) {
-                $recipients = array_merge($recipients, array_map(function($email){ return trim($email); }, explode(',', $user->getEmailParent())));
-                $recipients = array_unique($recipients);
-            }
+            $recipients = $this->getEmailRecipients($user);
 
             try {
                 $clubConfigurationPool->getMailer()->send(
@@ -123,16 +132,26 @@ class ResettingFOSUser1Controller extends \Sonata\UserBundle\Controller\Resettin
     public function checkEmailAction()
     {
         $session = $this->container->get('session');
-        $email = $session->get(static::SESSION_EMAIL);
+        $username = $session->get(static::SESSION_EMAIL);
         $session->remove(static::SESSION_EMAIL);
 
-        if (empty($email)) {
+        if (empty($username)) {
             // the user does not come from the sendEmail action
             return new RedirectResponse($this->container->get('router')->generate('admin_privatezonecore_user_resetting_request'));
         }
 
+        $entityManager = $this->container->get('doctrine.orm.entity_manager');
+        $user = $entityManager->getRepository('Ok99PrivateZoneUserBundle:User')->findOneBy(['username' => $username]);
+
+        if (empty($user)) {
+            // the user does not come from the sendEmail action
+            return new RedirectResponse($this->container->get('router')->generate('admin_privatezonecore_user_resetting_request'));
+        }
+
+        $recipients = $this->getEmailRecipients($user);
+
         return $this->container->get('templating')->renderResponse('FOSUserBundle:Resetting:checkEmail.html.'.$this->getEngine(), array(
-            'email' => $email,
+            'email' => implode(', ', $recipients),
             'base_template' => 'Ok99PrivateZoneAdminBundle::standard_layout.html.twig',
             'admin_pool' => $this->container->get('sonata.admin.pool'),
         ));
@@ -188,5 +207,24 @@ class ResettingFOSUser1Controller extends \Sonata\UserBundle\Controller\Resettin
         return $this->container->get('router')->generate('admin_privatezonecore_user_user_edit', array(
             'id' => $user->getId(),
         ));
+    }
+
+    /**
+     * @return list<string>
+     */
+    protected function getEmailRecipients(UserInterface $user): array
+    {
+        $clubConfigurationPool = $this->container->get('ok99.privatezone.club_configuration_pool');
+
+        $recipients = [];
+        if ($user->getEmail()) {
+            $recipients[] = $user->getEmail();
+        }
+        if ($user->getEmailParent() && $user->getAge() < $clubConfigurationPool->getSettings()->getAgeToParentalSupervision()) {
+            $recipients = array_merge($recipients, array_map(function($email){ return trim($email); }, explode(',', $user->getEmailParent())));
+            $recipients = array_unique($recipients);
+        }
+
+        return $recipients;
     }
 }
