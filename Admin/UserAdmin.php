@@ -583,8 +583,8 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
             $this->original !== null &&
             $this->personalDataChanged($this->original, $object)
         ) {
-            $orisImport = $this->configurationPool->getContainer()->get('ok99.privatezone.oris_import');
-            $orisImport->updateClubMember($object);
+            $orisUserGateway = $this->configurationPool->getContainer()->get('ok99.privatezone.oris_user_gateway');
+            $orisUserGateway->updateMember($object);
         }
     }
 

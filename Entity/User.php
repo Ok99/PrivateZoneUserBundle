@@ -901,6 +901,13 @@ class User extends BaseUser implements UserInterface
     private $createdAt;
 
     /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="creation_notified_at", type="datetime", nullable=true)
+     */
+    private $creationNotifiedAt = null;
+
+    /**
      * @var \DateTime
      *
      * @Gedmo\Timestampable(on="update")
@@ -1141,34 +1148,22 @@ class User extends BaseUser implements UserInterface
         return $this->id;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getOrisId()
+    public function getOrisId(): ?int
     {
         return $this->orisId;
     }
 
-    /**
-     * @param int $orisId
-     */
-    public function setOrisId($orisId)
+    public function setOrisId(?int $orisId)
     {
         $this->orisId = $orisId;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getOrisClubuserId()
+    public function getOrisClubuserId(): ?int
     {
         return $this->orisClubuserId;
     }
 
-    /**
-     * @param int $orisClubuserId
-     */
-    public function setOrisClubuserId($orisClubuserId)
+    public function setOrisClubuserId(?int $orisClubuserId)
     {
         $this->orisClubuserId = $orisClubuserId;
     }
@@ -1178,6 +1173,13 @@ class User extends BaseUser implements UserInterface
         return
             $this->getOrisId() !== null &&
             $this->getOrisClubuserId() !== null;
+    }
+
+    public function isAdmin(): bool
+    {
+        $regnum = (int) $this->getRegnum();
+
+        return $regnum > 9999;
     }
 
     /**
@@ -1433,18 +1435,12 @@ class User extends BaseUser implements UserInterface
         return $this->confirmationToken;
     }
 
-    /**
-     * @param \DateTime $dateOfBirth
-     */
-    public function setDateOfBirth($dateOfBirth)
+    public function setDateOfBirth(?\DateTime $dateOfBirth)
     {
         $this->dateOfBirth = $dateOfBirth;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getDateOfBirth()
+    public function getDateOfBirth(): ?\DateTime
     {
         return $this->dateOfBirth;
     }
@@ -1732,7 +1728,7 @@ class User extends BaseUser implements UserInterface
             return $this->getAvatar();
         } else {
             $pathnameFormat = '/img/avatar_%s.jpg';
-            if ($this->getRegnum() > 9999) {
+            if ($this->isAdmin()) {
                 return sprintf($pathnameFormat, 'admin');
             } else {
                 switch($this->getGender()) {
@@ -2042,6 +2038,16 @@ class User extends BaseUser implements UserInterface
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+
+    public function setCreationNotifiedAt(\DateTime $creationNotifiedAt)
+    {
+        $this->creationNotifiedAt = $creationNotifiedAt;
+    }
+
+    public function getCreationNotifiedAt(): ?\DateTime
+    {
+        return $this->creationNotifiedAt;
     }
 
     /**

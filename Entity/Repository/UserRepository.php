@@ -17,10 +17,8 @@ class UserRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('u');
         return $qb
-            ->where('u.regnum <= :maxRegnum')
-            ->setParameter('maxRegnum', 9999)
-            ->andWhere('u.enabled = :true')
-            ->setParameter('true', true)
+            ->where('u.regnum <= :maxRegnum')->setParameter('maxRegnum', 9999)
+            ->andWhere('u.enabled = :enabled')->setParameter('enabled', true)
             ->orderBy('u.lastname', 'asc')
             ->addOrderBy('u.firstname', 'asc');
     }
@@ -145,4 +143,23 @@ class UserRepository extends EntityRepository
 
         return $users;
     }
+
+    /**
+     * Returns active users who have not been notified of activation
+     *
+     * @return User[]
+     */
+    public function getActiveUsersToNotifyAboutActivation(): array
+    {
+        $queryBuilder = $this->getActiveUsersQueryBuilder();
+        $queryBuilder
+            ->andWhere('u.creationNotifiedAt IS NULL');
+        
+        try {
+            return $queryBuilder->getQuery()->getResult();
+        } catch (NoResultException $e) {
+            return [];
+        }
+    }
+
 }
