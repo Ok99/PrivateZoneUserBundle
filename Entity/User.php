@@ -1278,26 +1278,26 @@ class User extends BaseUser implements UserInterface
 
     public function setEmail($email): self
     {
-        $this->email = $email;
+        $this->email = $email !== null ? trim($email) : null;
 
         return $this;
     }
 
     public function getEmail(): ?string
     {
-        return $this->email;
+        return $this->email !== null ? trim($this->email) : null;
     }
 
     public function setEmailCanonical($emailCanonical): self
     {
-        $this->emailCanonical = $emailCanonical;
+        $this->emailCanonical = $emailCanonical !== null ? trim($emailCanonical) : null;
 
         return $this;
     }
 
     public function getEmailCanonical(): ?string
     {
-        return $this->emailCanonical;
+        return $this->emailCanonical !== null ? trim($this->emailCanonical) : null;
     }
 
     /**
