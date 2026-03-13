@@ -1,1 +1,6 @@
-{{ 'resetting.email.message'|trans({'%confirmationUrl%': 'odkaz: '~confirmationUrl }, 'FOSUserBundle') }}
+{# @var \Ok99\PrivateZoneCore\UserBundle\Entity\User user #}
+{{ 'resetting.email.message'|trans({
+    '%name%': user.name,
+    '%regnum%': user.fullRegnum,
+    '%confirmationUrl%': 'odkaz: '~confirmationUrl,
+}, 'FOSUserBundle') }}

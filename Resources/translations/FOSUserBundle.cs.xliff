@@ -62,7 +62,7 @@
                 <source>resetting.email.message</source>
                 <target><![CDATA[Ahoj,
 
-                pro nastavení nového hesla proklikněte tento odkaz:
+                pro nastavení nového hesla člena %name%, reg. číslo %regnum% klikněte na tento odkaz:
 
                 %confirmationUrl%]]></target>
             </trans-unit>

@@ -107,6 +107,7 @@ class ResettingFOSUser1Controller extends \Sonata\UserBundle\Controller\Resettin
                     $recipients,
                     $this->container->get('translator')->trans('resetting.email.subject', array(), 'FOSUserBundle'),
                     array(
+                        'user' => $user,
                         'confirmationUrl' => $this->container->get('router')->generate('fos_user_resetting_reset', array(
                             'token' => $user->getConfirmationToken()
                         ), true),
