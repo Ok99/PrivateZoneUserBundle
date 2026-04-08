@@ -56,10 +56,17 @@ class ResettingFOSUser1Controller extends \Sonata\UserBundle\Controller\Resettin
      */
     public function sendEmailAction()
     {
-        $usernameOrEmail = $this->container->get('request')->request->get('username');
+        $usernameOrEmail = strtoupper($this->container->get('request')->request->get('username'));
 
         if (strlen($usernameOrEmail) === 7) {
-            $usernameOrEmail = substr($usernameOrEmail, 3);
+            $clubConfigurationPool = $this->container->get('ok99.privatezone.club_configuration_pool');
+
+            $usernameClubShortcut = substr($usernameOrEmail, 0, 3);
+
+            // v pripade hostovani musime hledat nad celym registracnim cislem
+            if ($usernameClubShortcut === $clubConfigurationPool->getClubShortcut()) {
+                $usernameOrEmail = substr($usernameOrEmail, 3);
+            }
         }
 
         $userManager = $this->container->get('fos_user.user_manager');
