@@ -44,15 +44,15 @@
             </trans-unit>
             <trans-unit id="resetting.request.invalid_username">
                 <source>resetting.request.invalid_username</source>
-                <target><![CDATA[Účet s uživatelským jménem "%username%" neexistuje.<br/>V případě potíží zašlete e-mail na <a href="mailto:info@privatni-zona.cz">info@privatni-zona.cz</a>.]]></target>
+                <target><![CDATA[Účet s uživatelským jménem "%username%" neexistuje.<br/>V případě potíží zašlete e-mail na <a href="mailto:info@privatni-zona.cz">info@privatni&#8209;zona.cz</a>]]></target>
             </trans-unit>
             <trans-unit id="resetting.request.invalid_email">
                 <source>resetting.request.invalid_email</source>
-                <target><![CDATA[Účet s e-mailovou adresou "%email%" neexistuje.<br/>V případě potíží zašlete e-mail na <a href="mailto:info@privatni-zona.cz">info@privatni-zona.cz</a>.]]></target>
+                <target><![CDATA[Účet s e-mailovou adresou "%email%" neexistuje.<br/>V případě potíží zašlete e-mail na <a href="mailto:info@privatni-zona.cz">info@privatni&#8209;zona.cz</a>]]></target>
             </trans-unit>
             <trans-unit id="resetting.request.empty_email">
                 <source>resetting.request.empty_email</source>
-                <target><![CDATA[Účet nemá zadanou e-mailovou adresu.<br/>Obraťte se prosím na správce na adrese <a href="mailto:info@privatni-zona.cz">info@privatni-zona.cz</a>.]]></target>
+                <target><![CDATA[Účet nemá zadanou e-mailovou adresu.<br/>Obraťte se prosím na správce na adrese <a href="mailto:info@privatni-zona.cz">info@privatni&#8209;zona.cz</a>]]></target>
             </trans-unit>
             <trans-unit id="resetting.email.subject">
                 <source>resetting.email.subject</source>
