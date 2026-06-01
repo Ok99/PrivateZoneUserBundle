@@ -764,9 +764,17 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
     {
         /** @var QueryBuilder $query */
         $query = parent::createQuery($context);
-        $query->addOrderBy($query->getRootAlias() . '.lastname', 'asc');
-        $query->addOrderBy($query->getRootAlias() . '.firstname', 'asc');
-        $query->addOrderBy($query->getRootAlias() . '.regnum', 'asc');
+
+        $filterQuery = $this->request->get('filter');
+
+        if (
+            $filterQuery === null ||
+            $filterQuery['_sort_by'] === 'id'
+        ) {
+            $query->addOrderBy($query->getRootAlias() . '.lastname', 'asc');
+            $query->addOrderBy($query->getRootAlias() . '.firstname', 'asc');
+            $query->addOrderBy($query->getRootAlias() . '.regnum', 'asc');
+        }
 
         if ($context == 'list') {
             if (!$this->isAdmin()) {
