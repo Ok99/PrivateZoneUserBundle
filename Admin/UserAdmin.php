@@ -29,6 +29,12 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
 
     protected $baseRoutePattern = 'klub/uzivatele';
 
+    protected $datagridValues = array(
+        '_page' => 1,
+        '_sort_by' => 'name',
+        '_sort_order' => 'ASC'
+    );
+
     protected $maxPerPage = 50;
 
     protected $perPageOptions = array(10, 25, 50, 100, 500, 1000);
@@ -488,7 +494,12 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
         unset($this->listModes['mosaic']);
 
         $listMapper
-            ->addIdentifier('name', null, array('label' => 'User Name'))
+            ->addIdentifier('name', null, array(
+                'label' => 'User Name',
+                'sortable' => true,
+                'sort_field_mapping'=> array('fieldName'=>'lastname'),
+                'sort_parent_association_mappings' => []
+            ))
             ->add('regnum', null, array('template' => 'Ok99PrivateZoneUserBundle:UserAdmin:list_regnum.html.twig'))
             ->add('groups', null, array('template' => 'Ok99PrivateZoneUserBundle:UserAdmin:list_groups_field.html.twig'))
             ->add('enabled', null, array('editable' => false))
@@ -767,15 +778,6 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
 
         $filterQuery = $this->request->get('filter');
 
-        if (
-            $filterQuery === null ||
-            $filterQuery['_sort_by'] === 'id'
-        ) {
-            $query->addOrderBy($query->getRootAlias() . '.lastname', 'asc');
-            $query->addOrderBy($query->getRootAlias() . '.firstname', 'asc');
-            $query->addOrderBy($query->getRootAlias() . '.regnum', 'asc');
-        }
-
         if ($context == 'list') {
             if (!$this->isAdmin()) {
                 $query->andWhere($query->getRootAlias() . '.id = :userId');
@@ -790,6 +792,22 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
             if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
                 $query->andWhere($query->getRootAlias() . '.regnum <= :maxRegnum');
                 $query->setParameter('maxRegnum', 9999);
+            }
+
+            $sortBy = $filterQuery['_sort_by'] ?? null;
+            if (
+                $sortBy === null ||
+                $sortBy === 'name'
+            ) {
+                $alias = $query->getRootAlias();
+                $sortOrder = $filterQuery['_sort_order'] ?? 'ASC';
+
+                $query->addCallback(function(QueryBuilder $queryBuilder) use ($alias, $sortBy, $sortOrder) {
+                    $queryBuilder
+                        ->orderBy($alias . '.lastname', $sortOrder)
+                        ->addOrderBy($alias . '.firstname', $sortOrder)
+                        ->addOrderBy($alias . '.regnum', $sortOrder);
+                });
             }
         }
 

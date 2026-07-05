@@ -2,6 +2,7 @@
 
 namespace Ok99\PrivateZoneCore\UserBundle\Admin;
 
+use Doctrine\ORM\QueryBuilder;
 use Knp\Menu\ItemInterface as MenuItemInterface;
 use Ok99\PrivateZoneBundle\Service\ClubConfigurationPool;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
@@ -239,12 +240,31 @@ class UserAddressBookAdmin extends BaseUserAdmin
     public function createQuery($context = 'list')
     {
         $query = parent::createQuery($context);
+
+        $filterQuery = $this->request->get('filter');
+
         $query
             ->andWhere($query->getRootAlias() . '.enabled = :true')
             ->andWhere($query->getRootAlias() . '.regnum <= :maxRegnum')
             ->setParameter('true', true)
-            ->setParameter('maxRegnum', 9999)
-        ;
+            ->setParameter('maxRegnum', 9999);
+
+        $sortBy = $filterQuery['_sort_by'] ?? null;
+        if (
+            $sortBy === null ||
+            $sortBy === 'name'
+        ) {
+            $alias = $query->getRootAlias();
+            $sortOrder = $filterQuery['_sort_order'] ?? 'ASC';
+
+            $query->addCallback(function(QueryBuilder $queryBuilder) use ($alias, $sortBy, $sortOrder) {
+                $queryBuilder
+                    ->orderBy($alias . '.lastname', $sortOrder)
+                    ->addOrderBy($alias . '.firstname', $sortOrder)
+                    ->addOrderBy($alias . '.regnum', $sortOrder);
+            });
+        }
+
         return $query;
     }
 
