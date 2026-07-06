@@ -17,7 +17,7 @@
 
 		<div class="user-profile--avatar-field">
 			{% if value %}
-				<img src="{{ path('symbio_webtools_thumbnail', {'width': 160, 'height': 160, 'path': value }) }}" class="user-profile--avatar" alt="" />
+				<img src="{{ path('symbio_webtools_thumbnail', {'width': 300, 'height': 300, 'path': value }) }}" class="user-profile--avatar" alt="" />
 			{% endif %}
 		</div>
 		<div class="user-profile--drop-desc" style="display: none;">
@@ -206,7 +206,7 @@
 		</span>
 
 		{% if value %}
-			<img src="{{ path('symbio_webtools_thumbnail_ratio', {'width': 250, 'height': 350, 'path': value }) }}" class="user-profile--photo" alt="" />
+			<img src="{{ path('symbio_webtools_thumbnail_ratio', {'width': 1000, 'height': 1500, 'path': value }) }}" class="user-profile--photo" alt="" />
 		{% endif %}
 
 		<div class="user-profile--drop-desc">
