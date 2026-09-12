@@ -39,6 +39,7 @@ class UserAddressBookAdminController extends CRUDController
             if (
                 $searchData === null ||
                 !is_array($searchData) ||
+                count($searchData) === 0 ||
                 !is_object($searchData[0]) ||
                 !$searchData[0]->lat ||
                 !$searchData[0]->lon

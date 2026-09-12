@@ -509,7 +509,7 @@ class User extends BaseUser implements UserInterface
     protected $emailCanonical;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="email_parent", type="string", length=255, nullable=true)
      * @Assert\Callback(
@@ -1303,7 +1303,7 @@ class User extends BaseUser implements UserInterface
     /**
      * @return string
      */
-    public function getEmailParent()
+    public function getEmailParent(): ?string
     {
         return $this->emailParent;
     }
