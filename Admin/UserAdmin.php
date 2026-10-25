@@ -7,6 +7,8 @@ use Doctrine\ORM\QueryBuilder;
 use Knp\Menu\ItemInterface as MenuItemInterface;
 use Ok99\PrivateZoneBundle\AdminInterface\ExportAdminInterface;
 use Ok99\PrivateZoneBundle\Service\ClubConfigurationPool;
+use Ok99\PrivateZoneBundle\Service\ExceptionHandler;
+use Ok99\PrivateZoneBundle\Tools\Exception\EmptyResponseException;
 use Ok99\PrivateZoneCore\ClassificationBundle\Entity\Category;
 use Ok99\PrivateZoneCore\UserBundle\Entity\Group;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -62,7 +64,12 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
      * * @param string $class
      * * @param string $baseControllerName
      */
-    public function __construct($code, $class, $baseControllerName)
+    public function __construct(
+        $code,
+        $class,
+        $baseControllerName,
+        private ExceptionHandler $exceptionHandler,
+    )
     {
         parent::__construct($code, $class, $baseControllerName);
 
@@ -595,7 +602,11 @@ class UserAdmin extends BaseUserAdmin implements ExportAdminInterface
             $this->personalDataChanged($this->original, $object)
         ) {
             $orisUserGateway = $this->configurationPool->getContainer()->get('ok99.privatezone.oris_user_gateway');
-            $orisUserGateway->updateMember($object);
+            try {
+                $orisUserGateway->updateMember($object);
+            } catch (EmptyResponseException) {
+                $this->exceptionHandler->handle($e);
+            }
         }
     }
 

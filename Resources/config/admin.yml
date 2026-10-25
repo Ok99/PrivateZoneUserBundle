@@ -3,7 +3,7 @@ services:
         class: Ok99\PrivateZoneCore\UserBundle\Admin\UserAdmin
         tags:
             - { name: sonata.admin, manager_type: orm, group: Administration, label: users }
-        arguments: [null, Ok99\PrivateZoneCore\UserBundle\Entity\User, Ok99PrivateZoneUserBundle:UserAdmin]
+        arguments: [null, Ok99\PrivateZoneCore\UserBundle\Entity\User, Ok99PrivateZoneUserBundle:UserAdmin, @ok99.privatezone.exception_handler]
         calls:
             - [setContainer, [@service_container]]
             - [setEntityManager, [@doctrine.orm.default_entity_manager]]
