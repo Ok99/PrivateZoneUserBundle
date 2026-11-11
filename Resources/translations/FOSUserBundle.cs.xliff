@@ -72,7 +72,11 @@
             </trans-unit>
             <trans-unit id="security.login.remember_me">
                 <source>security.login.remember_me</source>
-                <target>Přihlásit trvale</target>
+                <target>Přihlásit se trvale</target>
+            </trans-unit>
+            <trans-unit id="security.login.submit_and_redirect">
+                <source>security.login.submit_and_redirect</source>
+                <target>Přihlásit a pokračovat na web</target>
             </trans-unit>
         </body>
     </file>

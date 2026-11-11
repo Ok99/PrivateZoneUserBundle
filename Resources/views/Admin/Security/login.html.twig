@@ -29,7 +29,9 @@ file that was distributed with this source code.
                 </p>
             {% endif %}
 
-            <form action="{{ path("sonata_user_admin_security_check") }}" class="login-form" method="post">
+            {% set redirectUrl = app.request.query.get('redirect_url') %}
+
+            <form action="{{ path("sonata_user_admin_security_check") }}?redirect_url={{ redirectUrl | escape('url') }}" class="login-form" method="post">
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
                 <div class="form-group has-feedback manual"{{ pz_club_configuration_pool.isDemo() ? ' style="display:none"' : '' }}>
                     <input type="text" name="_username" value="" required="required" class="form-control" placeholder="{{ 'User Regnum Long'|trans({}, 'Ok99PrivateZoneBundle') }}">
@@ -39,18 +41,34 @@ file that was distributed with this source code.
                     <input type="password" name="_password" class="form-control" placeholder="{{ 'security.login.password'|trans({}, 'SonataUserBundle') }}">
                     <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                 </div>
-                <div class="row manual"{{ pz_club_configuration_pool.isDemo() ? ' style="display:none"' : '' }}>
-                    <div class="col-xs-7">
-                        <div class="checkbox icheck">
-                            <label>
-                                <input type="checkbox" name="_remember_me"> {{ 'security.login.remember_me'|trans({}, 'FOSUserBundle') }}
-                            </label>
-                        </div>
-                    </div><!-- /.col -->
-                    <div class="col-xs-5">
-                        <button type="submit" class="btn btn-primary btn-block btn-flat">{{ 'security.login.submit'|trans({}, 'FOSUserBundle') }}</button>
-                    </div><!-- /.col -->
-                </div>
+
+                {% if redirectUrl is not empty %}
+                    <div class="row manual"{{ pz_club_configuration_pool.isDemo() ? ' style="display:none"' : '' }}>
+                        <div class="col-xs-9">
+                            <button type="submit" class="btn btn-primary btn-block btn-flat">{{ 'security.login.submit_and_redirect'|trans({}, 'FOSUserBundle') }}</button>
+                        </div><!-- /.col -->
+                        <div class="col-xs-9">
+                            <div class="checkbox icheck" style="margin-top: 14px;">
+                                <label>
+                                    <input type="checkbox" name="_remember_me"> {{ 'security.login.remember_me'|trans({}, 'FOSUserBundle') }}
+                                </label>
+                            </div>
+                        </div><!-- /.col -->
+                    </div>
+                {% else %}
+                    <div class="row manual"{{ pz_club_configuration_pool.isDemo() ? ' style="display:none"' : '' }}>
+                        <div class="col-xs-7">
+                            <div class="checkbox icheck">
+                                <label>
+                                    <input type="checkbox" name="_remember_me"> {{ 'security.login.remember_me'|trans({}, 'FOSUserBundle') }}
+                                </label>
+                            </div>
+                        </div><!-- /.col -->
+                        <div class="col-xs-5">
+                            <button type="submit" class="btn btn-primary btn-block btn-flat">{{ 'security.login.submit'|trans({}, 'FOSUserBundle') }}</button>
+                        </div><!-- /.col -->
+                    </div>
+                {% endif %}
 
                 {% if pz_club_configuration_pool.isDemo() %}
                     <script type="text/javascript">
